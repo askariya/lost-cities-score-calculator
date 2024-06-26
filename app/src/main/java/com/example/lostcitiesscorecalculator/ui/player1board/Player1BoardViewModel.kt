@@ -1,13 +1,13 @@
-package com.example.lostcitiesscorecalculator.ui.home
+package com.example.lostcitiesscorecalculator.ui.player1board
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
-class HomeViewModel : ViewModel() {
+class Player1BoardViewModel : ViewModel() {
 
     private val _text = MutableLiveData<String>().apply {
-        value = "This is home Fragment"
+        value = "This is Player 1 Board Fragment"
     }
     val text: LiveData<String> = _text
 }

@@ -1,4 +1,4 @@
-package com.example.lostcitiesscorecalculator.ui.home
+package com.example.lostcitiesscorecalculator.ui.player1board
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.lostcitiesscorecalculator.databinding.FragmentHomeBinding
 
-class HomeFragment : Fragment() {
+class Player1BoardFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
 
@@ -22,14 +22,14 @@ class HomeFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val homeViewModel =
-            ViewModelProvider(this).get(HomeViewModel::class.java)
+        val player1BoardViewModel =
+            ViewModelProvider(this).get(Player1BoardViewModel::class.java)
 
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
         val textView: TextView = binding.textHome
-        homeViewModel.text.observe(viewLifecycleOwner) {
+        player1BoardViewModel.text.observe(viewLifecycleOwner) {
             textView.text = it
         }
         return root

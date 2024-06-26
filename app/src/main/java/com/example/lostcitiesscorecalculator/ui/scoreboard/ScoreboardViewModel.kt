@@ -1,13 +1,13 @@
-package com.example.lostcitiesscorecalculator.ui.dashboard
+package com.example.lostcitiesscorecalculator.ui.scoreboard
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
-class DashboardViewModel : ViewModel() {
+class ScoreboardViewModel : ViewModel() {
 
     private val _text = MutableLiveData<String>().apply {
-        value = "This is dashboard Fragment"
+        value = "This is Scoreboard Fragment"
     }
     val text: LiveData<String> = _text
 }
