@@ -7,11 +7,11 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.example.lostcitiesscorecalculator.databinding.FragmentNotificationsBinding
+import com.example.lostcitiesscorecalculator.databinding.FragmentScoreboardBinding
 
 class ScoreboardFragment : Fragment() {
 
-    private var _binding: FragmentNotificationsBinding? = null
+    private var _binding: FragmentScoreboardBinding? = null
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -25,10 +25,10 @@ class ScoreboardFragment : Fragment() {
         val scoreboardViewModel =
             ViewModelProvider(this).get(ScoreboardViewModel::class.java)
 
-        _binding = FragmentNotificationsBinding.inflate(inflater, container, false)
+        _binding = FragmentScoreboardBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        val textView: TextView = binding.textNotifications
+        val textView: TextView = binding.textScoreboard
         scoreboardViewModel.text.observe(viewLifecycleOwner) {
             textView.text = it
         }
