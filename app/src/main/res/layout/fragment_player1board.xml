@@ -4,19 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.player1board.Player1BoardFragment">
-
-    <TextView
-        android:id="@+id/text_player1board"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:textAlignment="center"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    android:fitsSystemWindows="true"
+    tools:context=".ui.player1board.Player1BoardFragment" android:background="@color/red">
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/player_board"
+        android:name="com.example.lostcitiesscorecalculator.ui.playerboard.PlayerBoardFragment"
+        android:label="@string/title_player1"
+        tools:layout="@layout/fragment_playerboard"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -13,7 +13,7 @@
 
     <fragment
         android:id="@+id/navigation_dashboard"
-        android:name="com.example.lostcitiesscorecalculator.ui.playerxboard.Player2BoardFragment"
+        android:name="com.example.lostcitiesscorecalculator.ui.player2board.Player2BoardFragment"
         android:label="@string/title_player2"
         tools:layout="@layout/fragment_player2board" />
 

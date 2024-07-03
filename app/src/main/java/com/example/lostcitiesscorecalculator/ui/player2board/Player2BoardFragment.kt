@@ -1,4 +1,4 @@
-package com.example.lostcitiesscorecalculator.ui.playerxboard
+package com.example.lostcitiesscorecalculator.ui.player2board
 
 import android.os.Bundle
 import android.view.LayoutInflater

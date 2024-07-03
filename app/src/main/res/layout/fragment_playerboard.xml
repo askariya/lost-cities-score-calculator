@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.player1board.Player1BoardFragment">
+
+<!--    <TextView-->
+<!--        android:id="@+id/text_player1board"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginStart="8dp"-->
+<!--        android:layout_marginTop="8dp"-->
+<!--        android:layout_marginEnd="8dp"-->
+<!--        android:textAlignment="center"-->
+<!--        android:textSize="20sp"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent" />-->
+
+    <GridLayout
+        android:id="@+id/boardGrid"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:rowCount="11"
+        android:columnCount="6"
+        android:background="@color/cardview_dark_background">
+<!--        <Button-->
+<!--            android:id="@+id/yellow_wager"-->
+<!--            style="@style/CardButtonStyle"-->
+<!--            android:layout_row="0"-->
+<!--            android:layout_column="0"-->
+<!--            app:backgroundTint="@null"/>-->
+<!--        <Button-->
+<!--            android:id="@+id/white_wager"-->
+<!--            style="@style/CardButtonStyle"-->
+<!--            android:layout_row="0"-->
+<!--            android:layout_column="1"-->
+<!--            app:backgroundTint="@null"/>-->
+<!--        <Button-->
+<!--            android:id="@+id/blue_wager"-->
+<!--            style="@style/CardButtonStyle"-->
+<!--            android:layout_row="0"-->
+<!--            android:layout_column="2"-->
+<!--            app:backgroundTint="@null"/>-->
+<!--        <Button-->
+<!--            android:id="@+id/green_wager"-->
+<!--            style="@style/CardButtonStyle"-->
+<!--            android:layout_row="0"-->
+<!--            android:layout_column="3"-->
+<!--            app:backgroundTint="@null"/>-->
+<!--        <Button-->
+<!--            android:id="@+id/red_wager"-->
+<!--            style="@style/CardButtonStyle"-->
+<!--            android:layout_row="0"-->
+<!--            android:layout_column="4"-->
+<!--            app:backgroundTint="@null"/>-->
+<!--        <Button-->
+<!--            android:id="@+id/purple_wager"-->
+<!--            style="@style/CardButtonStyle"-->
+<!--            android:layout_row="0"-->
+<!--            android:layout_column="5"-->
+<!--            app:backgroundTint="@null"/>-->
+
+<!--        <Button-->
+<!--            android:id="@+id/yellow_2"-->
+<!--            style="@style/CardButtonStyle"-->
+<!--            android:layout_row="1"-->
+<!--            android:layout_column="0"-->
+<!--            android:text="@string/label_button2"-->
+<!--            app:backgroundTint="@null"/>-->
+    </GridLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
