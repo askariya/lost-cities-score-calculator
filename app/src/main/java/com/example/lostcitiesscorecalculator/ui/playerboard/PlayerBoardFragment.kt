@@ -162,6 +162,7 @@ class PlayerBoardFragment : Fragment() {
                 wagerButton.setImageResource(R.drawable.ic_wager)
                 wagerButton.setColorFilter(selectedColour)
                 wagerButton.scaleType = ImageView.ScaleType.CENTER_INSIDE
+                wagerButton.setPadding(wButtonLeftPadding, wButtonTopPadding,wButtonRightPadding,wButtonBottomPadding)
             }
         }
 
