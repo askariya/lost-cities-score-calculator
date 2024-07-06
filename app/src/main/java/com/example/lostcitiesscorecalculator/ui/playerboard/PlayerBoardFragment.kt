@@ -115,22 +115,51 @@ class PlayerBoardFragment : Fragment() {
         checkAndToggleTotalTextViewState(column)
     }
 
+    private fun toggleWagerButtonState(column: Int, wagerButton: Button, selectedColour: Int, unselectedColour: Int, selectedIconColor : Int)
+    {
+        val wagerCount = wagerButton.tag as? Int ?: 0
+
+        when (wagerCount)
+        {
+            0 -> {
+                wagerButton.tag = 1
+                wagerButton.setBackgroundColor(selectedColour)
+            }
+            1 -> {
+                wagerButton.tag = 2
+            }
+            2 -> {
+                wagerButton.tag = 3
+            }
+            3 -> {
+                wagerButton.tag = 0
+                wagerButton.setBackgroundColor(unselectedColour)
+            }
+        }
+
+        checkAndToggleTotalTextViewState(column)
+    }
+
     private fun checkAndToggleTotalTextViewState(column : Int)
     {
         var columnScore = 0
         var selectedButtonCount = 0
         val totalTextView: TextView = findTextView(10, column)!!
 
-        //TODO Calculate score for wager buttons
+        // Calculate the corresponding multiple based on the number of wager cards
+        val wagerButton = findButton(0, column)
+        val wagerButtonMultiple = (wagerButton?.tag as? Int ?: 0) + 1
+
+        if (wagerButtonMultiple > 1)
+            selectedButtonCount++
 
         // Calculate Score for numbered buttons
         for (row in 1 until totalButtonRows)
         {
-            val rowButton = findButton(row, column)
-            val buttonIsSelected = rowButton?.tag as? Boolean ?: false
+            val numberButton = findButton(row, column)
+            val buttonIsSelected = numberButton?.tag as? Boolean ?: false
 
-            if (buttonIsSelected)
-            {
+            if (buttonIsSelected) {
                 columnScore += (row + 1)
                 selectedButtonCount++
             }
@@ -142,6 +171,9 @@ class PlayerBoardFragment : Fragment() {
         } else {
             totalTextView.setBackgroundColor(getColorFromString("light_grey"))
         }
+
+        // Multiply score based on wager cards
+        columnScore *= wagerButtonMultiple
 
         if (selectedButtonCount >= 8)
             columnScore += 20
@@ -156,12 +188,18 @@ class PlayerBoardFragment : Fragment() {
             val unselectedBackgroundColor = getColorFromString("dark_grey")
             val selectedTextColor = getColorFromString("black")
 
-            // Set the OnClickListener and colours for each button
-            // Skip the wager row
+            // Set the OnClickListener and icons for the Wager button
+            val wagerButton : Button? = findButton(0, col)
+            wagerButton?.tag = 0
+            wagerButton?.setOnClickListener {
+                toggleWagerButtonState(col, wagerButton, buttonColor, unselectedBackgroundColor, selectedTextColor)
+            }
+
+            // Set the OnClickListener and colours for each numbered button
             for (row in 1 until totalButtonRows)
             {
-                val button: Button? = findButton(row, col)
-
+                val button : Button? = findButton(row, col)
+                button?.tag = false
                 button?.setTextColor(buttonColor)
                 button?.setOnClickListener {
                     toggleButtonState(col, button, buttonColor, unselectedBackgroundColor, selectedTextColor)
