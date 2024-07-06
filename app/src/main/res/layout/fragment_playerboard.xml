@@ -10,7 +10,7 @@
         android:id="@+id/boardGrid"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:rowCount="11"
+        android:rowCount="12"
         android:columnCount="6"
         android:verticalSpacing="0dp"
         android:horizontalSpacing="0dp"
@@ -380,6 +380,66 @@
             android:layout_row="9"
             android:layout_column="5"
             android:text="@string/label_button10"/>
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/yellow_total_card"
+            style="@style/CardBorderStyle"
+            android:layout_row="10"
+            android:layout_column="0">
+            <TextView
+                android:id="@+id/yellow_total"
+                style="@style/CardTextViewStyle"
+                android:text="@string/label_zero"/>
+        </com.google.android.material.card.MaterialCardView>
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/white_total_card"
+            style="@style/CardBorderStyle"
+            android:layout_row="10"
+            android:layout_column="1">
+            <TextView
+                android:id="@+id/white_total"
+                style="@style/CardTextViewStyle"
+                android:text="@string/label_zero"/>
+        </com.google.android.material.card.MaterialCardView>
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/blue_total_card"
+            style="@style/CardBorderStyle"
+            android:layout_row="10"
+            android:layout_column="2">
+            <TextView
+                android:id="@+id/blue_total"
+                style="@style/CardTextViewStyle"
+                android:text="@string/label_zero"/>
+        </com.google.android.material.card.MaterialCardView>
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/green_total_card"
+            style="@style/CardBorderStyle"
+            android:layout_row="10"
+            android:layout_column="3">
+            <TextView
+                android:id="@+id/green_total"
+                style="@style/CardTextViewStyle"
+                android:text="@string/label_zero"/>
+        </com.google.android.material.card.MaterialCardView>
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/red_total_card"
+            style="@style/CardBorderStyle"
+            android:layout_row="10"
+            android:layout_column="4">
+            <TextView
+                android:id="@+id/red_total"
+                style="@style/CardTextViewStyle"
+                android:text="@string/label_zero"/>
+        </com.google.android.material.card.MaterialCardView>
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/purple_total_card"
+            style="@style/CardBorderStyle"
+            android:layout_row="10"
+            android:layout_column="5">
+            <TextView
+                android:id="@+id/purple_total"
+                style="@style/CardTextViewStyle"
+                android:text="@string/label_zero"/>
+        </com.google.android.material.card.MaterialCardView>
 
     </GridLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

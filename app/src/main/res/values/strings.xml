@@ -12,4 +12,5 @@
     <string name="label_button8">8</string>
     <string name="label_button9">9</string>
     <string name="label_button10">10</string>
+    <string name="label_zero">0</string>
 </resources>

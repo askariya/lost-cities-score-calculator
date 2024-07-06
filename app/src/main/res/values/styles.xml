@@ -5,14 +5,40 @@
         <item name="android:layout_height">0dp</item>
         <item name="android:layout_rowWeight">1</item>
         <item name="android:layout_columnWeight">1</item>
-        <item name="cornerRadius">2dp</item>
+        <item name="cornerRadius">5dp</item>
         <item name="android:layout_gravity">fill</item>
         <item name="android:insetTop">0dp</item>
         <item name="android:insetBottom">0dp</item>
         <item name="android:padding">0dp</item>
         <item name="android:gravity">center</item>
         <item name="android:backgroundTint">@color/dark_grey</item>
-        <item name="strokeColor">@color/light_grey</item>
+        <item name="strokeColor">@color/medium_grey</item>
         <item name="strokeWidth">1dp</item>
+    </style>
+
+    <style name="CardBorderStyle">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">0dp</item>
+        <item name="android:layout_rowWeight">1</item>
+        <item name="android:layout_columnWeight">1</item>
+        <item name="cardCornerRadius">0dp</item>
+        <item name="android:layout_gravity">fill</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="android:padding">0dp</item>
+        <item name="android:gravity">center</item>
+        <item name="strokeColor">@color/medium_grey</item>
+        <item name="strokeWidth">0.5dp</item>
+    </style>
+
+    <style name="CardTextViewStyle">
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">fill_parent</item>
+        <item name="android:layout_gravity">fill</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="android:padding">0dp</item>
+        <item name="android:background">@color/light_grey</item>
+        <item name="android:gravity">center</item>
     </style>
 </resources>
