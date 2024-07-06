@@ -22,16 +22,12 @@ class Player2BoardFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val player2ViewModel =
+        val player2BoardViewModel =
             ViewModelProvider(this).get(Player2BoardViewModel::class.java)
 
         _binding = FragmentPlayer2boardBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        val textView: TextView = binding.textPlayer2board
-        player2ViewModel.text.observe(viewLifecycleOwner) {
-            textView.text = it
-        }
         return root
     }
 
