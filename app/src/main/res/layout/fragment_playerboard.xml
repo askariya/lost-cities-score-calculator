@@ -17,36 +17,48 @@
         android:background="@color/cardview_dark_background"
         android:layout_marginVertical="0dp"
         android:layout_marginHorizontal="0dp">
-        <Button
+        <ImageButton
             android:id="@+id/yellow_wager"
-            style="@style/CardButtonStyle"
+            style="@style/CardImageButtonStyle"
+            android:contentDescription="@string/label_white_wager"
             android:layout_row="0"
-            android:layout_column="0"/>
-        <Button
+            android:layout_column="0">
+        </ImageButton>
+        <ImageButton
             android:id="@+id/white_wager"
-            style="@style/CardButtonStyle"
+            style="@style/CardImageButtonStyle"
+            android:contentDescription="@string/label_white_wager"
             android:layout_row="0"
-            android:layout_column="1"/>
-        <Button
+            android:layout_column="1">
+        </ImageButton>
+        <ImageButton
             android:id="@+id/blue_wager"
-            style="@style/CardButtonStyle"
+            style="@style/CardImageButtonStyle"
+            android:contentDescription="@string/label_blue_wager"
             android:layout_row="0"
-            android:layout_column="2"/>
-        <Button
+            android:layout_column="2">
+        </ImageButton>
+        <ImageButton
             android:id="@+id/green_wager"
-            style="@style/CardButtonStyle"
+            style="@style/CardImageButtonStyle"
+            android:contentDescription="@string/label_green_wager"
             android:layout_row="0"
-            android:layout_column="3"/>
-        <Button
+            android:layout_column="3">
+        </ImageButton>
+        <ImageButton
             android:id="@+id/red_wager"
-            style="@style/CardButtonStyle"
+            style="@style/CardImageButtonStyle"
+            android:contentDescription="@string/label_red_wager"
             android:layout_row="0"
-            android:layout_column="4"/>
-        <Button
+            android:layout_column="4">
+        </ImageButton>
+        <ImageButton
             android:id="@+id/purple_wager"
-            style="@style/CardButtonStyle"
+            style="@style/CardImageButtonStyle"
+            android:contentDescription="@string/label_purple_wager"
             android:layout_row="0"
-            android:layout_column="5"/>
+            android:layout_column="5">
+        </ImageButton>
 
         <Button
             android:id="@+id/yellow_2"

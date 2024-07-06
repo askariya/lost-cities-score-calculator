@@ -16,6 +16,17 @@
         <item name="strokeWidth">1dp</item>
     </style>
 
+    <style name="CardImageButtonStyle">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">0dp</item>
+        <item name="android:layout_rowWeight">1</item>
+        <item name="android:layout_columnWeight">1</item>
+        <item name="android:gravity">center</item>
+        <item name="android:backgroundTint">@color/dark_grey</item>
+        <item name="android:scaleType">fitCenter</item>
+        <item name="android:src">@drawable/ic_wager</item>
+    </style>
+
     <style name="CardBorderStyle">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">0dp</item>
