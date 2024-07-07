@@ -18,16 +18,25 @@ class PlayerBoardViewModel(private val playerId: Int) : ViewModel() {
     private val _wagerCounts = MutableLiveData<Map<Int, Int>>()
     val wagerCounts: LiveData<Map<Int, Int>> get() = _wagerCounts
 
+    // Holds the total points for the player
+    private val _totalPoints = MutableLiveData<Int>()
+    val totalPoints: LiveData<Int> get() = _totalPoints
+
     init {
         _points.value = emptyMap()
         _buttonStates.value = emptyMap()
         _wagerCounts.value = emptyMap()
     }
 
+    private fun updateTotalPoints() {
+        _totalPoints.value = _points.value?.values?.sum() ?: 0
+    }
+
     private fun setPoints(column: Int, points: Int) {
         val updatedPoints = _points.value?.toMutableMap() ?: mutableMapOf()
         updatedPoints[column] = points
         _points.value = updatedPoints
+        updateTotalPoints()
     }
 
     private fun setButtonState(row: Int, column: Int, state: Boolean) {

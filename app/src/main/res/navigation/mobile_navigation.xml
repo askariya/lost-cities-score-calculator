@@ -9,17 +9,19 @@
         android:id="@+id/navigation_player1"
         android:name="com.example.lostcitiesscorecalculator.ui.player1board.Player1BoardFragment"
         android:label="@string/title_player1"
-        tools:layout="@layout/fragment_player1board" />
+        tools:layout="@layout/fragment_player1board">
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_player2"
         android:name="com.example.lostcitiesscorecalculator.ui.player2board.Player2BoardFragment"
         android:label="@string/title_player2"
-        tools:layout="@layout/fragment_player2board" />
-
+        tools:layout="@layout/fragment_player2board">
+    </fragment>
     <fragment
         android:id="@+id/navigation_score"
         android:name="com.example.lostcitiesscorecalculator.ui.scoreboard.ScoreboardFragment"
         android:label="@string/title_score"
-        tools:layout="@layout/fragment_scoreboard" />
+        tools:layout="@layout/fragment_scoreboard">
+    </fragment>
 </navigation>
