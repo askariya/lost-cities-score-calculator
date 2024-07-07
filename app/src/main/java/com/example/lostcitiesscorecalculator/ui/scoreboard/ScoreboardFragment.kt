@@ -6,8 +6,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.get
 import com.example.lostcitiesscorecalculator.databinding.FragmentScoreboardBinding
+import com.example.lostcitiesscorecalculator.ui.playerboard.PlayerBoardViewModel
 
 class ScoreboardFragment : Fragment() {
 
@@ -16,6 +20,8 @@ class ScoreboardFragment : Fragment() {
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
+
+    private lateinit var sharedScoreViewModel: SharedScoreViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -28,15 +34,25 @@ class ScoreboardFragment : Fragment() {
         _binding = FragmentScoreboardBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        val textView: TextView = binding.textScoreboard
-        scoreboardViewModel.text.observe(viewLifecycleOwner) {
-            textView.text = it
-        }
+        sharedScoreViewModel = ViewModelProvider(requireActivity()).get()
+
+        sharedScoreViewModel.player1TotalPoints.observe(viewLifecycleOwner, player1ScoreObserver)
+        sharedScoreViewModel.player2TotalPoints.observe(viewLifecycleOwner, player2ScoreObserver)
+
         return root
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    private val player1ScoreObserver = Observer<Int> { score ->
+        val player1Score = binding.player1ScoreTextView
+        player1Score.text = "Score: $score"
+    }
+    private val player2ScoreObserver = Observer<Int> { score ->
+        val player2Score = binding.player2ScoreTextView
+        player2Score.text = "Score: $score"
     }
 }

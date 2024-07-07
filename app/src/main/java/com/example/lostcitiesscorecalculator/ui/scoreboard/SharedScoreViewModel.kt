@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
-class SharedViewModel : ViewModel() {
+class SharedScoreViewModel : ViewModel() {
 
     private val _player1TotalPoints = MutableLiveData<Int>()
     val player1TotalPoints: LiveData<Int> get() = _player1TotalPoints

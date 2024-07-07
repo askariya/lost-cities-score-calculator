@@ -7,16 +7,24 @@
 
     <fragment
         android:id="@+id/navigation_player1"
-        android:name="com.example.lostcitiesscorecalculator.ui.player1board.Player1BoardFragment"
+        android:name="com.example.lostcitiesscorecalculator.ui.playerboard.PlayerBoardFragment"
         android:label="@string/title_player1"
-        tools:layout="@layout/fragment_player1board">
+        tools:layout="@layout/fragment_playerboard">
+        <argument
+            android:name="playerId"
+            app:argType="integer"
+            android:defaultValue="1" />
     </fragment>
 
     <fragment
         android:id="@+id/navigation_player2"
-        android:name="com.example.lostcitiesscorecalculator.ui.player2board.Player2BoardFragment"
+        android:name="com.example.lostcitiesscorecalculator.ui.playerboard.PlayerBoardFragment"
         android:label="@string/title_player2"
-        tools:layout="@layout/fragment_player2board">
+        tools:layout="@layout/fragment_playerboard">
+        <argument
+            android:name="playerId"
+            app:argType="integer"
+            android:defaultValue="2" />
     </fragment>
     <fragment
         android:id="@+id/navigation_score"

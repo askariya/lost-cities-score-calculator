@@ -14,8 +14,10 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.get
 import com.example.lostcitiesscorecalculator.R
 import com.example.lostcitiesscorecalculator.databinding.FragmentPlayerboardBinding
+import com.example.lostcitiesscorecalculator.ui.scoreboard.SharedScoreViewModel
 import com.google.android.material.card.MaterialCardView
 
 class PlayerBoardFragment : Fragment() {
@@ -24,15 +26,18 @@ class PlayerBoardFragment : Fragment() {
     private val binding get() = _binding!!
     private lateinit var viewModel: PlayerBoardViewModel
     private var playerId: Int = 0
+    private lateinit var sharedScoreViewModel: SharedScoreViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        playerId = arguments?.getInt("playerId") ?: 0
+        playerId = requireArguments().getInt("playerId", 0)
         val factory = PlayerBoardViewModelFactory(playerId)
         viewModel = ViewModelProvider(this, factory).get(PlayerBoardViewModel::class.java)
+
+        sharedScoreViewModel = ViewModelProvider(requireActivity()).get()
 
         _binding = FragmentPlayerboardBinding.inflate(inflater, container, false)
         val root: View = binding.root
@@ -154,9 +159,20 @@ class PlayerBoardFragment : Fragment() {
     }
 
     private fun observeViewModel() {
+        viewModel.totalPoints.observe(viewLifecycleOwner, totalScoreObserver)
         viewModel.points.observe(viewLifecycleOwner, pointsObserver)
         viewModel.buttonStates.observe(viewLifecycleOwner, buttonStatesObserver)
         viewModel.wagerCounts.observe(viewLifecycleOwner, wagerCountsObserver)
+    }
+
+    private val totalScoreObserver = Observer<Int> { score ->
+        if (playerId == 1) {
+            // Update Player 1 score in SharedScoreViewModel
+            sharedScoreViewModel.setPlayer1TotalPoints(score)
+        } else if (playerId == 2) {
+            // Update Player 2 score in SharedScoreViewModel
+            sharedScoreViewModel.setPlayer2TotalPoints(score)
+        }
     }
 
     private val pointsObserver = Observer<Map<Int, Int>> { points ->
