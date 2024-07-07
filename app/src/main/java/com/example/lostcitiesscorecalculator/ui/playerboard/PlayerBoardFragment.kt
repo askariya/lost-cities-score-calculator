@@ -1,5 +1,6 @@
 package com.example.lostcitiesscorecalculator.ui.playerboard
 
+import PlayerBoardViewModelFactory
 import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -11,6 +12,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.lostcitiesscorecalculator.R
 import com.example.lostcitiesscorecalculator.databinding.FragmentPlayerboardBinding
@@ -19,18 +21,18 @@ import com.google.android.material.card.MaterialCardView
 class PlayerBoardFragment : Fragment() {
 
     private var _binding: FragmentPlayerboardBinding? = null
-
-    // This property is only valid between onCreateView and
-    // onDestroyView.
     private val binding get() = _binding!!
+    private lateinit var viewModel: PlayerBoardViewModel
+    private var playerId: Int = 0
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val playerBoardViewModel =
-            ViewModelProvider(this).get(PlayerBoardViewModel::class.java)
+        playerId = arguments?.getInt("playerId") ?: 0
+        val factory = PlayerBoardViewModelFactory(playerId)
+        viewModel = ViewModelProvider(this, factory).get(PlayerBoardViewModel::class.java)
 
         _binding = FragmentPlayerboardBinding.inflate(inflater, container, false)
         val root: View = binding.root
@@ -43,6 +45,7 @@ class PlayerBoardFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
+
 
     private val totalButtonRows = 10
     private val totalButtonColumns = 6
@@ -107,7 +110,7 @@ class PlayerBoardFragment : Fragment() {
         val index = row * columnCount + column
 
         val cardView = if (index != -1) gridLayout.getChildAt(index) as MaterialCardView else null
-        return if (index != -1) cardView?.getChildAt(0) as TextView else null;
+        return if (index != -1) cardView?.getChildAt(0) as TextView else null
     }
 
     private fun getColorFromString(colorName : String?) : Int {
@@ -119,7 +122,7 @@ class PlayerBoardFragment : Fragment() {
         return ContextCompat.getColor(requireContext(), colorResourceId)
     }
 
-    private fun toggleButtonState(column : Int, button: Button, selectedColour: Int, unselectedColour: Int, selectedTextColour: Int) {
+    private fun toggleButtonState(row: Int, column: Int, button: Button, selectedColour: Int, unselectedColour: Int, selectedTextColour: Int) {
         val isButtonOn = button.tag as? Boolean ?: false
 
         if (isButtonOn) {
@@ -132,11 +135,11 @@ class PlayerBoardFragment : Fragment() {
             button.tag = true
         }
 
+        viewModel.setButtonState(row, column, !isButtonOn)
         checkAndToggleTotalTextViewState(column)
     }
 
-    private fun toggleWagerButtonState(column: Int, wagerButton: ImageButton, selectedColour: Int, unselectedColour: Int, selectedIconColor : Int)
-    {
+    private fun toggleWagerButtonState(column: Int, wagerButton: ImageButton, selectedColour: Int, unselectedColour: Int, selectedIconColor : Int) {
         val wagerCount = wagerButton.tag as? Int ?: 0
 
         when (wagerCount)
@@ -166,6 +169,7 @@ class PlayerBoardFragment : Fragment() {
             }
         }
 
+        viewModel.setWagerCount(column, wagerButton.tag as Int)
         checkAndToggleTotalTextViewState(column)
     }
 
@@ -208,6 +212,7 @@ class PlayerBoardFragment : Fragment() {
             columnScore += 20
 
         totalTextView.text = columnScore.toString()
+        viewModel.setPoints(column, columnScore)
     }
 
     private fun setupGridLayout() {
@@ -224,7 +229,7 @@ class PlayerBoardFragment : Fragment() {
             wButtonBottomPadding = wagerButton?.paddingBottom!!
             wButtonLeftPadding = wagerButton?.paddingLeft!!
             wButtonRightPadding = wagerButton?.paddingRight!!
-            wagerButton?.tag = 0
+            wagerButton?.tag = viewModel.wagerCounts.value?.get(col) ?: 0
             wagerButton?.setColorFilter(buttonColor)
             wagerButton?.setOnClickListener {
                 toggleWagerButtonState(col, wagerButton, buttonColor, unselectedBackgroundColor, selectedTextColor)
@@ -234,12 +239,69 @@ class PlayerBoardFragment : Fragment() {
             for (row in 1 until totalButtonRows)
             {
                 val button : Button? = findButton(row, col)
-                button?.tag = false
+                button?.tag = viewModel.buttonStates.value?.get(col)?.get(row) ?: false
                 button?.setTextColor(buttonColor)
                 button?.setOnClickListener {
-                    toggleButtonState(col, button, buttonColor, unselectedBackgroundColor, selectedTextColor)
+                    toggleButtonState(row, col, button, buttonColor, unselectedBackgroundColor, selectedTextColor)
                 }
             }
         }
+
+        // Observe the ViewModel data and update the UI accordingly
+        viewModel.points.observe(viewLifecycleOwner, Observer { points ->
+            points.forEach { (col, point) ->
+                val totalTextView = findTextView(10, col)
+                totalTextView?.text = point.toString()
+                if (point > 0) {
+                    totalTextView?.setBackgroundColor(getColorFromString(lightColours[col]))
+                } else {
+                    totalTextView?.setBackgroundColor(getColorFromString("light_grey"))
+                }
+            }
+        })
+
+        viewModel.buttonStates.observe(viewLifecycleOwner, Observer { buttonStates ->
+            buttonStates.forEach { (col, states) ->
+                states.forEach { (row, state) ->
+                    val button = findButton(row, col)
+                    button?.tag = state
+                    if (state) {
+                        button?.setBackgroundColor(getColorFromString(buttonColours[col]))
+                        button?.setTextColor(getColorFromString("black"))
+                    } else {
+                        button?.setBackgroundColor(getColorFromString("dark_grey"))
+                        button?.setTextColor(getColorFromString(buttonColours[col]))
+                    }
+                }
+            }
+        })
+
+        viewModel.wagerCounts.observe(viewLifecycleOwner, Observer { wagerCounts ->
+            wagerCounts.forEach { (col, count) ->
+                val wagerButton = findImageButton(col)
+                wagerButton?.tag = count
+                when (count) {
+                    1 -> {
+                        wagerButton?.backgroundTintList = ColorStateList.valueOf(getColorFromString(buttonColours[col]))
+                        wagerButton?.setColorFilter(getColorFromString("black"))
+                    }
+                    2 -> {
+                        wagerButton?.setImageResource(R.drawable.ic_wager2)
+                        wagerButton?.scaleType = ImageView.ScaleType.CENTER_CROP
+                    }
+                    3 -> {
+                        wagerButton?.setImageResource(R.drawable.ic_wager3_alternate)
+                        wagerButton?.setPadding(15, 15, 15, 15)
+                    }
+                    else -> {
+                        wagerButton?.backgroundTintList = ColorStateList.valueOf(getColorFromString("dark_grey"))
+                        wagerButton?.setImageResource(R.drawable.ic_wager)
+                        wagerButton?.setColorFilter(getColorFromString(buttonColours[col]))
+                        wagerButton?.scaleType = ImageView.ScaleType.CENTER_INSIDE
+                        wagerButton?.setPadding(wButtonLeftPadding, wButtonTopPadding, wButtonRightPadding, wButtonBottomPadding)
+                    }
+                }
+            }
+        })
     }
 }
