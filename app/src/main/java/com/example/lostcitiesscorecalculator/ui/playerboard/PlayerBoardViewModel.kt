@@ -22,10 +22,35 @@ class PlayerBoardViewModel(private val playerId: Int) : ViewModel() {
     private val _totalPoints = MutableLiveData<Int>()
     val totalPoints: LiveData<Int> get() = _totalPoints
 
+    // Numbered button indices in the grid
+    private val _buttonRowCount = 9
+    private val _buttonColCount = 6
+    private val _buttonRowStartIndex = 1
+    private val _buttonColStartIndex = 0
+
     init {
-        _points.value = emptyMap()
-        _buttonStates.value = emptyMap()
-        _wagerCounts.value = emptyMap()
+        resetBoardCommand()
+    }
+
+    fun resetBoardCommand()
+    {
+        _totalPoints.value = 0
+        _points.value = (_buttonColStartIndex until _buttonColCount).associateWith { 0 }
+        _buttonStates.value = (_buttonColStartIndex until _buttonColCount).associateWith {
+            (_buttonRowStartIndex until _buttonRowCount).associateWith { false }
+        }
+        _wagerCounts.value = (_buttonColStartIndex until _buttonColCount).associateWith { 0 }
+    }
+
+    fun toggleButtonStateCommand(row: Int, column: Int) {
+        val currentState = _buttonStates.value?.get(column)?.get(row) ?: false
+        setButtonState(row, column, !currentState)
+    }
+
+    fun toggleWagerCountCommand(column: Int) {
+        val currentCount = _wagerCounts.value?.get(column) ?: 0
+        val newCount = (currentCount + 1) % 4  // Cycle through 0, 1, 2, 3
+        setWagerCount(column, newCount)
     }
 
     private fun updateTotalPoints() {
@@ -48,22 +73,11 @@ class PlayerBoardViewModel(private val playerId: Int) : ViewModel() {
         updatePointsForColumn(column)
     }
 
-    fun toggleButtonState(row: Int, column: Int) {
-        val currentState = _buttonStates.value?.get(column)?.get(row) ?: false
-        setButtonState(row, column, !currentState)
-    }
-
     private fun setWagerCount(column: Int, count: Int) {
         val updatedWagerCounts = _wagerCounts.value?.toMutableMap() ?: mutableMapOf()
         updatedWagerCounts[column] = count
         _wagerCounts.value = updatedWagerCounts
         updatePointsForColumn(column)
-    }
-
-    fun toggleWagerCount(column: Int) {
-        val currentCount = _wagerCounts.value?.get(column) ?: 0
-        val newCount = (currentCount + 1) % 4  // Cycle through 0, 1, 2, 3
-        setWagerCount(column, newCount)
     }
 
     private fun updatePointsForColumn(column: Int) {

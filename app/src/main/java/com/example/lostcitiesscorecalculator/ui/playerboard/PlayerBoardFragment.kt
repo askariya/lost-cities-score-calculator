@@ -143,7 +143,7 @@ class PlayerBoardFragment : Fragment() {
             wagerButton?.tag = viewModel.wagerCounts.value?.get(col) ?: 0
             wagerButton?.setColorFilter(buttonColor)
             wagerButton?.setOnClickListener {
-                viewModel.toggleWagerCount(col)
+                viewModel.toggleWagerCountCommand(col)
             }
 
             // Set the OnClickListener and colours for each numbered button
@@ -152,10 +152,15 @@ class PlayerBoardFragment : Fragment() {
                 button?.tag = viewModel.buttonStates.value?.get(col)?.get(row) ?: false
                 button?.setTextColor(buttonColor)
                 button?.setOnClickListener {
-                    viewModel.toggleButtonState(row, col)
+                    viewModel.toggleButtonStateCommand(row, col)
                 }
             }
         }
+    }
+
+    private fun resetBoard()
+    {
+        viewModel.resetBoardCommand()
     }
 
     private fun observeViewModel() {
@@ -181,7 +186,7 @@ class PlayerBoardFragment : Fragment() {
         points.forEach { (col, point) ->
             val totalTextView = findTextView(10, col)
             totalTextView?.text = point.toString()
-            if (point > 0) {
+            if (point != 0) {
                 totalTextView?.setBackgroundColor(getColorFromString(lightColours[col]))
             } else {
                 totalTextView?.setBackgroundColor(zeroColour)

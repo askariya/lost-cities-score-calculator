@@ -5,7 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.playerboard.PlayerBoardFragment">
-
     <GridLayout
         android:id="@+id/boardGrid"
         android:layout_width="match_parent"
@@ -452,6 +451,5 @@
                 style="@style/CardTextViewStyle"
                 android:text="@string/label_zero"/>
         </com.google.android.material.card.MaterialCardView>
-
     </GridLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

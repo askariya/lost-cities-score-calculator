@@ -24,6 +24,8 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        setSupportActionBar(findViewById(R.id.my_toolbar))
+
         // Initialize the SharedScoreViewModel
         sharedScoreViewModel = ViewModelProvider(this).get(SharedScoreViewModel::class.java)
 
@@ -37,7 +39,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.navigation_player1, R.id.navigation_player1
             )
         )
-        setupActionBarWithNavController(navController, appBarConfiguration)
+//        setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
     }
 }
