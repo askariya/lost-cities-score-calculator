@@ -2,7 +2,7 @@
     <string name="app_name">Lost Cities Calculator</string>
     <string name="title_player1">Player 1</string>
     <string name="title_player2">Player 2</string>
-    <string name="title_score">Score</string>
+    <string name="title_score">Scoreboard</string>
     <string name="label_button2">2</string>
     <string name="label_button3">3</string>
     <string name="label_button4">4</string>
@@ -12,6 +12,7 @@
     <string name="label_button8">8</string>
     <string name="label_button9">9</string>
     <string name="label_button10">10</string>
+    <string name="label_reset">reset</string>
     <string name="label_zero">0</string>
     <string name="label_yellow_wager">yellow wager</string>
     <string name="label_white_wager">white wager</string>

@@ -10,6 +10,7 @@ import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -33,14 +34,19 @@ class PlayerBoardFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        _binding = FragmentPlayerboardBinding.inflate(inflater, container, false)
+        val root: View = binding.root
+
         playerId = requireArguments().getInt("playerId", 0)
         val factory = PlayerBoardViewModelFactory(playerId)
         viewModel = ViewModelProvider(this, factory).get(PlayerBoardViewModel::class.java)
 
         sharedScoreViewModel = ViewModelProvider(requireActivity()).get()
 
-        _binding = FragmentPlayerboardBinding.inflate(inflater, container, false)
-        val root: View = binding.root
+        if (playerId == 1)
+            (activity as? AppCompatActivity)?.supportActionBar?.title = getString(R.string.title_player1)
+        else
+            (activity as? AppCompatActivity)?.supportActionBar?.title = getString(R.string.title_player2)
 
         setupGridLayout()
         observeViewModel()

@@ -5,11 +5,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
+import androidx.navigation.ui.AppBarConfiguration
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.get
+import com.example.lostcitiesscorecalculator.R
 import com.example.lostcitiesscorecalculator.databinding.FragmentScoreboardBinding
 import com.example.lostcitiesscorecalculator.ui.playerboard.PlayerBoardViewModel
 
@@ -33,6 +35,8 @@ class ScoreboardFragment : Fragment() {
 
         _binding = FragmentScoreboardBinding.inflate(inflater, container, false)
         val root: View = binding.root
+
+        (activity as? AppCompatActivity)?.supportActionBar?.title = getString(R.string.title_score)
 
         sharedScoreViewModel = ViewModelProvider(requireActivity()).get()
 
