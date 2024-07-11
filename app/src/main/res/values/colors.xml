@@ -29,5 +29,7 @@
     <color name="light_blue">#B3C6FF</color>
     <color name="sky_blue">#224772</color>
     <color name="orange_yellow">#E1AD01</color>
+    <color name="tab_background_selected">#DC4D01</color>
+    <color name="tab_background_unselected">#014D4E</color>
 
 </resources>

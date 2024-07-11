@@ -1,9 +1,13 @@
 package com.example.lostcitiesscorecalculator
 
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2
 import com.example.lostcitiesscorecalculator.databinding.ActivityMainBinding
@@ -38,11 +42,29 @@ class MainActivity : AppCompatActivity() {
         viewPager.adapter = PlayerBoardPagerAdapter(this)
 
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
-            tab.text = when (position) {
+            val customTabView = layoutInflater.inflate(R.layout.custom_tab_layout, null)
+            val tabIcon = customTabView.findViewById<ImageView>(R.id.tab_icon)
+            val tabText = customTabView.findViewById<TextView>(R.id.tab_text)
+
+            tabText.text = when (position) {
                 0 -> getString(R.string.title_player1)
                 1 -> getString(R.string.title_player2)
                 else -> getString(R.string.title_score)
             }
+            tabIcon.setImageResource(when (position) {
+                0 -> {
+                    R.drawable.ic_player
+                }
+                1 -> {
+                    R.drawable.ic_player
+                }
+                else -> {
+                    R.drawable.ic_calculator_alternate
+                }
+            })
+
+            tabIcon.imageTintList = ColorStateList.valueOf(ContextCompat.getColor(this, R.color.white))
+            tab.customView = customTabView
         }.attach()
 
         // Set a listener for page change events to update action bar title
