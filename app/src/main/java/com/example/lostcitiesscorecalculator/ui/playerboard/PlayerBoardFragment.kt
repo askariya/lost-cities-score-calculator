@@ -29,6 +29,18 @@ class PlayerBoardFragment : Fragment() {
     private var playerId: Int = 0
     private lateinit var sharedScoreViewModel: SharedScoreViewModel
 
+    companion object {
+        private const val ARG_PLAYER_ID = "playerId"
+
+        fun newInstance(playerId: Int): PlayerBoardFragment {
+            return PlayerBoardFragment().apply {
+                arguments = Bundle().apply {
+                    putInt(ARG_PLAYER_ID, playerId)
+                }
+            }
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -42,11 +54,6 @@ class PlayerBoardFragment : Fragment() {
         viewModel = ViewModelProvider(this, factory).get(PlayerBoardViewModel::class.java)
 
         sharedScoreViewModel = ViewModelProvider(requireActivity()).get()
-
-        if (playerId == 1)
-            (activity as? AppCompatActivity)?.supportActionBar?.title = getString(R.string.title_player1)
-        else
-            (activity as? AppCompatActivity)?.supportActionBar?.title = getString(R.string.title_player2)
 
         setupGridLayout()
         observeViewModel()
@@ -164,7 +171,7 @@ class PlayerBoardFragment : Fragment() {
         }
     }
 
-    private fun resetBoard()
+    fun resetBoard()
     {
         viewModel.resetBoardCommand()
     }
