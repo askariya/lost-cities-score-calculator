@@ -12,7 +12,13 @@
     <color name="red">#FF5252</color>
     <color name="green">#4CAF50</color>
     <color name="blue">#3F51B5</color>
+    <color name="orange">#FF5B00</color>
     <color name="dark_grey">#1A1A1A</color>
+    <color name="darkest_grey">#050505</color>
+    <color name="dark_orange">#DC4D01</color>
+    <color name="dark_purple">#280137</color>
+    <color name="dark_red">#8B0000</color>
+    <color name="dark_teal">#014D4E</color>
     <color name="medium_grey">#555555</color>
     <color name="light_grey">#7f7f7f</color>
     <color name="light_white">#E6E6E6</color>
@@ -21,5 +27,7 @@
     <color name="light_red">#FFCCCC</color>
     <color name="light_green">#ADEBAD</color>
     <color name="light_blue">#B3C6FF</color>
+    <color name="sky_blue">#224772</color>
+    <color name="orange_yellow">#E1AD01</color>
 
 </resources>
