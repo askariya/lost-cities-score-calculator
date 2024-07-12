@@ -12,11 +12,11 @@ class SharedScoreViewModel : ViewModel() {
     private val _player2TotalPoints = MutableLiveData<Int>()
     val player2TotalPoints: LiveData<Int> get() = _player2TotalPoints
 
-    fun setPlayer1TotalPoints(points: Int) {
+    fun setPlayer1CurrentPoints(points: Int) {
         _player1TotalPoints.value = points
     }
 
-    fun setPlayer2TotalPoints(points: Int) {
+    fun setPlayer2CurrentPoints(points: Int) {
         _player2TotalPoints.value = points
     }
 }

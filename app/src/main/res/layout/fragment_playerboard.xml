@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -451,5 +450,79 @@
                 style="@style/CardTextViewStyle"
                 android:text="@string/label_zero"/>
         </com.google.android.material.card.MaterialCardView>
+        <GridLayout
+            android:layout_row="11"
+            android:layout_rowSpan="1"
+            android:layout_columnSpan="6"
+            android:layout_width="match_parent"
+            android:layout_column="0"
+            android:rowCount="1"
+            android:columnCount="11"
+            android:verticalSpacing="0dp"
+            android:horizontalSpacing="0dp"
+            android:paddingHorizontal="10dp"
+            android:background="@color/tab_background_selected">
+            <LinearLayout
+                android:layout_row="0"
+                android:layout_column="0"
+                android:layout_columnSpan="5"
+                android:layout_columnWeight="1"
+                android:orientation="horizontal"
+                android:layout_height="wrap_content"
+                android:padding="0dp"
+                android:layout_width="wrap_content"
+                android:layout_gravity="fill">
+                <TextView
+                    android:id="@+id/current_score_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/current_score"
+                    android:textColor="@android:color/white"
+                    android:layout_marginEnd="5dp"
+                    android:layout_gravity="start|center"/>
+                <TextView
+                    android:id="@+id/current_score_value"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/label_zero"
+                    android:textColor="@android:color/white"
+                    android:textStyle="bold"
+                    android:layout_gravity="start|center"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_row="0"
+                android:layout_column="5"
+                android:layout_columnSpan="5"
+                android:layout_columnWeight="1"
+                android:padding="0dp"
+                android:orientation="horizontal"
+                android:layout_gravity="fill">
+                <TextView
+                    android:id="@+id/total_score_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/total_score"
+                    android:textColor="@android:color/white"
+                    android:layout_marginEnd="5dp"
+                    android:layout_gravity="start|center"/>
+                <TextView
+                    android:id="@+id/total_score_value"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/label_zero"
+                    android:textColor="@android:color/white"
+                    android:textStyle="bold"
+                    android:layout_gravity="start|center"/>
+            </LinearLayout>
+
+            <Button
+                android:layout_row="0"
+                android:layout_column="10"
+                android:layout_columnSpan="1"
+                android:layout_columnWeight="1"
+                android:id="@+id/reset_button"
+                style="@style/ResetButtonStyle"
+                android:text="@string/label_reset"/>
+        </GridLayout>
     </GridLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
