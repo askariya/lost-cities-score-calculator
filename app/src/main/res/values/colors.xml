@@ -19,6 +19,7 @@
     <color name="dark_purple">#280137</color>
     <color name="dark_red">#8B0000</color>
     <color name="dark_teal">#014D4E</color>
+    <color name="medium_dark_grey">#3d3d3d</color>
     <color name="medium_grey">#555555</color>
     <color name="light_grey">#7f7f7f</color>
     <color name="light_white">#E6E6E6</color>
@@ -29,7 +30,7 @@
     <color name="light_blue">#B3C6FF</color>
     <color name="sky_blue">#224772</color>
     <color name="orange_yellow">#E1AD01</color>
-    <color name="tab_background_selected">#DC4D01</color>
+    <color name="tab_background_selected">#FF018786</color>
     <color name="tab_background_unselected">#014D4E</color>
 
 </resources>

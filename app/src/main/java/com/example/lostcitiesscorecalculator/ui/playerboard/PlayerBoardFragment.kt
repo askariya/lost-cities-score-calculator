@@ -2,6 +2,7 @@ package com.example.lostcitiesscorecalculator.ui.playerboard
 
 import PlayerBoardViewModelFactory
 import android.content.res.ColorStateList
+import android.graphics.Typeface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,7 +11,6 @@ import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -140,9 +140,6 @@ class PlayerBoardFragment : Fragment() {
     }
 
     private fun setupGridLayout() {
-        val unselectedBackgroundColor = getColorFromString("dark_grey")
-        val selectedTextColor = getColorFromString("black")
-
         for (col in 0 until totalButtonColumns) {
             val buttonColor = getColorFromString(buttonColours[col])
 
@@ -169,6 +166,12 @@ class PlayerBoardFragment : Fragment() {
                 }
             }
         }
+
+        // set the resetButton functionality
+        val resetButton : Button = binding.resetButton
+        resetButton.setOnClickListener{
+            viewModel.resetBoardCommand()
+        }
     }
 
     fun resetBoard()
@@ -177,20 +180,22 @@ class PlayerBoardFragment : Fragment() {
     }
 
     private fun observeViewModel() {
-        viewModel.totalPoints.observe(viewLifecycleOwner, totalScoreObserver)
+        viewModel.totalPoints.observe(viewLifecycleOwner, scoreObserver)
         viewModel.points.observe(viewLifecycleOwner, pointsObserver)
         viewModel.buttonStates.observe(viewLifecycleOwner, buttonStatesObserver)
         viewModel.wagerCounts.observe(viewLifecycleOwner, wagerCountsObserver)
     }
 
-    private val totalScoreObserver = Observer<Int> { score ->
+    private val scoreObserver = Observer<Int> { score ->
         if (playerId == 1) {
             // Update Player 1 score in SharedScoreViewModel
-            sharedScoreViewModel.setPlayer1TotalPoints(score)
+            sharedScoreViewModel.setPlayer1CurrentPoints(score)
         } else if (playerId == 2) {
             // Update Player 2 score in SharedScoreViewModel
-            sharedScoreViewModel.setPlayer2TotalPoints(score)
+            sharedScoreViewModel.setPlayer2CurrentPoints(score)
         }
+
+        binding.currentScoreValue.text = score.toString()
     }
 
     private val pointsObserver = Observer<Map<Int, Int>> { points ->
@@ -218,9 +223,11 @@ class PlayerBoardFragment : Fragment() {
                 if (state) {
                     button?.setBackgroundColor(getColorFromString(buttonColours[col]))
                     button?.setTextColor(textSelectedColour)
+                    button?.setTypeface(Typeface.create("sans-serif-black", Typeface.NORMAL))
                 } else {
                     button?.setBackgroundColor(unselectedColour)
                     button?.setTextColor(getColorFromString(buttonColours[col]))
+                    button?.setTypeface(Typeface.create("sans-serif", Typeface.NORMAL))
                 }
             }
         }
