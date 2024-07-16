@@ -55,6 +55,13 @@ class PlayerBoardFragment : Fragment() {
 
         sharedScoreViewModel = ViewModelProvider(requireActivity()).get()
 
+        sharedScoreViewModel.roundCounter.observe(viewLifecycleOwner, roundCounterObserver)
+
+        if(playerId == 1)
+            sharedScoreViewModel.player1TotalPoints.observe(viewLifecycleOwner, totalScoreObserver)
+        else
+            sharedScoreViewModel.player2TotalPoints.observe(viewLifecycleOwner, totalScoreObserver)
+
         setupGridLayout()
         observeViewModel()
 
@@ -174,16 +181,20 @@ class PlayerBoardFragment : Fragment() {
         }
     }
 
-    fun resetBoard()
-    {
-        viewModel.resetBoardCommand()
-    }
-
     private fun observeViewModel() {
         viewModel.totalPoints.observe(viewLifecycleOwner, scoreObserver)
         viewModel.points.observe(viewLifecycleOwner, pointsObserver)
         viewModel.buttonStates.observe(viewLifecycleOwner, buttonStatesObserver)
         viewModel.wagerCounts.observe(viewLifecycleOwner, wagerCountsObserver)
+    }
+
+    private val roundCounterObserver = Observer<Int> { round ->
+        viewModel.resetBoardCommand()
+        //TODO add a notification badge to score tab
+    }
+    private val totalScoreObserver = Observer<Int> { totalScore ->
+        binding.totalScoreValue.text = totalScore.toString()
+        //TODO make field flash
     }
 
     private val scoreObserver = Observer<Int> { score ->

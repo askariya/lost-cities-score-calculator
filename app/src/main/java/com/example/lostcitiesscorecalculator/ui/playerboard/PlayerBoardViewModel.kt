@@ -23,7 +23,7 @@ class PlayerBoardViewModel(private val playerId: Int) : ViewModel() {
     val totalPoints: LiveData<Int> get() = _totalPoints
 
     // Numbered button indices in the grid
-    private val _buttonRowCount = 9
+    private val _buttonRowCount = 10
     private val _buttonColCount = 6
     private val _buttonRowStartIndex = 1
     private val _buttonColStartIndex = 0

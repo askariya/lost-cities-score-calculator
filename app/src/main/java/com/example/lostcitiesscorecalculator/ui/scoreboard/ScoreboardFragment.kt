@@ -4,12 +4,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.get
-import com.example.lostcitiesscorecalculator.R
 import com.example.lostcitiesscorecalculator.databinding.FragmentScoreboardBinding
 
 class ScoreboardFragment : Fragment() {
@@ -35,8 +33,9 @@ class ScoreboardFragment : Fragment() {
 
         sharedScoreViewModel = ViewModelProvider(requireActivity()).get()
 
-        sharedScoreViewModel.player1TotalPoints.observe(viewLifecycleOwner, player1ScoreObserver)
-        sharedScoreViewModel.player2TotalPoints.observe(viewLifecycleOwner, player2ScoreObserver)
+        sharedScoreViewModel.player1CurrentPoints.observe(viewLifecycleOwner, player1CurrentScoreObserver)
+        sharedScoreViewModel.player2CurrentPoints.observe(viewLifecycleOwner, player2CurrentScoreObserver)
+        sharedScoreViewModel.roundCounter.observe(viewLifecycleOwner, roundCounterObserver)
 
         return root
     }
@@ -46,12 +45,16 @@ class ScoreboardFragment : Fragment() {
         _binding = null
     }
 
-    private val player1ScoreObserver = Observer<Int> { score ->
+    private val player1CurrentScoreObserver = Observer<Int> { score ->
         val player1Score = binding.player1ScoreTextView
         player1Score.text = "Score: $score"
     }
-    private val player2ScoreObserver = Observer<Int> { score ->
+    private val player2CurrentScoreObserver = Observer<Int> { score ->
         val player2Score = binding.player2ScoreTextView
         player2Score.text = "Score: $score"
+    }
+    private val roundCounterObserver = Observer<Int> { round ->
+        val player1RoundScore = sharedScoreViewModel.player1RoundScore.value ?: 0
+        val player2RoundScore = sharedScoreViewModel.player2RoundScore.value ?: 0
     }
 }

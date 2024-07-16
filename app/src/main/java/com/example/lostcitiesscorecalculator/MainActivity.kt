@@ -8,10 +8,10 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2
 import com.example.lostcitiesscorecalculator.databinding.ActivityMainBinding
-import com.example.lostcitiesscorecalculator.ui.playerboard.PlayerBoardFragment
 import com.example.lostcitiesscorecalculator.ui.playerboard.PlayerBoardPagerAdapter
 import com.example.lostcitiesscorecalculator.ui.scoreboard.SharedScoreViewModel
 import com.google.android.material.tabs.TabLayout
@@ -36,10 +36,14 @@ class MainActivity : AppCompatActivity() {
         // Initialize the SharedScoreViewModel
         sharedScoreViewModel = ViewModelProvider(this).get(SharedScoreViewModel::class.java)
 
+        sharedScoreViewModel.roundCounter.observe(this, roundCounterObserver)
+
         viewPager = findViewById(R.id.view_pager)
         tabLayout = findViewById(R.id.tab_layout)
 
         viewPager.adapter = PlayerBoardPagerAdapter(this)
+
+        viewPager.offscreenPageLimit = 3
 
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
             val customTabView = layoutInflater.inflate(R.layout.custom_tab_layout, null)
@@ -49,7 +53,7 @@ class MainActivity : AppCompatActivity() {
             tabText.text = when (position) {
                 0 -> getString(R.string.title_player1)
                 1 -> getString(R.string.title_player2)
-                else -> getString(R.string.title_score)
+                else -> getString(R.string.title_score_short)
             }
             tabIcon.setImageResource(when (position) {
                 0 -> {
@@ -71,7 +75,6 @@ class MainActivity : AppCompatActivity() {
         viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
-                updateActionBarTitle(position)
             }
         })
     }
@@ -83,27 +86,25 @@ class MainActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.action_button -> {
+            R.id.submit_button -> {
                 // Handle button click
-                resetBoardIfVisible()
+                onSubmitButtonPressed()
                 true
             }
             else -> super.onOptionsItemSelected(item)
         }
     }
 
-    private fun updateActionBarTitle(position: Int) {
-        supportActionBar?.title = when (position) {
-            0 -> getString(R.string.title_player1)
-            1 -> getString(R.string.title_player2)
-            else -> getString(R.string.title_score)
-        }
+    private fun updateActionBarTitle(round: Int) {
+        supportActionBar?.title = "${getString(R.string.round)} $round"
     }
 
-    private fun resetBoardIfVisible() {
-        val currentFragment = supportFragmentManager.findFragmentByTag("f${viewPager.currentItem}")
-        if (currentFragment is PlayerBoardFragment) {
-            currentFragment.resetBoard()
-        }
+    private fun onSubmitButtonPressed() {
+        //TODO display a warning here and ask user to confirm (or do this in SharedScoreViewModel)
+        sharedScoreViewModel.submitCurrentPointsToTotal()
+    }
+
+    private val roundCounterObserver = Observer<Int> { round ->
+        updateActionBarTitle(round)
     }
 }
