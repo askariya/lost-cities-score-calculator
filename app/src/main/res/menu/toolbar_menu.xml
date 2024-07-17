@@ -5,5 +5,11 @@
         android:id="@+id/submit_button"
         android:icon="@null"
         android:title="@string/label_submit"
-        app:showAsAction="always" />
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/reset_game_button"
+        android:icon="@null"
+        android:title="@string/label_reset_game"
+        app:showAsAction="never" />
 </menu>

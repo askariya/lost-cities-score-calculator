@@ -8,6 +8,7 @@ import android.widget.Button
 import android.widget.GridLayout
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -49,7 +50,6 @@ class ScoreboardFragment : Fragment() {
         sharedScoreViewModel.player2CurrentPoints.observe(viewLifecycleOwner, player2CurrentScoreObserver)
         sharedScoreViewModel.roundCounter.observe(viewLifecycleOwner, roundCounterObserver)
 
-        checkEmptyViewVisibility()
         return root
     }
 
@@ -60,6 +60,16 @@ class ScoreboardFragment : Fragment() {
 
     private fun addNewRound(roundCount: Int) {
         // Create TextView for Round number
+        val player1RoundScore = sharedScoreViewModel.player1RoundScore.value ?: 0
+        val player2RoundScore = sharedScoreViewModel.player2RoundScore.value ?: 0
+        var textColor = R.color.yellow
+
+        if (player1RoundScore > player2RoundScore)
+            textColor = R.color.player1_colour
+        else if (player2RoundScore > player1RoundScore)
+            textColor = R.color.player2_colour
+
+        val roundColor = ContextCompat.getColor(requireContext(), textColor)
         val roundNumber = TextView(requireContext()).apply {
             layoutParams = GridLayout.LayoutParams().apply {
                 width = 0
@@ -67,37 +77,50 @@ class ScoreboardFragment : Fragment() {
                 columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f)
             }
             text = roundCount.toString()
+            setBackgroundColor(roundColor)
             setTypeface(typeface, android.graphics.Typeface.BOLD)
             gravity = android.view.Gravity.CENTER
         }
 
         // Create TextView for Player 1 Score
-        val player1Score = TextView(requireContext()).apply {
+        val player1ScoreView = TextView(requireContext()).apply {
             layoutParams = GridLayout.LayoutParams().apply {
                 width = 0
                 height = ViewGroup.LayoutParams.WRAP_CONTENT
                 columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f)
             }
-            text = sharedScoreViewModel.player1RoundScore.value.toString()
+            text = player1RoundScore.toString()
+            setBackgroundColor(roundColor)
             gravity = android.view.Gravity.CENTER
         }
 
         // Create TextView for Player 2 Score
-        val player2Score = TextView(requireContext()).apply {
+        val player2ScoreView = TextView(requireContext()).apply {
             layoutParams = GridLayout.LayoutParams().apply {
                 width = 0
                 height = ViewGroup.LayoutParams.WRAP_CONTENT
                 columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f)
             }
-            text = sharedScoreViewModel.player2RoundScore.value.toString()
+            text = player2RoundScore.toString()
+            setBackgroundColor(roundColor)
             gravity = android.view.Gravity.CENTER
         }
 
         // Add the views to the GridLayout
         val gridLayout = binding.scoreGridLayout
         gridLayout.addView(roundNumber)
-        gridLayout.addView(player1Score)
-        gridLayout.addView(player2Score)
+        gridLayout.addView(player1ScoreView)
+        gridLayout.addView(player2ScoreView)
+        checkEmptyViewVisibility()
+    }
+
+    private fun resetScoreboard() {
+        // Clear children of scoreboard gridlayout and toggle emptyview
+        val scoreGrid = binding.scoreGridLayout
+        for (i in scoreGrid.childCount - 1 downTo 0) {
+            val child = scoreGrid.getChildAt(i)
+            scoreGrid.removeViewAt(i)
+        }
         checkEmptyViewVisibility()
     }
 
@@ -115,7 +138,12 @@ class ScoreboardFragment : Fragment() {
 //        player2Score.text = "Score: $score"
     }
     private val roundCounterObserver = Observer<Int> { round ->
-        if (round > 1)
+        if (round > 1) {
             addNewRound(round - 1)
+        }
+        else {
+            // If round is set to 1, reset the scoreboard
+            resetScoreboard()
+        }
     }
 }

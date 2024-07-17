@@ -59,13 +59,20 @@ class SharedScoreViewModel : ViewModel() {
         _roundCounter.value = 1
     }
 
-    //This is the only place the total points can be set.
     fun submitCurrentPointsToTotal() {
         setPlayer1TotalPoints((player1TotalPoints.value ?: 0) + (player1CurrentPoints.value ?: 0))
         setPlayer2TotalPoints((player2TotalPoints.value ?: 0) + (player2CurrentPoints.value ?: 0))
         setPlayer1RoundScore(player1CurrentPoints.value ?: 0)
         setPlayer2RoundScore(player2CurrentPoints.value ?: 0)
         incrementRoundCounter()
+    }
+
+    fun resetPoints() {
+        setPlayer1TotalPoints(0)
+        setPlayer2TotalPoints(0)
+        setPlayer1RoundScore(0)
+        setPlayer2RoundScore(0)
+        resetRoundCounter()
     }
 
 }

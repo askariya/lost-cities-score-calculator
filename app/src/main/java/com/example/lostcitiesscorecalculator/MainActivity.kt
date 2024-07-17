@@ -84,11 +84,15 @@ class MainActivity : AppCompatActivity() {
         return true
     }
 
+    // Handle toolbar button clicks
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.submit_button -> {
-                // Handle button click
                 onSubmitButtonPressed()
+                true
+            }
+            R.id.reset_game_button -> {
+                onResetGameButtonPressed()
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -102,6 +106,11 @@ class MainActivity : AppCompatActivity() {
     private fun onSubmitButtonPressed() {
         //TODO display a warning here and ask user to confirm (or do this in SharedScoreViewModel)
         sharedScoreViewModel.submitCurrentPointsToTotal()
+    }
+
+    private fun onResetGameButtonPressed() {
+        //TODO display a warning here and ask user to confirm (or do this in SharedScoreViewModel)
+        sharedScoreViewModel.resetPoints()
     }
 
     private val roundCounterObserver = Observer<Int> { round ->

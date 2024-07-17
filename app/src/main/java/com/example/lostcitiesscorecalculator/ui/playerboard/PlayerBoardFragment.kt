@@ -57,10 +57,12 @@ class PlayerBoardFragment : Fragment() {
 
         sharedScoreViewModel.roundCounter.observe(viewLifecycleOwner, roundCounterObserver)
 
-        if(playerId == 1)
+        if (playerId == 1) {
             sharedScoreViewModel.player1TotalPoints.observe(viewLifecycleOwner, totalScoreObserver)
-        else
+        }
+        else {
             sharedScoreViewModel.player2TotalPoints.observe(viewLifecycleOwner, totalScoreObserver)
+        }
 
         setupGridLayout()
         observeViewModel()
@@ -171,6 +173,7 @@ class PlayerBoardFragment : Fragment() {
                 button?.setOnClickListener {
                     viewModel.toggleButtonStateCommand(row, col)
                 }
+                //TODO perhaps set the button stroke color to the player 1 and player 2 colours here
             }
         }
 

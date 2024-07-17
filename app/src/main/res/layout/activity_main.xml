@@ -9,10 +9,10 @@
         android:id="@+id/header_toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
+        android:background="@color/dark_purple"
         android:elevation="4dp"
         android:theme="@style/ToolbarDarkTheme"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Dark"
+        app:popupTheme="@style/ToolbarDarkTheme"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent" />

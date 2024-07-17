@@ -15,6 +15,7 @@
     <string name="label_button10">10</string>
     <string name="label_reset">reset</string>
     <string name="label_submit">submit</string>
+    <string name="label_reset_game">restart</string>
     <string name="label_zero">0</string>
     <string name="label_yellow_wager">yellow wager</string>
     <string name="label_white_wager">white wager</string>
