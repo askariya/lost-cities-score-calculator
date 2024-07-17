@@ -19,6 +19,7 @@ import androidx.lifecycle.get
 import com.example.lostcitiesscorecalculator.R
 import com.example.lostcitiesscorecalculator.databinding.FragmentPlayerboardBinding
 import com.example.lostcitiesscorecalculator.ui.scoreboard.SharedScoreViewModel
+import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
 
 class PlayerBoardFragment : Fragment() {
@@ -174,6 +175,10 @@ class PlayerBoardFragment : Fragment() {
                     viewModel.toggleButtonStateCommand(row, col)
                 }
                 //TODO perhaps set the button stroke color to the player 1 and player 2 colours here
+//                if (playerId == 1)
+//                    (button as MaterialButton).setStrokeColorResource(R.color.player1_colour)
+//                else
+//                    (button as MaterialButton).setStrokeColorResource(R.color.player2_colour)
             }
         }
 
@@ -182,6 +187,12 @@ class PlayerBoardFragment : Fragment() {
         resetButton.setOnClickListener{
             viewModel.resetBoardCommand()
         }
+
+        val boardFooter = binding.boardFooter
+        if (playerId == 1)
+            boardFooter.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.player1_colour))
+        else
+            boardFooter.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.player2_colour))
     }
 
     private fun observeViewModel() {

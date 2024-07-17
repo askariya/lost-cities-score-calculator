@@ -14,7 +14,7 @@
         <item name="android:backgroundTint">@color/dark_grey</item>
         <item name="android:textSize">18sp</item>
         <item name="android:fontFamily">sans-serif</item>
-        <item name="strokeColor">@color/medium_grey</item>
+        <item name="strokeColor">@color/medium_dark_grey</item>
         <item name="strokeWidth">1dp</item>
     </style>
 
