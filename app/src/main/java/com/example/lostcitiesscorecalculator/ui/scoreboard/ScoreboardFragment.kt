@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.GridLayout
-import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -38,11 +37,17 @@ class ScoreboardFragment : Fragment() {
         _binding = FragmentScoreboardBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        // set the resetButton functionality
+        // set the submitButton functionality
         val submitScoreButton : Button = binding.submitScoreButton
         submitScoreButton.setOnClickListener{
             //TODO display a warning here and ask user to confirm (or do this in SharedScoreViewModel)
             sharedScoreViewModel.submitCurrentPointsToTotal()
+        }
+
+        // set the resetButton functionality
+        val endGameButton : Button = binding.endGameButton
+        endGameButton.setOnClickListener{
+            sharedScoreViewModel.resetPoints()
         }
 
         sharedScoreViewModel = ViewModelProvider(requireActivity()).get()

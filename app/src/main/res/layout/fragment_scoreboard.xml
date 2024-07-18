@@ -10,7 +10,6 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:paddingTop="16dp"
-        android:paddingBottom="16dp"
         android:paddingLeft="0dp"
         android:paddingRight="0dp"
         android:background="@color/medium_dark_grey">
@@ -166,13 +165,28 @@
                 style="@style/ScoreFooterStyle"/>
         </GridLayout>
 
-        <Button
-            android:id="@+id/submit_score_button"
-            android:layout_width="wrap_content"
+
+        <GridLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/white"
-            android:text="@string/label_submit"
-            android:layout_gravity="center"
-            android:layout_marginTop="16dp" />
+            android:rowCount="1"
+            android:columnCount="2"
+            android:padding="10dp">
+            <Button
+                android:id="@+id/end_game_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:text="@string/label_reset_game"
+                style="@style/ResetButtonStyle"
+                android:layout_gravity="start"/>
+            <Button
+                android:id="@+id/submit_score_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:text="@string/label_submit"
+                android:layout_gravity="end"/>
+        </GridLayout>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -19,7 +19,6 @@ import androidx.lifecycle.get
 import com.example.lostcitiesscorecalculator.R
 import com.example.lostcitiesscorecalculator.databinding.FragmentPlayerboardBinding
 import com.example.lostcitiesscorecalculator.ui.scoreboard.SharedScoreViewModel
-import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
 
 class PlayerBoardFragment : Fragment() {
