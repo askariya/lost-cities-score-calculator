@@ -70,10 +70,11 @@
 
     <style name="ScoreHeaderStyle">
         <item name="android:textStyle">bold</item>
-        <item name="android:textSize">18sp</item>
+        <item name="android:textSize">20sp</item>
         <item name="android:textColor">@color/light_white</item>
-        <item name="android:layout_marginBottom">10dp</item>
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_margin">0dp</item>
+        <item name="android:layout_gravity">fill</item>
     </style>
 </resources>

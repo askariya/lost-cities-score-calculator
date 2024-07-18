@@ -1,6 +1,7 @@
 package com.example.lostcitiesscorecalculator.ui.scoreboard
 
 import android.os.Bundle
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -62,22 +63,34 @@ class ScoreboardFragment : Fragment() {
         // Create TextView for Round number
         val player1RoundScore = sharedScoreViewModel.player1RoundScore.value ?: 0
         val player2RoundScore = sharedScoreViewModel.player2RoundScore.value ?: 0
-        var textColor = R.color.yellow
+        val textSize = 20f
+        val textColor = ContextCompat.getColor(requireContext(), R.color.white)
+        var backgroundColor = ContextCompat.getColor(requireContext(), R.color.dark_teal)
+        val colorPrimary = ContextCompat.getColor(requireContext(), R.color.color_primary)
+        val colorPrimaryVariant = ContextCompat.getColor(requireContext(), R.color.color_primary_variant)
+        val spacingInDp = 10 // Desired spacing in dp
+        val spacingInPx = TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_DIP,
+            spacingInDp.toFloat(),
+            resources.displayMetrics
+        ).toInt()
 
         if (player1RoundScore > player2RoundScore)
-            textColor = R.color.player1_colour
+            backgroundColor = ContextCompat.getColor(requireContext(), R.color.player1_colour)
         else if (player2RoundScore > player1RoundScore)
-            textColor = R.color.player2_colour
+            backgroundColor = ContextCompat.getColor(requireContext(), R.color.player2_colour)
 
-        val roundColor = ContextCompat.getColor(requireContext(), textColor)
         val roundNumber = TextView(requireContext()).apply {
             layoutParams = GridLayout.LayoutParams().apply {
                 width = 0
                 height = ViewGroup.LayoutParams.WRAP_CONTENT
-                columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f)
+                columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 0.3f)
+                bottomMargin = spacingInPx
             }
             text = roundCount.toString()
-            setBackgroundColor(roundColor)
+            setTextSize(TypedValue.COMPLEX_UNIT_SP, textSize)
+            setTextColor(textColor)
+            setBackgroundColor(colorPrimaryVariant)
             setTypeface(typeface, android.graphics.Typeface.BOLD)
             gravity = android.view.Gravity.CENTER
         }
@@ -87,10 +100,13 @@ class ScoreboardFragment : Fragment() {
             layoutParams = GridLayout.LayoutParams().apply {
                 width = 0
                 height = ViewGroup.LayoutParams.WRAP_CONTENT
-                columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f)
+                columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 0.35f)
+                bottomMargin = spacingInPx
             }
             text = player1RoundScore.toString()
-            setBackgroundColor(roundColor)
+            setTextSize(TypedValue.COMPLEX_UNIT_SP, textSize)
+            setTextColor(textColor)
+            setBackgroundColor(backgroundColor)
             gravity = android.view.Gravity.CENTER
         }
 
@@ -99,10 +115,13 @@ class ScoreboardFragment : Fragment() {
             layoutParams = GridLayout.LayoutParams().apply {
                 width = 0
                 height = ViewGroup.LayoutParams.WRAP_CONTENT
-                columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f)
+                columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 0.35f)
+                bottomMargin = spacingInPx
             }
             text = player2RoundScore.toString()
-            setBackgroundColor(roundColor)
+            setTextSize(TypedValue.COMPLEX_UNIT_SP, textSize)
+            setTextColor(textColor)
+            setBackgroundColor(backgroundColor)
             gravity = android.view.Gravity.CENTER
         }
 

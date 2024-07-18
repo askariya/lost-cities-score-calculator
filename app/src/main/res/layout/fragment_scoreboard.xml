@@ -9,24 +9,27 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:padding="16dp"
-        android:background="@color/background_color">
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp"
+        android:paddingLeft="0dp"
+        android:paddingRight="0dp"
+        android:background="@color/medium_dark_grey">
 
-        <TextView
-            android:id="@+id/scoreboard_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/title_score"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:textColor="@color/light_white"
-            android:layout_gravity="center"
-            android:layout_marginBottom="16dp" />
+<!--        <TextView-->
+<!--            android:id="@+id/scoreboard_title"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="@string/title_score"-->
+<!--            android:textSize="27sp"-->
+<!--            android:textStyle="bold"-->
+<!--            android:textColor="@color/light_white"-->
+<!--            android:layout_gravity="center"-->
+<!--            android:layout_marginBottom="16dp"/>-->
 
         <GridLayout
             android:id="@+id/score_grid_header"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
             android:columnCount="3"
             android:padding="2dp">
 
@@ -34,49 +37,46 @@
             <TextView
                 android:layout_row="0"
                 android:layout_column="0"
-                android:layout_columnWeight="1"
+                android:layout_columnWeight="0.3"
                 android:text="@string/round"
-                android:textColor="@color/tab_background_selected"
+                android:background="?attr/colorPrimaryVariant"
                 android:gravity="center"
                 style="@style/ScoreHeaderStyle"/>
 
             <TextView
                 android:layout_row="0"
                 android:layout_column="1"
-                android:layout_columnWeight="1"
+                android:layout_columnWeight="0.35"
                 android:text="@string/title_player1"
-                android:textColor="@color/player1_colour"
+                android:background="@color/player1_colour"
                 android:gravity="center"
                 style="@style/ScoreHeaderStyle"/>
 
             <TextView
                 android:layout_row="0"
                 android:layout_column="2"
-                android:layout_columnWeight="1"
+                android:layout_columnWeight="0.35"
                 android:text="@string/title_player2"
-                android:textColor="@color/player2_colour"
+                android:background="@color/player2_colour"
                 android:gravity="center"
                 style="@style/ScoreHeaderStyle"/>
-            <View
-                android:layout_row="1"
-                android:layout_column="0"
-                android:layout_columnSpan="3"
-                android:layout_width="match_parent"
-                android:layout_height="2dp"
-                android:background="@color/dark_purple"
-                android:layout_marginBottom="10dp"/>
         </GridLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="?attr/colorPrimary"
+            android:layout_marginBottom="10dp"/>
         <TextView
+            android:layout_marginTop="50dp"
             android:id="@+id/empty_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/empty_rounds_placeholder"
-            android:textSize="18sp"
+            android:textSize="20sp"
             android:textColor="@color/light_white"
             android:textStyle="italic"
             android:gravity="center"
-            android:visibility="visible"
-            android:layout_marginTop="16dp"/>
+            android:visibility="visible"/>
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="0dp"

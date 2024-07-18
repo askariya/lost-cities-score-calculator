@@ -36,5 +36,8 @@
     <color name="background_color">#555555</color>
     <color name="player1_colour">#8B0000</color>
     <color name="player2_colour">#00008B</color>
+    <color name="color_primary">#36013F</color>
+    <color name="color_primary_variant">#1A1A1A</color>
+
 
 </resources>
