@@ -25,6 +25,10 @@ class SharedScoreViewModel : ViewModel() {
     init {
         // Round counter should begin at 1
         resetRoundCounter()
+        setPlayer1CurrentPoints(0)
+        setPlayer2CurrentPoints(0)
+        setPlayer1TotalPoints(0)
+        setPlayer2TotalPoints(0)
     }
 
     fun setPlayer1CurrentPoints(points: Int) {

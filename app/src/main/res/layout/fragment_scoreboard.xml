@@ -61,6 +61,43 @@
                 android:gravity="center"
                 style="@style/ScoreHeaderStyle"/>
         </GridLayout>
+        <GridLayout
+            android:id="@+id/score_current_header"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:columnCount="3"
+            android:padding="2dp">
+
+            <!-- Headers for Round, Player 1, and Player 2 -->
+            <TextView
+                android:layout_row="0"
+                android:layout_column="0"
+                android:layout_columnWeight="0.3"
+                android:text="@string/current"
+                android:background="?attr/colorPrimary"
+                android:gravity="center"
+                style="@style/ScoreHeaderCurrentStyle"/>
+
+            <TextView
+                android:id="@+id/player1_current_score_view"
+                android:layout_row="0"
+                android:layout_column="1"
+                android:layout_columnWeight="0.35"
+                android:text="@string/title_player1"
+                android:background="@color/player1_colour_variant"
+                android:gravity="center"
+                style="@style/ScoreHeaderCurrentStyle"/>
+
+            <TextView
+                android:id="@+id/player2_current_score_view"
+                android:layout_row="0"
+                android:layout_column="2"
+                android:layout_columnWeight="0.35"
+                android:text="@string/title_player2"
+                android:background="@color/player2_colour_variant"
+                android:gravity="center"
+                style="@style/ScoreHeaderCurrentStyle"/>
+        </GridLayout>
         <View
             android:layout_width="match_parent"
             android:layout_height="2dp"
@@ -90,6 +127,44 @@
                 android:padding="2dp">
             </GridLayout>
         </ScrollView>
+
+        <GridLayout
+            android:id="@+id/score_grid_footer"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:columnCount="3"
+            android:padding="2dp">
+
+            <!-- Headers for Round, Player 1, and Player 2 -->
+            <TextView
+                android:layout_row="0"
+                android:layout_column="0"
+                android:layout_columnWeight="0.3"
+                android:text="@string/total"
+                android:background="?attr/colorPrimaryVariant"
+                android:gravity="center"
+                style="@style/ScoreFooterStyle"/>
+
+            <TextView
+                android:id="@+id/player1_total_score_view"
+                android:layout_row="0"
+                android:layout_column="1"
+                android:layout_columnWeight="0.35"
+                android:text="@string/title_player1"
+                android:background="@color/player1_colour"
+                android:gravity="center"
+                style="@style/ScoreFooterStyle"/>
+
+            <TextView
+                android:id="@+id/player2_total_score_view"
+                android:layout_row="0"
+                android:layout_column="2"
+                android:layout_columnWeight="0.35"
+                android:text="@string/title_player2"
+                android:background="@color/player2_colour"
+                android:gravity="center"
+                style="@style/ScoreFooterStyle"/>
+        </GridLayout>
 
         <Button
             android:id="@+id/submit_score_button"

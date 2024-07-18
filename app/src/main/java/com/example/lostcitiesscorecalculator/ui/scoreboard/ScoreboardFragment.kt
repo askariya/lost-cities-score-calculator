@@ -49,6 +49,8 @@ class ScoreboardFragment : Fragment() {
 
         sharedScoreViewModel.player1CurrentPoints.observe(viewLifecycleOwner, player1CurrentScoreObserver)
         sharedScoreViewModel.player2CurrentPoints.observe(viewLifecycleOwner, player2CurrentScoreObserver)
+        sharedScoreViewModel.player1TotalPoints.observe(viewLifecycleOwner, player1TotalScoreObserver)
+        sharedScoreViewModel.player2TotalPoints.observe(viewLifecycleOwner, player2TotalScoreObserver)
         sharedScoreViewModel.roundCounter.observe(viewLifecycleOwner, roundCounterObserver)
 
         return root
@@ -149,13 +151,23 @@ class ScoreboardFragment : Fragment() {
     }
 
     private val player1CurrentScoreObserver = Observer<Int> { score ->
-//        val player1Score = binding.player1ScoreTextView
-//        player1Score.text = "Score: $score"
+        val player1Score = binding.player1CurrentScoreView
+        player1Score.text = score.toString()
     }
     private val player2CurrentScoreObserver = Observer<Int> { score ->
-//        val player2Score = binding.player2ScoreTextView
-//        player2Score.text = "Score: $score"
+        val player2Score = binding.player2CurrentScoreView
+        player2Score.text = score.toString()
     }
+
+    private val player1TotalScoreObserver = Observer<Int> { totalScore ->
+        val player1Score = binding.player1TotalScoreView
+        player1Score.text = totalScore.toString()
+    }
+    private val player2TotalScoreObserver = Observer<Int> { totalScore ->
+        val player2Score = binding.player2TotalScoreView
+        player2Score.text = totalScore.toString()
+    }
+
     private val roundCounterObserver = Observer<Int> { round ->
         if (round > 1) {
             addNewRound(round - 1)
