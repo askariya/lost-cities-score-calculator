@@ -72,9 +72,10 @@ class ScoreboardFragment : Fragment() {
         val player2RoundScore = sharedScoreViewModel.player2RoundScore.value ?: 0
         val textSize = 20f
         val textColor = ContextCompat.getColor(requireContext(), R.color.white)
-        var backgroundColor = ContextCompat.getColor(requireContext(), R.color.dark_teal)
         val colorPrimary = ContextCompat.getColor(requireContext(), R.color.color_primary)
         val colorPrimaryVariant = ContextCompat.getColor(requireContext(), R.color.color_primary_variant)
+        val colorSecondary = ContextCompat.getColor(requireContext(), R.color.color_secondary)
+        var backgroundColor = colorSecondary
         val spacingInDp = 10 // Desired spacing in dp
         val spacingInPx = TypedValue.applyDimension(
             TypedValue.COMPLEX_UNIT_DIP,

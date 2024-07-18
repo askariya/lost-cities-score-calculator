@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="color_primary">#36013F</color>
+    <color name="color_primary_variant">#1A1A1A</color>
+    <color name="color_secondary">#555555</color>
     <color name="purple_200">#FFBB86FC</color>
     <color name="purple_500">#FF6200EE</color>
     <color name="purple_700">#FF3700B3</color>
@@ -19,6 +22,8 @@
     <color name="dark_purple">#36013F</color>
     <color name="dark_red">#8B0000</color>
     <color name="dark_blue">#00008B</color>
+    <color name="dark_pink">#E75480</color>
+    <color name="dark_mint">#219A6E</color>
     <color name="dark_teal">#014D4E</color>
     <color name="medium_dark_grey">#3d3d3d</color>
     <color name="medium_grey">#555555</color>
@@ -34,12 +39,10 @@
     <color name="tab_background_selected">#FF018786</color>
     <color name="tab_background_unselected">#014D4E</color>
     <color name="background_color">#555555</color>
-    <color name="player1_colour">#8B0000</color>
-    <color name="player2_colour">#00008B</color>
-    <color name="player1_colour_variant">#8B0000</color>
-    <color name="player2_colour_variant">#00008B</color>
-    <color name="color_primary">#36013F</color>
-    <color name="color_primary_variant">#1A1A1A</color>
+    <color name="player1_colour">#219A6E</color>
+    <color name="player2_colour">#E75480</color>
+    <color name="player1_colour_variant">#79D9B7</color>
+    <color name="player2_colour_variant">#FC8EAC</color>
 
 
 </resources>
