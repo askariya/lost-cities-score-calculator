@@ -75,6 +75,7 @@ class MainActivity : AppCompatActivity() {
         viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
+                setHeaderToolbar(position)
             }
         })
     }
@@ -96,6 +97,15 @@ class MainActivity : AppCompatActivity() {
                 true
             }
             else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    private fun setHeaderToolbar(position: Int)
+    {
+        when (position) {
+            0 -> binding.headerToolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.player1_colour))
+            1 -> binding.headerToolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.player2_colour))
+            else -> binding.headerToolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.color_primary))
         }
     }
 
