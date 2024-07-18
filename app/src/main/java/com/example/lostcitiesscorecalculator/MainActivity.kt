@@ -96,6 +96,14 @@ class MainActivity : AppCompatActivity() {
                 onResetGameButtonPressed()
                 true
             }
+            R.id.save_game_button -> {
+                onSaveGameButtonPressed()
+                true
+            }
+            R.id.load_game_button -> {
+                onLoadGameButtonPressed()
+                true
+            }
             else -> super.onOptionsItemSelected(item)
         }
     }
@@ -121,6 +129,14 @@ class MainActivity : AppCompatActivity() {
     private fun onResetGameButtonPressed() {
         //TODO display a warning here and ask user to confirm (or do this in SharedScoreViewModel)
         sharedScoreViewModel.resetPoints()
+    }
+
+    private fun onSaveGameButtonPressed() {
+        //TODO display a warning here and ask user to confirm
+    }
+
+    private fun onLoadGameButtonPressed() {
+        //TODO display a warning here and ask user to confirm
     }
 
     private val roundCounterObserver = Observer<Int> { round ->
