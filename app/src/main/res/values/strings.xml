@@ -31,6 +31,6 @@
     <string name="total">Total</string>
     <string name="round">Round</string>
     <string name="empty_rounds_placeholder">No rounds completed yet.</string>
-    <string name="eight_card_bonus_label">*8*</string>
+    <string name="eight_card_bonus_label">8</string>
 
 </resources>

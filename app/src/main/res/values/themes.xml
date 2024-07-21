@@ -16,14 +16,13 @@
 
     <!-- Custom Toolbar Style -->
     <style name="ToolbarDarkTheme" parent="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
-        <item name="android:actionOverflowMenuStyle">@style/OverflowMenuStyle</item>
         <item name="android:textColorSecondary">@color/medium_grey</item>
         <item name="actionMenuTextColor">@color/white</item>
         <item name="android:textAllCaps">true</item>
     </style>
 
-    <style name="OverflowMenuStyle" parent="Widget.AppCompat.PopupMenu.Overflow">
-<!--        <item name="android:textColor">@color/red</item>-->
-<!--        <item name="android:textAllCaps">true</item>-->
+    <!-- Custom Toolbar Style -->
+    <style name="ToolbarDarkThemePopup" parent="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+        <item name="android:textColor">@color/black</item>
     </style>
 </resources>
