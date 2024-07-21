@@ -7,6 +7,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
@@ -111,6 +112,14 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun showGameSavedNotification(){
+        Toast.makeText(this, "Game Saved", Toast.LENGTH_SHORT).show()
+    }
+
+    private fun showGameLoadedNotification(){
+        Toast.makeText(this, "Loaded Save", Toast.LENGTH_SHORT).show()
+    }
+
     private fun setHeaderToolbar(position: Int)
     {
         when (position) {
@@ -127,6 +136,7 @@ class MainActivity : AppCompatActivity() {
     private fun onSubmitButtonPressed() {
         //TODO display a warning here and ask user to confirm (or do this in SharedScoreViewModel)
         sharedScoreViewModel.submitCurrentPointsToTotal()
+        onSaveGameButtonPressed() // Save the game automatically when submitting
     }
 
     private fun onResetGameButtonPressed() {
@@ -149,6 +159,8 @@ class MainActivity : AppCompatActivity() {
         editor.putInt("player2TotalScore", sharedScoreViewModel.player2TotalPoints.value ?: 0)
         editor.putInt("roundCount", sharedScoreViewModel.roundCounter.value ?: 0)
         editor.apply()
+
+        showGameSavedNotification()
     }
 
     private fun onLoadGameButtonPressed() {
@@ -167,6 +179,7 @@ class MainActivity : AppCompatActivity() {
 
         // Load the saved values back into the game
         sharedScoreViewModel.loadGame(scores, player1TotalScore, player2TotalScore, roundCount)
+        showGameLoadedNotification()
     }
 
     private val roundCounterObserver = Observer<Int> { round ->

@@ -25,7 +25,7 @@
     <string name="label_green_wager">green wager</string>
     <string name="label_red_wager">red wager</string>
     <string name="label_purple_wager">purple wager</string>
-    <string name="current_score">Current Score:</string>
+    <string name="current_score">Current Round:</string>
     <string name="current">Current</string>
     <string name="total_score">Total Score:</string>
     <string name="total">Total</string>
