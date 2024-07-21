@@ -1,5 +1,6 @@
 package com.example.lostcitiesscorecalculator
 
+import android.content.Context
 import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.Menu
@@ -128,15 +129,29 @@ class MainActivity : AppCompatActivity() {
 
     private fun onResetGameButtonPressed() {
         //TODO display a warning here and ask user to confirm (or do this in SharedScoreViewModel)
-        sharedScoreViewModel.resetPoints()
+        sharedScoreViewModel.resetGame()
     }
 
     private fun onSaveGameButtonPressed() {
         //TODO display a warning here and ask user to confirm
+        val sharedPreferences = getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+
+        editor.putInt("player1Score", sharedScoreViewModel.player1TotalPoints.value ?: 0)
+        editor.putInt("player2Score", sharedScoreViewModel.player2TotalPoints.value ?: 0)
+        editor.apply() // or editor.commit()
+
     }
 
     private fun onLoadGameButtonPressed() {
         //TODO display a warning here and ask user to confirm
+        val sharedPreferences = getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
+
+        val player1Score = sharedPreferences.getInt("player1Score", 0)
+        val player2Score = sharedPreferences.getInt("player2Score", 0)
+
+        sharedScoreViewModel.setPlayer1CurrentPoints(player1Score)
+        sharedScoreViewModel.setPlayer2CurrentPoints(player2Score)
     }
 
     private val roundCounterObserver = Observer<Int> { round ->

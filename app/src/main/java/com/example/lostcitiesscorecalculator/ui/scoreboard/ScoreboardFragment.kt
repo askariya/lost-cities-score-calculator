@@ -47,7 +47,7 @@ class ScoreboardFragment : Fragment() {
         // set the resetButton functionality
         val endGameButton : Button = binding.endGameButton
         endGameButton.setOnClickListener{
-            sharedScoreViewModel.resetPoints()
+            sharedScoreViewModel.resetGame()
         }
 
         sharedScoreViewModel = ViewModelProvider(requireActivity()).get()
@@ -56,7 +56,7 @@ class ScoreboardFragment : Fragment() {
         sharedScoreViewModel.player2CurrentPoints.observe(viewLifecycleOwner, player2CurrentScoreObserver)
         sharedScoreViewModel.player1TotalPoints.observe(viewLifecycleOwner, player1TotalScoreObserver)
         sharedScoreViewModel.player2TotalPoints.observe(viewLifecycleOwner, player2TotalScoreObserver)
-        sharedScoreViewModel.roundCounter.observe(viewLifecycleOwner, roundCounterObserver)
+        sharedScoreViewModel.roundScores.observe(viewLifecycleOwner, roundScoreObserver)
 
         return root
     }
@@ -66,10 +66,8 @@ class ScoreboardFragment : Fragment() {
         _binding = null
     }
 
-    private fun addNewRound(roundCount: Int) {
+    private fun addNewRound(roundCount: Int, player1RoundScore: Int, player2RoundScore: Int) {
         // Create TextView for Round number
-        val player1RoundScore = sharedScoreViewModel.player1RoundScore.value ?: 0
-        val player2RoundScore = sharedScoreViewModel.player2RoundScore.value ?: 0
         val textSize = 20f
         val textColor = ContextCompat.getColor(requireContext(), R.color.white)
         val colorPrimary = ContextCompat.getColor(requireContext(), R.color.color_primary)
@@ -141,16 +139,6 @@ class ScoreboardFragment : Fragment() {
         checkEmptyViewVisibility()
     }
 
-    private fun resetScoreboard() {
-        // Clear children of scoreboard gridlayout and toggle emptyview
-        val scoreGrid = binding.scoreGridLayout
-        for (i in scoreGrid.childCount - 1 downTo 0) {
-            val child = scoreGrid.getChildAt(i)
-            scoreGrid.removeViewAt(i)
-        }
-        checkEmptyViewVisibility()
-    }
-
     // Function to check and update empty view visibility
     private fun checkEmptyViewVisibility() {
         binding.emptyView.visibility = if (binding.scoreGridLayout.childCount <= 0) View.VISIBLE else View.GONE
@@ -174,13 +162,17 @@ class ScoreboardFragment : Fragment() {
         player2Score.text = totalScore.toString()
     }
 
-    private val roundCounterObserver = Observer<Int> { round ->
-        if (round > 1) {
-            addNewRound(round - 1)
+    private val roundScoreObserver = Observer<MutableMap<Int, Pair<Int, Int>>> { roundScores ->
+        val roundNumbers = roundScores.keys.sorted()
+        val scoreGrid = binding.scoreGridLayout
+        scoreGrid.removeAllViews()
+
+        for (round in roundNumbers) {
+            val player1Score = roundScores[round]?.first ?: 0
+            val player2Score = roundScores[round]?.second ?: 0
+            addNewRound(round, player1Score, player2Score)
         }
-        else {
-            // If round is set to 1, reset the scoreboard
-            resetScoreboard()
-        }
+
+        checkEmptyViewVisibility()
     }
 }
