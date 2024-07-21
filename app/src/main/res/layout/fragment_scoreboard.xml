@@ -3,36 +3,190 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.scoreboard.ScoreboardFragment">
-
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".ui.scoreboard.ScoreboardFragment"
+    android:padding="0dp">
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:paddingTop="16dp"
+        android:paddingLeft="0dp"
+        android:paddingRight="0dp"
+        android:background="@color/medium_dark_grey">
 
-        <!-- Player 1 Score -->
+<!--        <TextView-->
+<!--            android:id="@+id/scoreboard_title"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="@string/title_score"-->
+<!--            android:textSize="27sp"-->
+<!--            android:textStyle="bold"-->
+<!--            android:textColor="@color/light_white"-->
+<!--            android:layout_gravity="center"-->
+<!--            android:layout_marginBottom="16dp"/>-->
+
+        <GridLayout
+            android:id="@+id/score_grid_header"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:columnCount="3"
+            android:padding="2dp">
+
+            <!-- Headers for Round, Player 1, and Player 2 -->
+            <TextView
+                android:layout_row="0"
+                android:layout_column="0"
+                android:layout_columnWeight="0.3"
+                android:text="@string/round"
+                android:background="?attr/colorPrimaryVariant"
+                android:gravity="center"
+                style="@style/ScoreHeaderStyle"/>
+
+            <TextView
+                android:layout_row="0"
+                android:layout_column="1"
+                android:layout_columnWeight="0.35"
+                android:text="@string/title_player1"
+                android:background="@color/player1_colour"
+                android:gravity="center"
+                style="@style/ScoreHeaderStyle"/>
+
+            <TextView
+                android:layout_row="0"
+                android:layout_column="2"
+                android:layout_columnWeight="0.35"
+                android:text="@string/title_player2"
+                android:background="@color/player2_colour"
+                android:gravity="center"
+                style="@style/ScoreHeaderStyle"/>
+        </GridLayout>
+        <GridLayout
+            android:id="@+id/score_current_header"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:columnCount="3"
+            android:padding="2dp">
+
+            <!-- Headers for Round, Player 1, and Player 2 -->
+            <TextView
+                android:layout_row="0"
+                android:layout_column="0"
+                android:layout_columnWeight="0.3"
+                android:text="@string/current"
+                android:background="?attr/colorPrimary"
+                android:gravity="center"
+                style="@style/ScoreHeaderCurrentStyle"/>
+
+            <TextView
+                android:id="@+id/player1_current_score_view"
+                android:layout_row="0"
+                android:layout_column="1"
+                android:layout_columnWeight="0.35"
+                android:text="@string/title_player1"
+                android:background="@color/player1_colour_variant"
+                android:gravity="center"
+                style="@style/ScoreHeaderCurrentStyle"/>
+
+            <TextView
+                android:id="@+id/player2_current_score_view"
+                android:layout_row="0"
+                android:layout_column="2"
+                android:layout_columnWeight="0.35"
+                android:text="@string/title_player2"
+                android:background="@color/player2_colour_variant"
+                android:gravity="center"
+                style="@style/ScoreHeaderCurrentStyle"/>
+        </GridLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="?attr/colorPrimary"
+            android:layout_marginBottom="10dp"/>
         <TextView
-            android:id="@+id/player1ScoreTextView"
+            android:layout_marginTop="50dp"
+            android:id="@+id/empty_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Player 1 Score:"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            tools:text="Player 1 Score: 100" />
+            android:text="@string/empty_rounds_placeholder"
+            android:textSize="20sp"
+            android:textColor="@color/light_white"
+            android:textStyle="italic"
+            android:gravity="center"
+            android:visibility="visible"/>
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:paddingBottom="16dp">
+            <GridLayout
+                android:id="@+id/score_grid_layout"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:columnCount="3"
+                android:padding="2dp">
+            </GridLayout>
+        </ScrollView>
 
-        <!-- Player 2 Score -->
-        <TextView
-            android:id="@+id/player2ScoreTextView"
+        <GridLayout
+            android:id="@+id/score_grid_footer"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:columnCount="3"
+            android:padding="2dp">
+
+            <!-- Headers for Round, Player 1, and Player 2 -->
+            <TextView
+                android:layout_row="0"
+                android:layout_column="0"
+                android:layout_columnWeight="0.3"
+                android:text="@string/total"
+                android:background="?attr/colorPrimaryVariant"
+                android:gravity="center"
+                style="@style/ScoreFooterStyle"/>
+
+            <TextView
+                android:id="@+id/player1_total_score_view"
+                android:layout_row="0"
+                android:layout_column="1"
+                android:layout_columnWeight="0.35"
+                android:text="@string/title_player1"
+                android:background="@color/player1_colour"
+                android:gravity="center"
+                style="@style/ScoreFooterStyle"/>
+
+            <TextView
+                android:id="@+id/player2_total_score_view"
+                android:layout_row="0"
+                android:layout_column="2"
+                android:layout_columnWeight="0.35"
+                android:text="@string/title_player2"
+                android:background="@color/player2_colour"
+                android:gravity="center"
+                style="@style/ScoreFooterStyle"/>
+        </GridLayout>
+
+
+        <GridLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Player 2 Score:"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            tools:text="Player 2 Score: 120" />
-
-        <!-- Add any other UI elements or customization as needed -->
-
+            android:rowCount="1"
+            android:columnCount="2"
+            android:padding="10dp">
+            <Button
+                android:id="@+id/end_game_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:text="@string/label_reset_game"
+                style="@style/ResetButtonStyle"
+                android:layout_gravity="start"/>
+            <Button
+                android:id="@+id/submit_score_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:text="@string/label_submit"
+                android:layout_gravity="end"/>
+        </GridLayout>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

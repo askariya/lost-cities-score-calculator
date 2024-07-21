@@ -55,6 +55,15 @@ class PlayerBoardFragment : Fragment() {
 
         sharedScoreViewModel = ViewModelProvider(requireActivity()).get()
 
+        sharedScoreViewModel.roundCounter.observe(viewLifecycleOwner, roundCounterObserver)
+
+        if (playerId == 1) {
+            sharedScoreViewModel.player1TotalPoints.observe(viewLifecycleOwner, totalScoreObserver)
+        }
+        else {
+            sharedScoreViewModel.player2TotalPoints.observe(viewLifecycleOwner, totalScoreObserver)
+        }
+
         setupGridLayout()
         observeViewModel()
 
@@ -117,7 +126,7 @@ class PlayerBoardFragment : Fragment() {
         return gridLayout.getChildAt(column) as ImageButton
     }
 
-    private fun findTextView(row: Int, column: Int): TextView? {
+    private fun findTextView(row: Int, column: Int, childIndex: Int): TextView? {
         val gridLayout = binding.boardGrid
         val rowCount = gridLayout.rowCount
         val columnCount = gridLayout.columnCount
@@ -129,7 +138,7 @@ class PlayerBoardFragment : Fragment() {
         val index = row * columnCount + column
 
         val cardView = if (index != -1) gridLayout.getChildAt(index) as MaterialCardView else null
-        return if (index != -1) cardView?.getChildAt(0) as TextView else null
+        return cardView?.getChildAt(childIndex) as TextView?
     }
 
     private fun getColorFromString(colorName : String?) : Int {
@@ -164,6 +173,7 @@ class PlayerBoardFragment : Fragment() {
                 button?.setOnClickListener {
                     viewModel.toggleButtonStateCommand(row, col)
                 }
+                //TODO perhaps set the button stroke color to the player 1 and player 2 colours here
             }
         }
 
@@ -172,18 +182,37 @@ class PlayerBoardFragment : Fragment() {
         resetButton.setOnClickListener{
             viewModel.resetBoardCommand()
         }
+
+        val boardFooter = binding.boardFooter
+        if (playerId == 1)
+            boardFooter.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.player1_colour))
+        else
+            boardFooter.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.player2_colour))
     }
 
-    fun resetBoard()
-    {
-        viewModel.resetBoardCommand()
+    private fun setEightCardBonusVisibility(column: Int, visible: Boolean) {
+        val eightCardBonusView = findTextView(10, column, 1)
+        if (visible)
+            eightCardBonusView?.visibility = View.VISIBLE
+        else
+            eightCardBonusView?.visibility = View.INVISIBLE
     }
 
     private fun observeViewModel() {
         viewModel.totalPoints.observe(viewLifecycleOwner, scoreObserver)
         viewModel.points.observe(viewLifecycleOwner, pointsObserver)
         viewModel.buttonStates.observe(viewLifecycleOwner, buttonStatesObserver)
+        viewModel.eightCardBonusStates.observe(viewLifecycleOwner, eightCardBonusStatesObserver)
         viewModel.wagerCounts.observe(viewLifecycleOwner, wagerCountsObserver)
+    }
+
+    private val roundCounterObserver = Observer<Int> { round ->
+        viewModel.resetBoardCommand()
+        //TODO add a notification badge to score tab
+    }
+    private val totalScoreObserver = Observer<Int> { totalScore ->
+        binding.totalScoreValue.text = totalScore.toString()
+        //TODO make field flash
     }
 
     private val scoreObserver = Observer<Int> { score ->
@@ -202,7 +231,7 @@ class PlayerBoardFragment : Fragment() {
         val zeroColour = getColorFromString("light_grey")
 
         points.forEach { (col, point) ->
-            val totalTextView = findTextView(10, col)
+            val totalTextView = findTextView(10, col, 0)
             totalTextView?.text = point.toString()
             if (point != 0) {
                 totalTextView?.setBackgroundColor(getColorFromString(lightColours[col]))
@@ -230,6 +259,12 @@ class PlayerBoardFragment : Fragment() {
                     button?.setTypeface(Typeface.create("sans-serif", Typeface.NORMAL))
                 }
             }
+        }
+    }
+
+    private val eightCardBonusStatesObserver = Observer<Map<Int, Boolean>> { bonusStates ->
+        bonusStates.forEach { (col, state) ->
+            setEightCardBonusVisibility(col, state)
         }
     }
 

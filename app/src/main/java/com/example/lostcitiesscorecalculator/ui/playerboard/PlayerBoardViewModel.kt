@@ -14,6 +14,10 @@ class PlayerBoardViewModel(private val playerId: Int) : ViewModel() {
     private val _buttonStates = MutableLiveData<Map<Int, Map<Int, Boolean>>>()
     val buttonStates: LiveData<Map<Int, Map<Int, Boolean>>> get() = _buttonStates
 
+    // Holds the Eight Card Bonus state for each column
+    private val _eightCardBonusStates = MutableLiveData<Map<Int, Boolean>>()
+    val eightCardBonusStates: LiveData<Map<Int, Boolean>> get() = _eightCardBonusStates
+
     // Holds the wager counts for each column
     private val _wagerCounts = MutableLiveData<Map<Int, Int>>()
     val wagerCounts: LiveData<Map<Int, Int>> get() = _wagerCounts
@@ -23,7 +27,7 @@ class PlayerBoardViewModel(private val playerId: Int) : ViewModel() {
     val totalPoints: LiveData<Int> get() = _totalPoints
 
     // Numbered button indices in the grid
-    private val _buttonRowCount = 9
+    private val _buttonRowCount = 10
     private val _buttonColCount = 6
     private val _buttonRowStartIndex = 1
     private val _buttonColStartIndex = 0
@@ -40,6 +44,7 @@ class PlayerBoardViewModel(private val playerId: Int) : ViewModel() {
             (_buttonRowStartIndex until _buttonRowCount).associateWith { false }
         }
         _wagerCounts.value = (_buttonColStartIndex until _buttonColCount).associateWith { 0 }
+        _eightCardBonusStates.value = (_buttonColStartIndex until _buttonColCount).associateWith { false }
     }
 
     fun toggleButtonStateCommand(row: Int, column: Int) {
@@ -73,6 +78,12 @@ class PlayerBoardViewModel(private val playerId: Int) : ViewModel() {
         updatePointsForColumn(column)
     }
 
+    private fun setEightCardBonusState(column: Int, state: Boolean) {
+        val updatedEightCardStates = _eightCardBonusStates.value?.toMutableMap() ?: mutableMapOf()
+        updatedEightCardStates[column] = state
+        _eightCardBonusStates.value = updatedEightCardStates
+    }
+
     private fun setWagerCount(column: Int, count: Int) {
         val updatedWagerCounts = _wagerCounts.value?.toMutableMap() ?: mutableMapOf()
         updatedWagerCounts[column] = count
@@ -100,8 +111,13 @@ class PlayerBoardViewModel(private val playerId: Int) : ViewModel() {
         columnScore *= wagerButtonMultiple
 
         // Additional logic based on your requirements
-        if (buttonStates.count { it.value } >= 8) {
+        if ((buttonStates.count { it.value } + (wagerButtonMultiple - 1)) >= 8) {
+            //TODO set the 8 card bonus
             columnScore += 20
+            setEightCardBonusState(column, true)
+        }
+        else {
+            setEightCardBonusState(column, false)
         }
 
         setPoints(column, columnScore)

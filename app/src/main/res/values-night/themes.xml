@@ -2,15 +2,28 @@
     <!-- Base application theme. -->
     <style name="Theme.LostCitiesScoreCalculator" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/purple_200</item>
-        <item name="colorPrimaryVariant">@color/purple_700</item>
+        <item name="colorPrimary">@color/color_primary</item>
+        <item name="colorPrimaryVariant">@color/color_primary_variant</item>
         <item name="colorOnPrimary">@color/black</item>
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/teal_200</item>
-        <item name="colorSecondaryVariant">@color/teal_200</item>
+        <item name="colorSecondaryVariant">@color/teal_700</item>
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
+    </style>
+
+    <!-- Custom Toolbar Style -->
+    <style name="ToolbarDarkTheme" parent="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+        <item name="android:actionOverflowMenuStyle">@style/OverflowMenuStyle</item>
+        <item name="android:textColorSecondary">@color/medium_grey</item>
+        <item name="actionMenuTextColor">@color/white</item>
+        <item name="android:textAllCaps">true</item>
+    </style>
+
+    <style name="OverflowMenuStyle" parent="Widget.AppCompat.PopupMenu.Overflow">
+        <!--        <item name="android:textColor">@color/red</item>-->
+        <!--        <item name="android:textAllCaps">true</item>-->
     </style>
 </resources>
