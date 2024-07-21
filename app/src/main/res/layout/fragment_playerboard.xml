@@ -399,6 +399,9 @@
                 android:id="@+id/yellow_total"
                 style="@style/CardTextViewStyle"
                 android:text="@string/label_zero"/>
+            <TextView
+                android:id="@+id/yellow_total_badge"
+                style="@style/CardEightBonusTextViewStyle"/>
         </com.google.android.material.card.MaterialCardView>
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/white_total_card"
@@ -409,6 +412,9 @@
                 android:id="@+id/white_total"
                 style="@style/CardTextViewStyle"
                 android:text="@string/label_zero"/>
+            <TextView
+                android:id="@+id/white_total_badge"
+                style="@style/CardEightBonusTextViewStyle"/>
         </com.google.android.material.card.MaterialCardView>
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/blue_total_card"
@@ -419,6 +425,9 @@
                 android:id="@+id/blue_total"
                 style="@style/CardTextViewStyle"
                 android:text="@string/label_zero"/>
+            <TextView
+                android:id="@+id/blue_total_badge"
+                style="@style/CardEightBonusTextViewStyle"/>
         </com.google.android.material.card.MaterialCardView>
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/green_total_card"
@@ -429,6 +438,9 @@
                 android:id="@+id/green_total"
                 style="@style/CardTextViewStyle"
                 android:text="@string/label_zero"/>
+            <TextView
+                android:id="@+id/green_total_badge"
+                style="@style/CardEightBonusTextViewStyle"/>
         </com.google.android.material.card.MaterialCardView>
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/red_total_card"
@@ -439,6 +451,9 @@
                 android:id="@+id/red_total"
                 style="@style/CardTextViewStyle"
                 android:text="@string/label_zero"/>
+            <TextView
+                android:id="@+id/red_total_badge"
+                style="@style/CardEightBonusTextViewStyle"/>
         </com.google.android.material.card.MaterialCardView>
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/purple_total_card"
@@ -449,6 +464,9 @@
                 android:id="@+id/purple_total"
                 style="@style/CardTextViewStyle"
                 android:text="@string/label_zero"/>
+            <TextView
+                android:id="@+id/purple_total_badge"
+                style="@style/CardEightBonusTextViewStyle"/>
         </com.google.android.material.card.MaterialCardView>
         <GridLayout
             android:id="@+id/board_footer"

@@ -126,7 +126,7 @@ class PlayerBoardFragment : Fragment() {
         return gridLayout.getChildAt(column) as ImageButton
     }
 
-    private fun findTextView(row: Int, column: Int): TextView? {
+    private fun findTextView(row: Int, column: Int, childIndex: Int): TextView? {
         val gridLayout = binding.boardGrid
         val rowCount = gridLayout.rowCount
         val columnCount = gridLayout.columnCount
@@ -138,7 +138,7 @@ class PlayerBoardFragment : Fragment() {
         val index = row * columnCount + column
 
         val cardView = if (index != -1) gridLayout.getChildAt(index) as MaterialCardView else null
-        return if (index != -1) cardView?.getChildAt(0) as TextView else null
+        return cardView?.getChildAt(childIndex) as TextView?
     }
 
     private fun getColorFromString(colorName : String?) : Int {
@@ -174,10 +174,6 @@ class PlayerBoardFragment : Fragment() {
                     viewModel.toggleButtonStateCommand(row, col)
                 }
                 //TODO perhaps set the button stroke color to the player 1 and player 2 colours here
-//                if (playerId == 1)
-//                    (button as MaterialButton).setStrokeColorResource(R.color.player1_colour)
-//                else
-//                    (button as MaterialButton).setStrokeColorResource(R.color.player2_colour)
             }
         }
 
@@ -226,7 +222,7 @@ class PlayerBoardFragment : Fragment() {
         val zeroColour = getColorFromString("light_grey")
 
         points.forEach { (col, point) ->
-            val totalTextView = findTextView(10, col)
+            val totalTextView = findTextView(10, col, 0)
             totalTextView?.text = point.toString()
             if (point != 0) {
                 totalTextView?.setBackgroundColor(getColorFromString(lightColours[col]))
