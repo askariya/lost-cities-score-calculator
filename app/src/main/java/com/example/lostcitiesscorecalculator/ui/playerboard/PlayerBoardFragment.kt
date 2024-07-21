@@ -190,10 +190,19 @@ class PlayerBoardFragment : Fragment() {
             boardFooter.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.player2_colour))
     }
 
+    private fun setEightCardBonusVisibility(column: Int, visible: Boolean) {
+        val eightCardBonusView = findTextView(10, column, 1)
+        if (visible)
+            eightCardBonusView?.visibility = View.VISIBLE
+        else
+            eightCardBonusView?.visibility = View.INVISIBLE
+    }
+
     private fun observeViewModel() {
         viewModel.totalPoints.observe(viewLifecycleOwner, scoreObserver)
         viewModel.points.observe(viewLifecycleOwner, pointsObserver)
         viewModel.buttonStates.observe(viewLifecycleOwner, buttonStatesObserver)
+        viewModel.eightCardBonusStates.observe(viewLifecycleOwner, eightCardBonusStatesObserver)
         viewModel.wagerCounts.observe(viewLifecycleOwner, wagerCountsObserver)
     }
 
@@ -250,6 +259,12 @@ class PlayerBoardFragment : Fragment() {
                     button?.setTypeface(Typeface.create("sans-serif", Typeface.NORMAL))
                 }
             }
+        }
+    }
+
+    private val eightCardBonusStatesObserver = Observer<Map<Int, Boolean>> { bonusStates ->
+        bonusStates.forEach { (col, state) ->
+            setEightCardBonusVisibility(col, state)
         }
     }
 
