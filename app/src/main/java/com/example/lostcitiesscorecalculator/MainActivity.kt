@@ -17,6 +17,8 @@ import com.example.lostcitiesscorecalculator.ui.playerboard.PlayerBoardPagerAdap
 import com.example.lostcitiesscorecalculator.ui.scoreboard.SharedScoreViewModel
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 
 class MainActivity : AppCompatActivity() {
 
@@ -136,22 +138,35 @@ class MainActivity : AppCompatActivity() {
         //TODO display a warning here and ask user to confirm
         val sharedPreferences = getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
+        // Convert map to JSON string
+        val gson = Gson()
+        val jsonString = gson.toJson(sharedScoreViewModel.roundScores.value)
 
-        editor.putInt("player1Score", sharedScoreViewModel.player1TotalPoints.value ?: 0)
-        editor.putInt("player2Score", sharedScoreViewModel.player2TotalPoints.value ?: 0)
-        editor.apply() // or editor.commit()
-
+        // Save JSON string to SharedPreferences
+        editor.putString("roundScores", jsonString)
+        // Save the total points and the round count as well
+        editor.putInt("player1TotalScore", sharedScoreViewModel.player1TotalPoints.value ?: 0)
+        editor.putInt("player2TotalScore", sharedScoreViewModel.player2TotalPoints.value ?: 0)
+        editor.putInt("roundCount", sharedScoreViewModel.roundCounter.value ?: 0)
+        editor.apply()
     }
 
     private fun onLoadGameButtonPressed() {
         //TODO display a warning here and ask user to confirm
         val sharedPreferences = getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
+        val rsJsonString = sharedPreferences.getString("roundScores", null)
+        // Convert JSON string to map
+        val gson = Gson()
+        val type = object : TypeToken<MutableMap<Int, Pair<Int, Int>>>() {}.type
 
-        val player1Score = sharedPreferences.getInt("player1Score", 0)
-        val player2Score = sharedPreferences.getInt("player2Score", 0)
+        val scores: MutableMap<Int, Pair<Int, Int>> = gson.fromJson(rsJsonString, type)
+            ?: mutableMapOf()
+        val player1TotalScore = sharedPreferences.getInt("player1TotalScore", 0)
+        val player2TotalScore = sharedPreferences.getInt("player2TotalScore", 0)
+        val roundCount = sharedPreferences.getInt("roundCount", 1)
 
-        sharedScoreViewModel.setPlayer1CurrentPoints(player1Score)
-        sharedScoreViewModel.setPlayer2CurrentPoints(player2Score)
+        // Load the saved values back into the game
+        sharedScoreViewModel.loadGame(scores, player1TotalScore, player2TotalScore, roundCount)
     }
 
     private val roundCounterObserver = Observer<Int> { round ->

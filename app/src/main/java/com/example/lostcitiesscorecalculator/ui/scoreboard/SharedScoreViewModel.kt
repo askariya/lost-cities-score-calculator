@@ -25,14 +25,6 @@ class SharedScoreViewModel : ViewModel() {
         resetGame()
     }
 
-    fun setPlayer1CurrentPoints(points: Int) {
-        _player1CurrentPoints.value = points
-    }
-
-    fun setPlayer2CurrentPoints(points: Int) {
-        _player2CurrentPoints.value = points
-    }
-
     private fun setPlayer1TotalPoints(points: Int) {
         _player1TotalPoints.value = points
     }
@@ -41,11 +33,15 @@ class SharedScoreViewModel : ViewModel() {
         _player2TotalPoints.value = points
     }
 
+    private fun setRoundScores(scores: MutableMap<Int, Pair<Int, Int>>) {
+        _roundScores.value = scores
+    }
+
     private fun addRoundScore(round: Int, player1RoundScore: Int, player2RoundScore: Int)
     {
         val roundScoreMap = roundScores.value ?: mutableMapOf()
         roundScoreMap[round] = Pair(player1RoundScore, player2RoundScore)
-        roundScores.value = roundScoreMap
+        setRoundScores(roundScoreMap)
         setPlayer1TotalPoints((player1TotalPoints.value ?: 0) + player1RoundScore)
         setPlayer2TotalPoints((player2TotalPoints.value ?: 0) + player2RoundScore)
         incrementRoundCounter()
@@ -53,7 +49,7 @@ class SharedScoreViewModel : ViewModel() {
 
     private fun resetRoundScores()
     {
-        roundScores.value = mutableMapOf()
+        setRoundScores(mutableMapOf())
         setPlayer1TotalPoints(0)
         setPlayer2TotalPoints(0)
         resetRoundCounter()
@@ -63,8 +59,20 @@ class SharedScoreViewModel : ViewModel() {
         _roundCounter.value = (_roundCounter.value ?: 1) + 1
     }
 
+    private fun setRoundCounter(roundNum: Int) {
+        _roundCounter.value = roundNum
+    }
+
     private fun resetRoundCounter() {
         _roundCounter.value = 1
+    }
+
+    fun setPlayer1CurrentPoints(points: Int) {
+        _player1CurrentPoints.value = points
+    }
+
+    fun setPlayer2CurrentPoints(points: Int) {
+        _player2CurrentPoints.value = points
     }
 
     fun submitCurrentPointsToTotal() {
@@ -75,6 +83,15 @@ class SharedScoreViewModel : ViewModel() {
         setPlayer1CurrentPoints(0)
         setPlayer2CurrentPoints(0)
         resetRoundScores()
+    }
+
+    // Should only be used by the MainActivity for loading the scores
+    fun loadGame(scores: MutableMap<Int, Pair<Int, Int>>, player1TotalScore: Int, player2TotalScore: Int, roundNum: Int)
+    {
+        setRoundScores(scores)
+        setPlayer1TotalPoints(player1TotalScore)
+        setPlayer2TotalPoints(player2TotalScore)
+        setRoundCounter(roundNum)
     }
 
 }
