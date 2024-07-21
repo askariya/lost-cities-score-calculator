@@ -44,6 +44,7 @@ class PlayerBoardViewModel(private val playerId: Int) : ViewModel() {
             (_buttonRowStartIndex until _buttonRowCount).associateWith { false }
         }
         _wagerCounts.value = (_buttonColStartIndex until _buttonColCount).associateWith { 0 }
+        _eightCardBonusStates.value = (_buttonColStartIndex until _buttonColCount).associateWith { false }
     }
 
     fun toggleButtonStateCommand(row: Int, column: Int) {
