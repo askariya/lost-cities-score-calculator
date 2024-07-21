@@ -3,11 +3,13 @@ package com.example.lostcitiesscorecalculator
 import android.content.Context
 import android.content.res.ColorStateList
 import android.os.Bundle
+import android.text.Html
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
@@ -16,6 +18,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.example.lostcitiesscorecalculator.databinding.ActivityMainBinding
 import com.example.lostcitiesscorecalculator.ui.playerboard.PlayerBoardPagerAdapter
 import com.example.lostcitiesscorecalculator.ui.scoreboard.SharedScoreViewModel
+import com.example.lostcitiesscorecalculator.ui.utils.DialogUtils
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.gson.Gson
@@ -134,18 +137,41 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun onSubmitButtonPressed() {
-        //TODO display a warning here and ask user to confirm (or do this in SharedScoreViewModel)
-        sharedScoreViewModel.submitCurrentPointsToTotal()
-        onSaveGameButtonPressed() // Save the game automatically when submitting
+        val player1Score = sharedScoreViewModel.player1CurrentPoints.value ?: 0
+        val player2Score = sharedScoreViewModel.player2CurrentPoints.value ?: 0
+        val message = """
+            Do you want to submit the following score?<br><br>
+            <b>Player 1:</b>&nbsp;&nbsp;&nbsp;&nbsp;$player1Score<br>
+            <b>Player 2:</b>&nbsp;&nbsp;&nbsp;&nbsp;$player2Score
+            """.trimIndent()
+        DialogUtils.showConfirmationDialog(this,
+            "Submit Score",
+            message,
+            "Submit",
+            "Cancel")
+        {
+            sharedScoreViewModel.submitCurrentPointsToTotal()
+            onSaveGameButtonPressed() // Save the game automatically when submitting
+        }
     }
 
     private fun onResetGameButtonPressed() {
-        //TODO display a warning here and ask user to confirm (or do this in SharedScoreViewModel)
-        sharedScoreViewModel.resetGame()
+        val message = """
+            Are you sure you want to restart the game?<br><br>
+            <i>All player scores and round history will be cleared.</i>
+            """.trimIndent()
+        DialogUtils.showConfirmationDialog(this,
+            "Restart Game",
+            message,
+            "Yes",
+            "No")
+        {
+            sharedScoreViewModel.resetGame()
+            onSaveGameButtonPressed() // Save the game automatically when submitting
+        }
     }
 
     private fun onSaveGameButtonPressed() {
-        //TODO display a warning here and ask user to confirm
         val sharedPreferences = getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
         // Convert map to JSON string
@@ -164,25 +190,37 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun onLoadGameButtonPressed() {
-        //TODO display a warning here and ask user to confirm
-        val sharedPreferences = getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
-        val rsJsonString = sharedPreferences.getString("roundScores", null)
-        // Convert JSON string to map
-        val gson = Gson()
-        val type = object : TypeToken<MutableMap<Int, Pair<Int, Int>>>() {}.type
+        val message = """
+            Are you sure you want to load the last saved game?<br><br>
+            <i>All player scores and round history will be cleared and replaced 
+            with the last saved game data.</i>
+            """.trimIndent()
+        DialogUtils.showConfirmationDialog(this,
+            "Load Game",
+            message,
+            "Yes",
+            "No")
+        {
+            val sharedPreferences = getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
+            val rsJsonString = sharedPreferences.getString("roundScores", null)
+            // Convert JSON string to map
+            val gson = Gson()
+            val type = object : TypeToken<MutableMap<Int, Pair<Int, Int>>>() {}.type
 
-        val scores: MutableMap<Int, Pair<Int, Int>> = gson.fromJson(rsJsonString, type)
-            ?: mutableMapOf()
-        val player1TotalScore = sharedPreferences.getInt("player1TotalScore", 0)
-        val player2TotalScore = sharedPreferences.getInt("player2TotalScore", 0)
-        val roundCount = sharedPreferences.getInt("roundCount", 1)
+            val scores: MutableMap<Int, Pair<Int, Int>> = gson.fromJson(rsJsonString, type)
+                ?: mutableMapOf()
+            val player1TotalScore = sharedPreferences.getInt("player1TotalScore", 0)
+            val player2TotalScore = sharedPreferences.getInt("player2TotalScore", 0)
+            val roundCount = sharedPreferences.getInt("roundCount", 1)
 
-        // Load the saved values back into the game
-        sharedScoreViewModel.loadGame(scores, player1TotalScore, player2TotalScore, roundCount)
-        showGameLoadedNotification()
+            // Load the saved values back into the game
+            sharedScoreViewModel.loadGame(scores, player1TotalScore, player2TotalScore, roundCount)
+            showGameLoadedNotification()
+        }
     }
 
     private val roundCounterObserver = Observer<Int> { round ->
         updateActionBarTitle(round)
     }
+
 }
