@@ -172,7 +172,6 @@ class PlayerBoardFragment : Fragment() {
                 button?.setOnClickListener {
                     viewModel.toggleButtonStateCommand(row, col)
                 }
-                //TODO perhaps set the button stroke color to the player 1 and player 2 colours here
             }
         }
 
