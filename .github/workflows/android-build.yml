@@ -59,6 +59,7 @@ jobs:
         release_name: Release ${{ github.ref }}
         body: |
           Release of version ${{ github.ref }}
+        token: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Upload APK to Release
       uses: actions/upload-release-asset@v1
