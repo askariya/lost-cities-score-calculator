@@ -2,9 +2,7 @@ name: Android CI
 
 on:
   push:
-    branches: [ "release-setup" ]
-  pull_request:
-    branches: [ "release-setup" ]
+    branches: [ "master" ]
 
 permissions: write-all
 
