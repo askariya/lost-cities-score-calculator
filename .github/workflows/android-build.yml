@@ -55,20 +55,15 @@ jobs:
 
     - name: Create Git Tag
       run: |
-        git tag -a 0.0.1 -m "Release version 0.0.1"
-        git push origin 0.0.1
+        git tag -a 0.0.2 -m "Release version 0.0.2"
+        git push origin 0.0.2
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-    - name: Download APK artifact
-      uses: actions/download-artifact@v3
-      with:
-        name: lost-cities-calculator
 
     - name: Create Release and Upload APK
       uses: softprops/action-gh-release@v2
       with:
-        tag_name: 0.0.1
-        files: ./lost-cities-calculator/lost-cities-calculator.apk
+        tag_name: 0.0.2
+        files: ./app/build/outputs/apk/release/lost-cities-calculator.apk
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
