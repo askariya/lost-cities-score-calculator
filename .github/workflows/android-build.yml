@@ -2,7 +2,7 @@ name: Android CI
 
 on:
   push:
-    branches: [ "master" ]
+    branches: [ "release-notes" ]
 
 permissions: write-all
 
@@ -45,7 +45,7 @@ jobs:
       with:
         name: lost-cities-calculator
         path: app/build/outputs/apk/release/lost-cities-calculator.apk
-    
+
     - name: Configure Git
       run: |
         git config --global user.email "github-actions@github.com"
@@ -61,14 +61,11 @@ jobs:
     - name: Increment Version
       id: increment_version
       run: |
-        # Extract the major and minor versions from environment variables
         MAJOR=${{ vars.MAJOR_VERSION }}
         MINOR=${{ vars.MINOR_VERSION }}
-
-        # Extract the current patch version from the latest tag
         TAG=${{ env.LATEST_TAG }}
         if [ -z "$TAG" ]; then
-          TAG="v0.0.0"  # Default to initial version if no tags exist
+          TAG="v0.0.0"
         fi
         TAG=${TAG#v}
         CURRENT_MAJOR=${TAG%%.*}
@@ -94,10 +91,21 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+    - name: Generate Release Notes
+      id: generate_notes
+      run: |
+        LAST_TAG=${{ env.LATEST_TAG }}
+        NEW_TAG=${{ env.NEW_VERSION }}
+        RELEASE_NOTES=$(gh pr list --search "is:merged base:master merged:>${LAST_TAG}" --json number,title,body --jq '.[] | "PR #\(.number): \(.title)\n\n\(.body)\n\n---\n\n"' | sed ':a;N;$!ba;s/\n/\\n/g')
+        echo "RELEASE_NOTES=$RELEASE_NOTES" >> $GITHUB_ENV
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
     - name: Create Release and Upload APK
       uses: softprops/action-gh-release@v2
       with:
         tag_name: ${{ env.NEW_VERSION }}
         files: ./app/build/outputs/apk/release/lost-cities-calculator.apk
+        body: ${{ env.RELEASE_NOTES }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
