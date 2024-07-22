@@ -27,15 +27,7 @@ jobs:
       run: |
         echo "${{ secrets.KEYSTORE_FILE }}" | base64 -d > ${{ github.workspace }}/my-release-key.jks
       env:
-        KEYSTORE_FILE: ${{ github.workspace }}/my-release-key.jks
-
-    # - name: Build with Gradle
-    #   run: ./gradlew build
-    #   env:
-    #     KEYSTORE_FILE: ${{ github.workspace }}/my-release-key.jks
-    #     KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-    #     KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-    #     KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        KEYSTORE_FILE: ${{ secrets.KEYSTORE_FILE }}
 
     - name: Build APK
       run: ./gradlew assembleRelease
@@ -54,20 +46,21 @@ jobs:
         name: lost-cities-calculator
         path: app/build/outputs/apk/release/lost-cities-calculator.apk
 
+    - name: Create Git Tag
+      run: |
+        git tag -a 0.0.0 -m "Release version 0.0.0"
+        git push origin 0.0.0
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  release:
-      runs-on: ubuntu-latest
-      needs: build
+    - name: Download APK artifact
+      uses: actions/download-artifact@v3
+      with:
+        name: lost-cities-calculator
 
-      steps:
-      - name: Download APK artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: lost-cities-calculator
-
-      - name: Create Release and Upload APK
-        uses: softprops/action-gh-release@v2
-        with:
-          files: ./lost-cities-calculator/lost-cities-calculator.apk
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Create Release and Upload APK
+      uses: softprops/action-gh-release@v2
+      with:
+        files: ./lost-cities-calculator/lost-cities-calculator.apk
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
