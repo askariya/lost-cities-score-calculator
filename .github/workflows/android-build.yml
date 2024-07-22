@@ -45,6 +45,11 @@ jobs:
       with:
         name: lost-cities-calculator
         path: app/build/outputs/apk/release/lost-cities-calculator.apk
+    
+    - name: Configure Git
+      run: |
+        git config --global user.email "github-actions@github.com"
+        git config --global user.name "GitHub Actions"
 
     - name: Create Git Tag
       run: |
