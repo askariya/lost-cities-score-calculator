@@ -47,6 +47,30 @@ class PlayerBoardViewModel(private val playerId: Int) : ViewModel() {
         _eightCardBonusStates.value = (_buttonColStartIndex until _buttonColCount).associateWith { false }
     }
 
+    val hasBoardBeenModified: Boolean
+        get() {
+            val states = _buttonStates.value ?: return false
+            val wagerCounts = _wagerCounts.value ?: return false
+
+            // Iterate through the map values
+            for (wagerCount in wagerCounts.values) {
+                if (wagerCount != 0) {
+                    return true
+                }
+            }
+
+            // Iterate through the outer map
+            for (innerMap in states.values) {
+                // Iterate through the inner map
+                for (buttonState in innerMap.values) {
+                    if (buttonState) {
+                        return true
+                    }
+                }
+            }
+            return false
+        }
+
     fun toggleButtonStateCommand(row: Int, column: Int) {
         val currentState = _buttonStates.value?.get(column)?.get(row) ?: false
         setButtonState(row, column, !currentState)
