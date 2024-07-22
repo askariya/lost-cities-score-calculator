@@ -54,11 +54,12 @@ jobs:
     - name: Install GitHub CLI
       run: sudo apt-get install gh
       
-    - name: Create Release with GitHub CLI
-      run: |
-        gh release create v1.0.0 ./app/build/outputs/apk/release/app-release.apk --title "Release v1.0.0" --notes "Release of version v1.0.0"
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Create Release and Upload APK
+      uses: softprops/action-gh-release@v2
+      with:
+        files: ./app/build/outputs/apk/release/my-custom-apk-name.apk
+      # env:
+      #   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
 
     # - name: Upload APK to Release
