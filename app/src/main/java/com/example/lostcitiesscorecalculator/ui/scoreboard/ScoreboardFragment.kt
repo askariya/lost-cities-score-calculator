@@ -15,6 +15,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.lostcitiesscorecalculator.LostCitiesScoreCalculatorApplication
 import com.example.lostcitiesscorecalculator.R
 import com.example.lostcitiesscorecalculator.databinding.FragmentScoreboardBinding
+import com.example.lostcitiesscorecalculator.ui.utils.GameStateManager
 
 class ScoreboardFragment : Fragment() {
 
@@ -40,14 +41,13 @@ class ScoreboardFragment : Fragment() {
         // set the submitButton functionality
         val submitScoreButton : Button = binding.submitScoreButton
         submitScoreButton.setOnClickListener{
-            //TODO display a warning here and ask user to confirm (or do this in SharedScoreViewModel)
-            sharedScoreViewModel.submitCurrentPointsToTotal()
+            GameStateManager.submitScore(requireContext())
         }
 
         // set the resetButton functionality
         val endGameButton : Button = binding.endGameButton
         endGameButton.setOnClickListener{
-            sharedScoreViewModel.resetGame()
+            GameStateManager.restartGame(requireContext())
         }
 
         sharedScoreViewModel = (requireActivity().application as LostCitiesScoreCalculatorApplication).sharedScoreViewModel

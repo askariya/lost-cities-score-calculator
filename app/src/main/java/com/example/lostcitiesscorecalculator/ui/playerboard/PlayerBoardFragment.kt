@@ -19,6 +19,7 @@ import com.example.lostcitiesscorecalculator.LostCitiesScoreCalculatorApplicatio
 import com.example.lostcitiesscorecalculator.R
 import com.example.lostcitiesscorecalculator.databinding.FragmentPlayerboardBinding
 import com.example.lostcitiesscorecalculator.ui.scoreboard.SharedScoreViewModel
+import com.example.lostcitiesscorecalculator.ui.utils.DialogUtils
 import com.google.android.material.card.MaterialCardView
 
 class PlayerBoardFragment : Fragment() {
@@ -178,7 +179,7 @@ class PlayerBoardFragment : Fragment() {
         // set the resetButton functionality
         val resetButton : Button = binding.resetButton
         resetButton.setOnClickListener{
-            viewModel.resetBoardCommand()
+            onResetButtonPressed()
         }
 
         val boardFooter = binding.boardFooter
@@ -194,6 +195,28 @@ class PlayerBoardFragment : Fragment() {
             eightCardBonusView?.visibility = View.VISIBLE
         else
             eightCardBonusView?.visibility = View.INVISIBLE
+    }
+
+    private fun onResetButtonPressed() {
+        // Only prompt if the board has been modified.
+        if (viewModel.hasBoardBeenModified) {
+            val message = """
+            Are you sure you want to reset Player $playerId's board?<br><br>
+            <i>All selected buttons will be unselected and Player $playerId's 
+            current score will be reset.</i>
+            """.trimIndent()
+            DialogUtils.showConfirmationDialog(requireContext(),
+                "Reset Board",
+                message,
+                "Yes",
+                "No")
+            {
+                sharedScoreViewModel.resetGame()
+            }
+        }
+        else {
+            sharedScoreViewModel.resetGame()
+        }
     }
 
     private fun observeViewModel() {
