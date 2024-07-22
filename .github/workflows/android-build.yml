@@ -47,23 +47,43 @@ jobs:
       with:
         name: lost-cities-calculator
         path: app/build/outputs/apk/release/lost-cities-calculator.apk
-    
+
     - name: Configure Git
       run: |
         git config --global user.email "github-actions@github.com"
         git config --global user.name "GitHub Actions"
 
-    - name: Create Git Tag
+    - name: Fetch Latest Tag
+      id: fetch_tag
       run: |
-        git tag -a 0.0.2 -m "Release version 0.0.2"
-        git push origin 0.0.2
+        git fetch --tags
+        LATEST_TAG=$(git tag --sort=-creatordate | head -n 1)
+        echo "LATEST_TAG=$LATEST_TAG" >> $GITHUB_ENV
+
+    - name: Increment Version
+      id: increment_version
+      run: |
+        # Extract the current patch version from the latest tag
+        TAG=${{ env.LATEST_TAG }}
+        TAG=${TAG#v}
+        PATCH=${TAG##*.}
+        PATCH=$((PATCH + 1))
+
+        # Construct the new version
+        NEW_VERSION="v${{ env.MAJOR_VERSION }}.${{ env.MINOR_VERSION }}.$PATCH"
+        echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
+
+    - name: Create and Push New Tag
+      run: |
+        git tag -a ${{ env.NEW_VERSION }} -m "Release version ${{ env.NEW_VERSION }}"
+        git push origin ${{ env.NEW_VERSION }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Create Release and Upload APK
       uses: softprops/action-gh-release@v2
       with:
-        tag_name: 0.0.2
+        tag_name: ${{ env.NEW_VERSION }}
         files: ./app/build/outputs/apk/release/lost-cities-calculator.apk
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
