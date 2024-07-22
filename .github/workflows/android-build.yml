@@ -47,7 +47,7 @@ jobs:
       with:
         name: lost-cities-calculator
         path: app/build/outputs/apk/release/lost-cities-calculator.apk
-
+    
     - name: Configure Git
       run: |
         git config --global user.email "github-actions@github.com"
@@ -63,14 +63,30 @@ jobs:
     - name: Increment Version
       id: increment_version
       run: |
+        # Extract the major and minor versions from environment variables
+        MAJOR=${{ vars.MAJOR_VERSION }}
+        MINOR=${{ vars.MINOR_VERSION }}
+
         # Extract the current patch version from the latest tag
         TAG=${{ env.LATEST_TAG }}
+        if [ -z "$TAG" ]; then
+          TAG="v0.0.0"  # Default to initial version if no tags exist
+        fi
         TAG=${TAG#v}
+        CURRENT_MAJOR=${TAG%%.*}
+        CURRENT_MINOR=${TAG#*.}
+        CURRENT_MINOR=${CURRENT_MINOR%%.*}
         PATCH=${TAG##*.}
-        PATCH=$((PATCH + 1))
+
+        # Reset patch version if major or minor versions change
+        if [ "$MAJOR" -ne "$CURRENT_MAJOR" ] || [ "$MINOR" -ne "$CURRENT_MINOR" ]; then
+          PATCH=0
+        else
+          PATCH=$((PATCH + 1))
+        fi
 
         # Construct the new version
-        NEW_VERSION="v${{ vars.MAJOR_VERSION }}.${{ vars.MINOR_VERSION }}.$PATCH"
+        NEW_VERSION="v$MAJOR.$MINOR.$PATCH"
         echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
 
     - name: Create and Push New Tag
