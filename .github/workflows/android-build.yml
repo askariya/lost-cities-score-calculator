@@ -96,15 +96,12 @@ jobs:
       run: |
         LAST_TAG=${{ env.LATEST_TAG }}
         NEW_TAG=${{ env.NEW_VERSION }}
-        RELEASE_NOTES=$(gh pr list --search "is:merged base:master merged:>${LAST_TAG}" --json title,body,closingIssues,number --jq '
-          .[] | 
-          "## \(.title)\n\n\(.body)\n\nClosed Issues:\n\((.closingIssues.nodes[] | "- #\(.number)") // "None")\n\n---\n\n"'
-        )
+        RELEASE_NOTES=$(gh pr list --search "is:merged base:master merged:>${LAST_TAG}" --json title,body,closingIssues,number --jq '.[] | 
+        "## \(.title)\n\n\(.body)\n\nClosed Issues:\n\((.closingIssues.nodes[] | "- #\(.number)") // "None")\n\n---\n\n"' | sed ':a;N;$!ba;s/\n/\\n/g')
         echo -e "Release Notes:\n${RELEASE_NOTES}"
         echo "RELEASE_NOTES=$RELEASE_NOTES" >> $GITHUB_ENV
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      
 
     - name: Create Release and Upload APK
       uses: softprops/action-gh-release@v2
