@@ -29,13 +29,13 @@ jobs:
       env:
         KEYSTORE_FILE: ${{ github.workspace }}/my-release-key.jks
 
-    - name: Build with Gradle
-      run: ./gradlew build
-      env:
-        KEYSTORE_FILE: ${{ github.workspace }}/my-release-key.jks
-        KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-        KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-        KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+    # - name: Build with Gradle
+    #   run: ./gradlew build
+    #   env:
+    #     KEYSTORE_FILE: ${{ github.workspace }}/my-release-key.jks
+    #     KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+    #     KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+    #     KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
 
     - name: Build APK
       run: ./gradlew assembleRelease
@@ -56,7 +56,7 @@ jobs:
       
     - name: Create Release with GitHub CLI
       run: |
-        gh release create ${{ github.ref }} ./app/build/outputs/apk/release/app-release.apk --title "Release ${{ github.ref }}" --notes "Release of version ${{ github.ref }}"
+        gh release create v1.0.0 ./app/build/outputs/apk/release/app-release.apk --title "Release v1.0.0" --notes "Release of version v1.0.0"
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
