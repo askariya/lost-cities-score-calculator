@@ -70,7 +70,7 @@ jobs:
         PATCH=$((PATCH + 1))
 
         # Construct the new version
-        NEW_VERSION="v${{ env.MAJOR_VERSION }}.${{ env.MINOR_VERSION }}.$PATCH"
+        NEW_VERSION="v${{ vars.MAJOR_VERSION }}.${{ vars.MINOR_VERSION }}.$PATCH"
         echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
 
     - name: Create and Push New Tag
