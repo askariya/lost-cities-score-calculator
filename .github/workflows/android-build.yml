@@ -96,7 +96,8 @@ jobs:
       run: |
         LAST_TAG=${{ env.LATEST_TAG }}
         NEW_TAG=${{ env.NEW_VERSION }}
-        RELEASE_NOTES=$(gh pr list --search "is:merged base:master merged:>${LAST_TAG}" --json title,body --jq '.[] | "## \(.title)\n\n- \(.body | gsub("\n"; "\n- "))\n\n---\n\n"' | sed ':a;N;$!ba;s/\n/\\n/g')
+        RELEASE_NOTES=$(gh pr list --search "is:merged base:master merged:>${LAST_TAG}" --json title,body,closingIssues,number --jq '.[] | 
+        "## \(.title)\n\n\(.body)\n\nClosed Issues:\n\((.closingIssues.nodes[] | "- #\(.number)") // "None")\n\n---\n\n"' | sed ':a;N;$!ba;s/\n/\\n/g')
         echo "RELEASE_NOTES=$RELEASE_NOTES" >> $GITHUB_ENV
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
