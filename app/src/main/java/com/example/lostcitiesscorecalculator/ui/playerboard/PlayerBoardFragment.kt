@@ -15,10 +15,11 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.get
+import com.example.lostcitiesscorecalculator.LostCitiesScoreCalculatorApplication
 import com.example.lostcitiesscorecalculator.R
 import com.example.lostcitiesscorecalculator.databinding.FragmentPlayerboardBinding
 import com.example.lostcitiesscorecalculator.ui.scoreboard.SharedScoreViewModel
+import com.example.lostcitiesscorecalculator.ui.utils.DialogUtils
 import com.google.android.material.card.MaterialCardView
 
 class PlayerBoardFragment : Fragment() {
@@ -53,16 +54,14 @@ class PlayerBoardFragment : Fragment() {
         val factory = PlayerBoardViewModelFactory(playerId)
         viewModel = ViewModelProvider(this, factory).get(PlayerBoardViewModel::class.java)
 
-        sharedScoreViewModel = ViewModelProvider(requireActivity()).get()
+        sharedScoreViewModel = (requireActivity().application as LostCitiesScoreCalculatorApplication).sharedScoreViewModel
 
         sharedScoreViewModel.roundCounter.observe(viewLifecycleOwner, roundCounterObserver)
 
-        if (playerId == 1) {
+        if (playerId == 1)
             sharedScoreViewModel.player1TotalPoints.observe(viewLifecycleOwner, totalScoreObserver)
-        }
-        else {
+        else
             sharedScoreViewModel.player2TotalPoints.observe(viewLifecycleOwner, totalScoreObserver)
-        }
 
         setupGridLayout()
         observeViewModel()
@@ -180,7 +179,7 @@ class PlayerBoardFragment : Fragment() {
         // set the resetButton functionality
         val resetButton : Button = binding.resetButton
         resetButton.setOnClickListener{
-            viewModel.resetBoardCommand()
+            onResetButtonPressed()
         }
 
         val boardFooter = binding.boardFooter
@@ -196,6 +195,28 @@ class PlayerBoardFragment : Fragment() {
             eightCardBonusView?.visibility = View.VISIBLE
         else
             eightCardBonusView?.visibility = View.INVISIBLE
+    }
+
+    private fun onResetButtonPressed() {
+        // Only prompt if the board has been modified.
+        if (viewModel.hasBoardBeenModified) {
+            val message = """
+            Are you sure you want to reset Player $playerId's board?<br><br>
+            <i>All selected buttons will be unselected and Player $playerId's 
+            current score will be reset.</i>
+            """.trimIndent()
+            DialogUtils.showConfirmationDialog(requireContext(),
+                "Reset Board",
+                message,
+                "Yes",
+                "No")
+            {
+                sharedScoreViewModel.resetGame()
+            }
+        }
+        else {
+            sharedScoreViewModel.resetGame()
+        }
     }
 
     private fun observeViewModel() {

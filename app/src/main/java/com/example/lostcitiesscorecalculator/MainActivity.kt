@@ -1,25 +1,21 @@
 package com.example.lostcitiesscorecalculator
 
-import android.content.Context
 import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2
 import com.example.lostcitiesscorecalculator.databinding.ActivityMainBinding
 import com.example.lostcitiesscorecalculator.ui.playerboard.PlayerBoardPagerAdapter
 import com.example.lostcitiesscorecalculator.ui.scoreboard.SharedScoreViewModel
+import com.example.lostcitiesscorecalculator.ui.utils.GameStateManager
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 
 class MainActivity : AppCompatActivity() {
 
@@ -38,7 +34,7 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(findViewById(R.id.header_toolbar))
 
         // Initialize the SharedScoreViewModel
-        sharedScoreViewModel = ViewModelProvider(this).get(SharedScoreViewModel::class.java)
+        sharedScoreViewModel = (application as LostCitiesScoreCalculatorApplication).sharedScoreViewModel
 
         sharedScoreViewModel.roundCounter.observe(this, roundCounterObserver)
 
@@ -112,14 +108,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun showGameSavedNotification(){
-        Toast.makeText(this, "Game Saved", Toast.LENGTH_SHORT).show()
-    }
-
-    private fun showGameLoadedNotification(){
-        Toast.makeText(this, "Loaded Save", Toast.LENGTH_SHORT).show()
-    }
-
     private fun setHeaderToolbar(position: Int)
     {
         when (position) {
@@ -134,55 +122,23 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun onSubmitButtonPressed() {
-        //TODO display a warning here and ask user to confirm (or do this in SharedScoreViewModel)
-        sharedScoreViewModel.submitCurrentPointsToTotal()
-        onSaveGameButtonPressed() // Save the game automatically when submitting
+        GameStateManager.submitScore(this)
     }
 
     private fun onResetGameButtonPressed() {
-        //TODO display a warning here and ask user to confirm (or do this in SharedScoreViewModel)
-        sharedScoreViewModel.resetGame()
+        GameStateManager.restartGame(this)
     }
 
     private fun onSaveGameButtonPressed() {
-        //TODO display a warning here and ask user to confirm
-        val sharedPreferences = getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
-        val editor = sharedPreferences.edit()
-        // Convert map to JSON string
-        val gson = Gson()
-        val jsonString = gson.toJson(sharedScoreViewModel.roundScores.value)
-
-        // Save JSON string to SharedPreferences
-        editor.putString("roundScores", jsonString)
-        // Save the total points and the round count as well
-        editor.putInt("player1TotalScore", sharedScoreViewModel.player1TotalPoints.value ?: 0)
-        editor.putInt("player2TotalScore", sharedScoreViewModel.player2TotalPoints.value ?: 0)
-        editor.putInt("roundCount", sharedScoreViewModel.roundCounter.value ?: 0)
-        editor.apply()
-
-        showGameSavedNotification()
+        GameStateManager.saveGame(this)
     }
 
     private fun onLoadGameButtonPressed() {
-        //TODO display a warning here and ask user to confirm
-        val sharedPreferences = getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
-        val rsJsonString = sharedPreferences.getString("roundScores", null)
-        // Convert JSON string to map
-        val gson = Gson()
-        val type = object : TypeToken<MutableMap<Int, Pair<Int, Int>>>() {}.type
-
-        val scores: MutableMap<Int, Pair<Int, Int>> = gson.fromJson(rsJsonString, type)
-            ?: mutableMapOf()
-        val player1TotalScore = sharedPreferences.getInt("player1TotalScore", 0)
-        val player2TotalScore = sharedPreferences.getInt("player2TotalScore", 0)
-        val roundCount = sharedPreferences.getInt("roundCount", 1)
-
-        // Load the saved values back into the game
-        sharedScoreViewModel.loadGame(scores, player1TotalScore, player2TotalScore, roundCount)
-        showGameLoadedNotification()
+        GameStateManager.loadGame(this)
     }
 
     private val roundCounterObserver = Observer<Int> { round ->
         updateActionBarTitle(round)
     }
+
 }
