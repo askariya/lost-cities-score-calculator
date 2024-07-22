@@ -12,7 +12,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.get
+import com.example.lostcitiesscorecalculator.LostCitiesScoreCalculatorApplication
 import com.example.lostcitiesscorecalculator.R
 import com.example.lostcitiesscorecalculator.databinding.FragmentScoreboardBinding
 
@@ -50,7 +50,7 @@ class ScoreboardFragment : Fragment() {
             sharedScoreViewModel.resetGame()
         }
 
-        sharedScoreViewModel = ViewModelProvider(requireActivity()).get()
+        sharedScoreViewModel = (requireActivity().application as LostCitiesScoreCalculatorApplication).sharedScoreViewModel
 
         sharedScoreViewModel.player1CurrentPoints.observe(viewLifecycleOwner, player1CurrentScoreObserver)
         sharedScoreViewModel.player2CurrentPoints.observe(viewLifecycleOwner, player2CurrentScoreObserver)
