@@ -41,13 +41,13 @@ class ScoreboardFragment : Fragment() {
         // set the submitButton functionality
         val submitScoreButton : Button = binding.submitScoreButton
         submitScoreButton.setOnClickListener{
-            GameStateManager.submitScore(requireContext())
+            onSubmitButtonPressed()
         }
 
         // set the resetButton functionality
         val endGameButton : Button = binding.endGameButton
         endGameButton.setOnClickListener{
-            GameStateManager.restartGame(requireContext())
+            onEndGameButtonPressed()
         }
 
         sharedScoreViewModel = (requireActivity().application as LostCitiesScoreCalculatorApplication).sharedScoreViewModel
@@ -64,6 +64,13 @@ class ScoreboardFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    private fun onSubmitButtonPressed() {
+        GameStateManager.submitScore(requireContext())
+    }
+    private fun onEndGameButtonPressed() {
+        GameStateManager.restartGame(requireContext())
     }
 
     private fun addNewRound(roundCount: Int, player1RoundScore: Int, player2RoundScore: Int) {
