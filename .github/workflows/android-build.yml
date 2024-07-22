@@ -56,7 +56,7 @@ jobs:
         git tag -a 0.0.0 -m "Release version 0.0.0"
         git push origin 0.0.0
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.CUSTOM_TOKEN }}
 
     - name: Download APK artifact
       uses: actions/download-artifact@v3
@@ -67,5 +67,6 @@ jobs:
       uses: softprops/action-gh-release@v2
       with:
         files: ./lost-cities-calculator/lost-cities-calculator.apk
+        token: 
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.CUSTOM_TOKEN }}
