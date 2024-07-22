@@ -2,8 +2,9 @@ name: Android CI
 
 on:
   push:
-    branches:
-      - release-setup
+    branches: [ "release-setup" ]
+  pull_request:
+    branches: [ "release-setup" ]
 
 jobs:
   build:
@@ -24,14 +25,14 @@ jobs:
 
     - name: Set up signing keys
       run: |
-        echo "${{ secrets.KEYSTORE_FILE }}" | base64 -d > my-release-key.jks
+        echo "${{ secrets.KEYSTORE_FILE }}" | base64 -d > ${{ github.workspace }}/my-release-key.jks
       env:
-        KEYSTORE_FILE: my-release-key.jks
+        KEYSTORE_FILE: ${{ github.workspace }}/my-release-key.jks
 
     - name: Build with Gradle
       run: ./gradlew build
       env:
-        KEYSTORE_FILE: my-release-key.jks
+        KEYSTORE_FILE: ${{ github.workspace }}/my-release-key.jks
         KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
         KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
         KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
@@ -39,7 +40,7 @@ jobs:
     - name: Build APK
       run: ./gradlew assembleRelease
       env:
-        KEYSTORE_FILE: my-release-key.jks
+        KEYSTORE_FILE: ${{ github.workspace }}/my-release-key.jks
         KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
         KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
         KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
