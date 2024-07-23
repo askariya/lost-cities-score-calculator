@@ -130,11 +130,11 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Create Release and Upload APK
-      uses: softprops/action-gh-release@v2
-      with:
-        tag_name: ${{ env.NEW_VERSION }}
-        files: ./app/build/outputs/apk/release/lost-cities-calculator.apk
-        body: ${{ env.RELEASE_NOTES }}
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Create Release
+      run: |
+        curl -X POST \
+          -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+          -H "Content-Type: application/json" \
+          -d '{"tag_name": "${{ env.NEW_VERSION }}", "name": "${{ env.NEW_VERSION }}", "body": "${{ env.RELEASE_NOTES }}", "draft": false, "prerelease": false}' \
+          "https://api.github.com/repos/${{ github.repository }}/releases"
+    
