@@ -130,12 +130,17 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+    - name: Prepare Release Notes
+      id: prepare_notes
+      run: |
+        echo "${{ env.RELEASE_NOTES }}" | jq -R . > notes.json
+        cat notes.json
+
     - name: Create Release with Notes Only
       run: |
-        RELEASE_NOTES=$(printf "%s" "${{ env.RELEASE_NOTES }}")
         gh release create "${{ env.NEW_VERSION }}" \
           --title "${{ env.NEW_VERSION }}" \
-          --notes "$RELEASE_NOTES"
+          --notes "$(cat notes.json)"
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
