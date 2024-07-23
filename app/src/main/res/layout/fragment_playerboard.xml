@@ -480,7 +480,7 @@
             android:verticalSpacing="0dp"
             android:horizontalSpacing="0dp"
             android:paddingHorizontal="10dp"
-            android:background="@color/tab_background_selected">
+            android:background="@color/color_primary">
             <LinearLayout
                 android:layout_row="0"
                 android:layout_column="0"

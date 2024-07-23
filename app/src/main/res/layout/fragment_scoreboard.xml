@@ -186,6 +186,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/white"
                 android:text="@string/label_submit"
+                style="@style/StandardButtonStyle"
                 android:layout_gravity="end"/>
         </GridLayout>
     </LinearLayout>

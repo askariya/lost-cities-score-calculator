@@ -1,6 +1,7 @@
 package com.example.lostcitiesscorecalculator
 
 import android.content.res.ColorStateList
+import android.graphics.Color
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -14,6 +15,7 @@ import com.example.lostcitiesscorecalculator.databinding.ActivityMainBinding
 import com.example.lostcitiesscorecalculator.ui.playerboard.PlayerBoardPagerAdapter
 import com.example.lostcitiesscorecalculator.ui.scoreboard.SharedScoreViewModel
 import com.example.lostcitiesscorecalculator.ui.utils.GameStateManager
+import com.google.android.material.color.MaterialColors
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 
@@ -22,6 +24,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var viewPager: ViewPager2
     private lateinit var tabLayout: TabLayout
+    private var colorPrimary: Int = 0
 
     private lateinit var sharedScoreViewModel: SharedScoreViewModel
 
@@ -30,8 +33,9 @@ class MainActivity : AppCompatActivity() {
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
         setSupportActionBar(findViewById(R.id.header_toolbar))
+
+        colorPrimary = MaterialColors.getColor(this, androidx.appcompat.R.attr.colorPrimary, Color.BLACK)
 
         // Initialize the SharedScoreViewModel
         sharedScoreViewModel = (application as LostCitiesScoreCalculatorApplication).sharedScoreViewModel
@@ -113,7 +117,7 @@ class MainActivity : AppCompatActivity() {
         when (position) {
             0 -> binding.headerToolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.player1_colour))
             1 -> binding.headerToolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.player2_colour))
-            else -> binding.headerToolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.color_primary))
+            else -> binding.headerToolbar.setBackgroundColor(this.colorPrimary)
         }
     }
 
