@@ -130,17 +130,25 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Save Release Notes to File
-      run: |
-        echo "${{ env.RELEASE_NOTES }}" > release_notes.txt
-
-    - name: Create Release with Notes from File
-      run: |
-        gh release create "${{ env.NEW_VERSION }}" \
-          --title "${{ env.NEW_VERSION }}" \
-          --notes "$(cat release_notes.txt)"
+    - name: Create Release with Notes Only
+      uses: actions/github-script@v6
+      with:
+        script: |
+          const releaseNotes = process.env.RELEASE_NOTES;
+          const { data: release } = await github.rest.repos.createRelease({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            tag_name: process.env.NEW_VERSION,
+            name: process.env.NEW_VERSION,
+            body: releaseNotes,
+            draft: false,
+            prerelease: false
+          });
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        NEW_VERSION: ${{ env.NEW_VERSION }}
+        RELEASE_NOTES: ${{ env.RELEASE_NOTES }}
+
 
 
 
