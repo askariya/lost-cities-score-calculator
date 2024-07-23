@@ -130,24 +130,14 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Create Release with Notes Only
-      uses: actions/github-script@v6
+    - name: Create Release and Upload APK
+      uses: softprops/action-gh-release@v2
       with:
-        script: |
-          const releaseNotes = process.env.RELEASE_NOTES;
-          const { data: release } = await github.rest.repos.createRelease({
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            tag_name: process.env.NEW_VERSION,
-            name: process.env.NEW_VERSION,
-            body: releaseNotes,
-            draft: false,
-            prerelease: false
-          });
+        tag_name: ${{ env.NEW_VERSION }}
+        files: ./app/build/outputs/apk/release/lost-cities-calculator.apk
+        generate_release_notes: true
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        NEW_VERSION: ${{ env.NEW_VERSION }}
-        RELEASE_NOTES: ${{ env.RELEASE_NOTES }}
 
 
 
