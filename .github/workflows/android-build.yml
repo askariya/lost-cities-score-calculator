@@ -130,12 +130,17 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+    - name: Write Release Notes to File
+      run: |
+        echo "${{ env.RELEASE_NOTES }}" > release_notes.txt
+        cat release_notes.txt
+
     - name: Create Release and Upload APK
       uses: softprops/action-gh-release@v2
       with:
         tag_name: ${{ env.NEW_VERSION }}
         files: ./app/build/outputs/apk/release/lost-cities-calculator.apk
-        generate_release_notes: true
+        body_path: release_notes.txt
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
