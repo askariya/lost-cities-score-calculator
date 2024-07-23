@@ -57,10 +57,6 @@ jobs:
         git fetch --tags
         LATEST_TAG=$(git tag --sort=-creatordate | head -n 1)
         echo "LATEST_TAG=$LATEST_TAG" >> $GITHUB_ENV
-        
-        # Fetch the date of the latest tag
-        TAG_DATE=$(git for-each-ref --sort=-creatordate --format '%(creatordate:iso8601)' refs/tags/$LATEST_TAG)
-        echo "TAG_DATE=$TAG_DATE" >> $GITHUB_ENV
 
     - name: Increment Version
       id: increment_version
@@ -99,8 +95,11 @@ jobs:
       id: generate_notes
       run: |
         LAST_TAG=${{ env.LATEST_TAG }}
-        TAG_DATE=${{ env.TAG_DATE }}
         NEW_TAG=${{ env.NEW_VERSION }}
+        
+        # Fetch the date of the latest tag
+        TAG_DATE=$(git for-each-ref --sort=-creatordate --format '%(creatordate:iso8601)' refs/tags/$LAST_TAG)
+        echo "TAG_DATE=$TAG_DATE" >> $GITHUB_ENV
         
         # Fetch merged PRs since the last tag using GitHub API
         API_URL="https://api.github.com/repos/${{ github.repository }}/pulls?state=closed&base=master&sort=updated&direction=desc"
