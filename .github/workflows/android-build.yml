@@ -97,57 +97,37 @@ jobs:
         LAST_TAG=${{ env.LATEST_TAG }}
         NEW_TAG=${{ env.NEW_VERSION }}
 
-        # Fetch the commit date of the latest tag
-        TAG_COMMIT_DATE=$(git log -1 --format=%cI $LAST_TAG 2>/dev/null || echo "No tag found")
-        if [ "$TAG_COMMIT_DATE" = "No tag found" ]; then
-          echo "Error: Tag $LAST_TAG not found." >&2
-          exit 1
-        fi
-
-        TAG_DATE=$(date -u -d "$TAG_COMMIT_DATE" +%Y-%m-%dT%H:%M:%SZ)
+        # Fetch the commit date of the latest tag in a consistent format
+        TAG_COMMIT_DATE=$(git log -1 --format=%cI $LAST_TAG)
+        TAG_DATE=$(date -u -d "$TAG_COMMIT_DATE" +%Y-%m-%dT%H:%M:%SZ")
         echo "TAG_DATE=$TAG_DATE" >> $GITHUB_ENV
 
         # Fetch merged PRs since the last tag using GitHub API
         API_URL="https://api.github.com/repos/${{ github.repository }}/pulls?state=closed&base=master&sort=updated&direction=desc"
         RESPONSE=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" "$API_URL")
 
-        # Check if the API response is valid
-        if [ -z "$RESPONSE" ]; then
-          echo "Error: No response from GitHub API." >&2
-          exit 1
-        fi
+        # Initialize release notes
+        RELEASE_NOTES=""
 
-        # Function to get closed issues for a PR
-        get_issues() {
-          PR_NUMBER=$1
+        # Process each PR
+        for PR in $(echo "$RESPONSE" | jq -c '.[]'); do
+          PR_TITLE=$(echo "$PR" | jq -r '.title')
+          PR_BODY=$(echo "$PR" | jq -r '.body // "No description"')
+          PR_MERGED_AT=$(echo "$PR" | jq -r '.merged_at')
+
+          # Fetch closed issues for each PR
+          PR_NUMBER=$(echo "$PR" | jq -r '.number')
           ISSUES_API_URL="https://api.github.com/repos/${{ github.repository }}/issues?state=closed&per_page=100"
           ISSUES_RESPONSE=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" "$ISSUES_API_URL")
-          if [ -z "$ISSUES_RESPONSE" ]; then
-            echo "Error: No response from GitHub issues API." >&2
-            exit 1
-          fi
-          echo "$ISSUES_RESPONSE" | jq -r --arg PR_NUMBER "$PR_NUMBER" '
-            .[] | select(.pull_request != null and .pull_request.url | contains("pulls/" + $PR_NUMBER)) |
-            "- #\(.number) \(.title)"' | sed 's/\\n/\n/g'
-        }
 
-        # Generate release notes
-        RELEASE_NOTES=""
-        for pr in $(echo "$RESPONSE" | jq -r --arg TAG_DATE "$TAG_DATE" '.[] | select(.merged_at != null and (.merged_at > $TAG_DATE)) | @base64'); do
-          _jq() {
-            echo ${pr} | base64 --decode | jq -r ${1}
-          }
+          # Extract issues closed by this PR
+          CLOSED_ISSUES=$(echo "$ISSUES_RESPONSE" | jq -r --arg PR_NUMBER "$PR_NUMBER" '
+            .[] | select(.pull_request != null and .pull_request.url | test("pulls/" + $PR_NUMBER)) |
+            "• \(.title)"' | sed 's/"/\\"/g' | sed ':a;N;$!ba;s/\n/\\n/g')
 
-          TITLE=$(_jq '.title')
-          BODY=$(_jq '.body // "No description"')
-          MERGED_AT=$(_jq '.merged_at')
-          PR_NUMBER=$(_jq '.number')
-
-          # Get closed issues associated with this PR
-          ISSUES=$(get_issues $PR_NUMBER)
-
-          # Format the release notes entry
-          RELEASE_NOTES+="**$TITLE**\n\n$(echo "$BODY" | sed 's/^/• /')\n\nClosed Issues:\n${ISSUES:-None}\n\nMerged at: $MERGED_AT\n\n---\n\n"
+          # Append PR details to release notes
+          PR_NOTES=$(echo -e "$PR_TITLE\n$(echo "$PR_BODY" | split("\n") | map("• \(.|gsub("\\\\"; "\\\\"))") | join("\n"))\n\nMerged at: $PR_MERGED_AT\n\nClosed Issues:\n$CLOSED_ISSUES\n\n---\n\n")
+          RELEASE_NOTES+="$PR_NOTES"
         done
 
         # Handle new lines and special characters
