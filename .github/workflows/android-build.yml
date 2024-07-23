@@ -119,6 +119,7 @@ jobs:
         fi
         echo -e "LAST_TAG = ${LAST_TAG}"
         echo -e "NEW_TAG = ${NEW_TAG}"
+        echo -e "RELEASE_NOTES = ${CLEANED_NOTES}"
         echo "RELEASE_NOTES=Release Notes:\n${CLEANED_NOTES}" >> $GITHUB_ENV
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
