@@ -29,22 +29,22 @@ jobs:
       env:
         KEYSTORE_FILE: ${{ secrets.KEYSTORE_FILE }}
 
-    - name: Build APK
-      run: ./gradlew assembleRelease
-      env:
-        KEYSTORE_FILE: ${{ github.workspace }}/my-release-key.jks
-        KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-        KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-        KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+    # - name: Build APK
+    #   run: ./gradlew assembleRelease
+    #   env:
+    #     KEYSTORE_FILE: ${{ github.workspace }}/my-release-key.jks
+    #     KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+    #     KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+    #     KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
 
-    - name: Rename APK file
-      run: mv app/build/outputs/apk/release/app-release.apk app/build/outputs/apk/release/lost-cities-calculator.apk
+    # - name: Rename APK file
+    #   run: mv app/build/outputs/apk/release/app-release.apk app/build/outputs/apk/release/lost-cities-calculator.apk
 
-    - name: Upload APK as artifact
-      uses: actions/upload-artifact@v3
-      with:
-        name: lost-cities-calculator
-        path: app/build/outputs/apk/release/lost-cities-calculator.apk
+    # - name: Upload APK as artifact
+    #   uses: actions/upload-artifact@v3
+    #   with:
+    #     name: lost-cities-calculator
+    #     path: app/build/outputs/apk/release/lost-cities-calculator.apk
 
     - name: Configure Git
       run: |
@@ -84,12 +84,12 @@ jobs:
         NEW_VERSION="v$MAJOR.$MINOR.$PATCH"
         echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
 
-    - name: Create and Push New Tag
-      run: |
-        git tag -a ${{ env.NEW_VERSION }} -m "Release version ${{ env.NEW_VERSION }}"
-        git push origin ${{ env.NEW_VERSION }}
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    # - name: Create and Push New Tag
+    #   run: |
+    #     git tag -a ${{ env.NEW_VERSION }} -m "Release version ${{ env.NEW_VERSION }}"
+    #     git push origin ${{ env.NEW_VERSION }}
+    #   env:
+    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Generate Release Notes
       id: generate_notes
@@ -113,11 +113,11 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 
-    - name: Create Release and Upload APK
-      uses: softprops/action-gh-release@v2
-      with:
-        tag_name: ${{ env.NEW_VERSION }}
-        files: ./app/build/outputs/apk/release/lost-cities-calculator.apk
-        body: ${{ env.RELEASE_NOTES }}
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    # - name: Create Release and Upload APK
+    #   uses: softprops/action-gh-release@v2
+    #   with:
+    #     tag_name: ${{ env.NEW_VERSION }}
+    #     files: ./app/build/outputs/apk/release/lost-cities-calculator.apk
+    #     body: ${{ env.RELEASE_NOTES }}
+    #   env:
+    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
