@@ -99,7 +99,7 @@ jobs:
 
         # Fetch the commit date of the latest tag in a consistent format
         TAG_COMMIT_DATE=$(git log -1 --format=%cI $LAST_TAG)
-        TAG_DATE=$(date -u -d "$TAG_COMMIT_DATE" +%Y-%m-%dT%H:%M:%SZ")
+        TAG_DATE=$(date -u -d "$TAG_COMMIT_DATE" +%Y-%m-%dT%H:%M:%SZ)
         echo "TAG_DATE=$TAG_DATE" >> $GITHUB_ENV
 
         # Fetch merged PRs since the last tag using GitHub API
@@ -126,27 +126,25 @@ jobs:
             "• \(.title)"' | sed 's/"/\\"/g' | sed ':a;N;$!ba;s/\n/\\n/g')
 
           # Append PR details to release notes
-          PR_NOTES=$(echo -e "$PR_TITLE\n$(echo "$PR_BODY" | split("\n") | map("• \(.|gsub("\\\\"; "\\\\"))") | join("\n"))\n\nMerged at: $PR_MERGED_AT\n\nClosed Issues:\n$CLOSED_ISSUES\n\n---\n\n")
+          PR_NOTES=$(echo -e "$PR_TITLE\n$(echo "$PR_BODY" | sed 's/"/\\"/g' | sed ':a;N;$!ba;s/\n/\\n/g')\n\nMerged at: $PR_MERGED_AT\n\nClosed Issues:\n$CLOSED_ISSUES\n\n---\n\n")
           RELEASE_NOTES+="$PR_NOTES"
         done
 
-        # Handle new lines and special characters
-        CLEANED_NOTES=$(echo "$RELEASE_NOTES" | sed 's/"/\\"/g' | sed ':a;N;$!ba;s/\n/\\n/g')
-
-        # Handling empty output
-        if [ -z "$CLEANED_NOTES" ]; then
-          CLEANED_NOTES="No new PRs since the last tag."
+        # Handle empty output
+        if [ -z "$RELEASE_NOTES" ]; then
+          RELEASE_NOTES="No new PRs since the last tag."
         fi
 
         # Print debug information
         echo -e "LAST_TAG = ${LAST_TAG}"
         echo -e "NEW_TAG = ${NEW_TAG}"
-        echo -e "RELEASE_NOTES = ${CLEANED_NOTES}"
+        echo -e "RELEASE_NOTES = ${RELEASE_NOTES}"
         echo -e "LAST_TAG_DATE = ${TAG_DATE}"
 
-        echo "RELEASE_NOTES=Release Notes:\n${CLEANED_NOTES}" >> $GITHUB_ENV
+        echo "RELEASE_NOTES=Release Notes:\n${RELEASE_NOTES}" >> $GITHUB_ENV
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
 
 
 
