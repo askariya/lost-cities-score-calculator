@@ -106,10 +106,20 @@ jobs:
         API_URL="https://api.github.com/repos/${{ github.repository }}/pulls?state=closed&base=master&sort=updated&direction=desc"
         RESPONSE=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" "$API_URL")
         
-        # Use jq to filter PRs based on the merged date and format output with bullet points
+        # Function to get closed issues for a PR
+        get_issues() {
+          PR_NUMBER=$1
+          ISSUES_API_URL="https://api.github.com/repos/${{ github.repository }}/issues?state=closed&per_page=100"
+          ISSUES_RESPONSE=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" "$ISSUES_API_URL")
+          echo "$ISSUES_RESPONSE" | jq -r --arg PR_NUMBER "$PR_NUMBER" '
+            .[] | select(.pull_request != null and .pull_request.url | test("pulls/" + $PR_NUMBER)) |
+            "- #\(.number) \(.title)"' | sed 's/\\n/\n/g'
+        }
+        
+        # Use jq to filter PRs based on the merged date and format output with closed issues
         RELEASE_NOTES=$(echo "$RESPONSE" | jq -r --arg TAG_DATE "$TAG_DATE" '
           .[] | select(.merged_at != null and (.merged_at > $TAG_DATE)) |
-          "\(.title)\n\((.body // "No description") | split("\n") | map("• \(.|gsub("\\\\"; "\\\\"))") | join("\n"))\n\nMerged at: \(.merged_at)\n\n---\n\n"' 
+          "\(.title)\n\((.body // "No description") | split("\n") | map("• \(.|gsub("\\\\"; "\\\\"))") | join("\n"))\n\nClosed Issues:\n\((get_issues(.number) // "None"))\n\nMerged at: \(.merged_at)\n\n---\n\n"' 
         )
         
         # Handle new lines and special characters
