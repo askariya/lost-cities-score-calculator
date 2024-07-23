@@ -108,7 +108,7 @@ jobs:
         # Use jq to filter PRs based on the merged date and handle null descriptions
         RELEASE_NOTES=$(echo "$RESPONSE" | jq -r --arg TAG_DATE "$TAG_DATE" '
           .[] | select(.merged_at != null and (.merged_at > $TAG_DATE)) |
-          "\(.title)\n\n\(.body // "No description")\n\n---\n\n"'
+          "\(.title)\n\n\(.body // "No description")\n\nMerged at: \(.merged_at)\n\n---\n\n"'
         )
         
         # Handle new lines and special characters
