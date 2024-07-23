@@ -130,18 +130,12 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Create Release
+    - name: Create Release and Upload APK
       run: |
-        json=$(jq -n \
-          --arg tag_name "${{ env.NEW_VERSION }}" \
-          --arg name "${{ env.NEW_VERSION }}" \
-          --arg body "${{ env.RELEASE_NOTES }}" \
-          '{tag_name: $tag_name, name: $name, body: $body, draft: false, prerelease: false}')
+        gh release create "${{ env.NEW_VERSION }}" \
+          ./app/build/outputs/apk/release/lost-cities-calculator.apk \
+          --title "${{ env.NEW_VERSION }}" \
+          --notes "${{ env.RELEASE_NOTES }}"
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-        curl -X POST \
-          -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-          -H "Content-Type: application/json" \
-          -d "$json" \
-          "https://api.github.com/repos/${{ github.repository }}/releases"
-    
-    
