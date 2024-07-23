@@ -101,14 +101,8 @@ jobs:
         RELEASE_NOTES=$(gh pr list --search "is:merged base:master merged:>${LAST_TAG}" --json title,body --jq '.[] | 
         "## \(.title)\n\n\(.body)\n\n---\n\n"' | sed ':a;N;$!ba;s/\n/\\n/g')
         
-        # Optionally, fetch closed issues separately if needed
-        CLOSED_ISSUES=$(gh issue list --search "is:closed closed:>${LAST_TAG}" --json number,title --jq '.[] | 
-        "- #\(.number) \(.title)"' | sed ':a;N;$!ba;s/\n/\\n/g')
-
-        echo -e "Last Tag = ${LAST_TAG}"
-        echo -e "New Tag = ${NEW_TAG}"
-        echo -e "Release Notes:\n${RELEASE_NOTES}\n\nClosed Issues:\n${CLOSED_ISSUES}"
-        echo "RELEASE_NOTES=Release Notes:\n${RELEASE_NOTES}\n\nClosed Issues:\n${CLOSED_ISSUES}" >> $GITHUB_ENV
+        echo -e "Release Notes:\n${RELEASE_NOTES}"
+        echo "RELEASE_NOTES=Release Notes:\n${RELEASE_NOTES}" >> $GITHUB_ENV
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
