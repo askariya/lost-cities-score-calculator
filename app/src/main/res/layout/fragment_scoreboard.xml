@@ -168,7 +168,8 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/white"
                 android:text="@string/label_reset_game"
-                style="@style/ResetButtonStyle"
+                android:backgroundTint="@color/dark_red"
+                style="@style/StandardButtonStyle"
                 android:layout_gravity="start"/>
             <Button
                 android:id="@+id/submit_score_button"
