@@ -96,27 +96,27 @@ jobs:
       run: |
         LAST_TAG=${{ env.LATEST_TAG }}
         NEW_TAG=${{ env.NEW_VERSION }}
-        
+
         # Fetch the commit date of the latest tag
         TAG_COMMIT_DATE=$(git log -1 --format=%cI $LAST_TAG 2>/dev/null || echo "No tag found")
         if [ "$TAG_COMMIT_DATE" = "No tag found" ]; then
           echo "Error: Tag $LAST_TAG not found." >&2
           exit 1
         fi
-        
+
         TAG_DATE=$(date -u -d "$TAG_COMMIT_DATE" +%Y-%m-%dT%H:%M:%SZ)
         echo "TAG_DATE=$TAG_DATE" >> $GITHUB_ENV
-        
+
         # Fetch merged PRs since the last tag using GitHub API
         API_URL="https://api.github.com/repos/${{ github.repository }}/pulls?state=closed&base=master&sort=updated&direction=desc"
         RESPONSE=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" "$API_URL")
-        
+
         # Check if the API response is valid
         if [ -z "$RESPONSE" ]; then
           echo "Error: No response from GitHub API." >&2
           exit 1
         fi
-        
+
         # Function to get closed issues for a PR
         get_issues() {
           PR_NUMBER=$1
@@ -127,46 +127,47 @@ jobs:
             exit 1
           fi
           echo "$ISSUES_RESPONSE" | jq -r --arg PR_NUMBER "$PR_NUMBER" '
-            .[] | select(.pull_request != null and .pull_request.url | test("pulls/" + $PR_NUMBER)) |
+            .[] | select(.pull_request != null and .pull_request.url | contains("pulls/" + $PR_NUMBER)) |
             "- #\(.number) \(.title)"' | sed 's/\\n/\n/g'
         }
-        
+
         # Generate release notes
         RELEASE_NOTES=""
         for pr in $(echo "$RESPONSE" | jq -r --arg TAG_DATE "$TAG_DATE" '.[] | select(.merged_at != null and (.merged_at > $TAG_DATE)) | @base64'); do
           _jq() {
             echo ${pr} | base64 --decode | jq -r ${1}
           }
-        
+
           TITLE=$(_jq '.title')
           BODY=$(_jq '.body // "No description"')
           MERGED_AT=$(_jq '.merged_at')
           PR_NUMBER=$(_jq '.number')
-        
+
           # Get closed issues associated with this PR
           ISSUES=$(get_issues $PR_NUMBER)
-        
+
           # Format the release notes entry
           RELEASE_NOTES+="**$TITLE**\n\n$(echo "$BODY" | sed 's/^/• /')\n\nClosed Issues:\n${ISSUES:-None}\n\nMerged at: $MERGED_AT\n\n---\n\n"
         done
-        
+
         # Handle new lines and special characters
         CLEANED_NOTES=$(echo "$RELEASE_NOTES" | sed 's/"/\\"/g' | sed ':a;N;$!ba;s/\n/\\n/g')
-        
+
         # Handling empty output
         if [ -z "$CLEANED_NOTES" ]; then
           CLEANED_NOTES="No new PRs since the last tag."
         fi
-        
+
         # Print debug information
         echo -e "LAST_TAG = ${LAST_TAG}"
         echo -e "NEW_TAG = ${NEW_TAG}"
         echo -e "RELEASE_NOTES = ${CLEANED_NOTES}"
         echo -e "LAST_TAG_DATE = ${TAG_DATE}"
-        
+
         echo "RELEASE_NOTES=Release Notes:\n${CLEANED_NOTES}" >> $GITHUB_ENV
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
 
 
     # - name: Create Release and Upload APK
