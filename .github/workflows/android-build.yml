@@ -29,22 +29,22 @@ jobs:
       env:
         KEYSTORE_FILE: ${{ secrets.KEYSTORE_FILE }}
 
-    # - name: Build APK
-    #   run: ./gradlew assembleRelease
-    #   env:
-    #     KEYSTORE_FILE: ${{ github.workspace }}/my-release-key.jks
-    #     KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-    #     KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-    #     KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+    - name: Build APK
+      run: ./gradlew assembleRelease
+      env:
+        KEYSTORE_FILE: ${{ github.workspace }}/my-release-key.jks
+        KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+        KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+        KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
 
-    # - name: Rename APK file
-    #   run: mv app/build/outputs/apk/release/app-release.apk app/build/outputs/apk/release/lost-cities-calculator.apk
+    - name: Rename APK file
+      run: mv app/build/outputs/apk/release/app-release.apk app/build/outputs/apk/release/lost-cities-calculator.apk
 
-    # - name: Upload APK as artifact
-    #   uses: actions/upload-artifact@v3
-    #   with:
-    #     name: lost-cities-calculator
-    #     path: app/build/outputs/apk/release/lost-cities-calculator.apk
+    - name: Upload APK as artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: lost-cities-calculator
+        path: app/build/outputs/apk/release/lost-cities-calculator.apk
 
     - name: Configure Git
       run: |
@@ -84,90 +84,57 @@ jobs:
         NEW_VERSION="v$MAJOR.$MINOR.$PATCH"
         echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
 
-    # - name: Create and Push New Tag
-    #   run: |
-    #     git tag -a ${{ env.NEW_VERSION }} -m "Release version ${{ env.NEW_VERSION }}"
-    #     git push origin ${{ env.NEW_VERSION }}
-    #   env:
-    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Create and Push New Tag
+      run: |
+        git tag -a ${{ env.NEW_VERSION }} -m "Release version ${{ env.NEW_VERSION }}"
+        git push origin ${{ env.NEW_VERSION }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Generate Release Notes
       id: generate_notes
       run: |
         LAST_TAG=${{ env.LATEST_TAG }}
         NEW_TAG=${{ env.NEW_VERSION }}
-
+        
         # Fetch the commit date of the latest tag in a consistent format
         TAG_COMMIT_DATE=$(git log -1 --format=%cI $LAST_TAG)
         TAG_DATE=$(date -u -d "$TAG_COMMIT_DATE" +%Y-%m-%dT%H:%M:%SZ)
         echo "TAG_DATE=$TAG_DATE" >> $GITHUB_ENV
-
+        
         # Fetch merged PRs since the last tag using GitHub API
         API_URL="https://api.github.com/repos/${{ github.repository }}/pulls?state=closed&base=master&sort=updated&direction=desc"
         RESPONSE=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" "$API_URL")
-        echo "PR_RESPONSE=$RESPONSE" # Debugging line
-
-        # Initialize release notes
-        RELEASE_NOTES=""
-
-        # Process each PR
-        for PR in $(echo "$RESPONSE" | jq -c '.[]'); do
-          echo "PR_JSON=$PR" # Debugging line
-          PR_TITLE=$(echo "$PR" | jq -r '.title')
-          PR_BODY=$(echo "$PR" | jq -r '.body // "No description"')
-          PR_MERGED_AT=$(echo "$PR" | jq -r '.merged_at')
-
-          echo "PR_TITLE=$PR_TITLE" # Debugging line
-          echo "PR_BODY=$PR_BODY" # Debugging line
-
-          # Fetch closed issues for each PR
-          PR_NUMBER=$(echo "$PR" | jq -r '.number')
-          ISSUES_API_URL="https://api.github.com/repos/${{ github.repository }}/issues?state=closed&per_page=100"
-          ISSUES_RESPONSE=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" "$ISSUES_API_URL")
-          echo "ISSUES_RESPONSE=$ISSUES_RESPONSE" # Debugging line
-
-          # Extract issues closed by this PR
-          CLOSED_ISSUES=$(echo "$ISSUES_RESPONSE" | jq -r --arg PR_NUMBER "$PR_NUMBER" '
-            .[] | select(.pull_request != null and .pull_request.url | contains("/pulls/" + $PR_NUMBER)) |
-            "• \(.title)"')
-          echo "CLOSED_ISSUES=$CLOSED_ISSUES" # Debugging line
-
-          # Escape special characters
-          PR_BODY_ESCAPED=$(echo "$PR_BODY" | sed 's/"/\\"/g' | sed ':a;N;$!ba;s/\n/\\n/g')
-          CLOSED_ISSUES_ESCAPED=$(echo "$CLOSED_ISSUES" | sed 's/"/\\"/g' | sed ':a;N;$!ba;s/\n/\\n/g')
-
-          # Append PR details to release notes
-          PR_NOTES=$(printf "%s\n%s\n\nMerged at: %s\n\nClosed Issues:\n%s\n\n---\n\n" "$PR_TITLE" "$PR_BODY_ESCAPED" "$PR_MERGED_AT" "$CLOSED_ISSUES_ESCAPED")
-          RELEASE_NOTES+="$PR_NOTES"
-        done
-
-        # Handle empty output
-        if [ -z "$RELEASE_NOTES" ]; then
-          RELEASE_NOTES="No new PRs since the last tag."
+        
+        # Use jq to filter PRs based on the merged date and format output with bullet points
+        RELEASE_NOTES=$(echo "$RESPONSE" | jq -r --arg TAG_DATE "$TAG_DATE" '
+          .[] | select(.merged_at != null and (.merged_at > $TAG_DATE)) |
+          "\(.title)\n\((.body // "No description") | split("\n") | map("• \(.|gsub("\\\\"; "\\\\"))") | join("\n"))\n\nMerged at: \(.merged_at)\n\n---\n\n"' 
+        )
+        
+        # Handle new lines and special characters
+        CLEANED_NOTES=$(echo "$RELEASE_NOTES" | sed 's/"/\\"/g' | sed ':a;N;$!ba;s/\n/\\n/g')
+        
+        # Handling empty output
+        if [ -z "$CLEANED_NOTES" ]; then
+          CLEANED_NOTES="No new PRs since the last tag."
         fi
-
+        
         # Print debug information
         echo -e "LAST_TAG = ${LAST_TAG}"
         echo -e "NEW_TAG = ${NEW_TAG}"
-        echo -e "RELEASE_NOTES = ${RELEASE_NOTES}"
+        echo -e "RELEASE_NOTES = ${CLEANED_NOTES}"
         echo -e "LAST_TAG_DATE = ${TAG_DATE}"
-
-        echo "RELEASE_NOTES=Release Notes:\n${RELEASE_NOTES}" >> $GITHUB_ENV
+        
+        echo "RELEASE_NOTES=Release Notes:\n${CLEANED_NOTES}" >> $GITHUB_ENV
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-
-
-
-
-
-
-
-    # - name: Create Release and Upload APK
-    #   uses: softprops/action-gh-release@v2
-    #   with:
-    #     tag_name: ${{ env.NEW_VERSION }}
-    #     files: ./app/build/outputs/apk/release/lost-cities-calculator.apk
-    #     body: ${{ env.RELEASE_NOTES }}
-    #   env:
-    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Create Release and Upload APK
+      uses: softprops/action-gh-release@v2
+      with:
+        tag_name: ${{ env.NEW_VERSION }}
+        files: ./app/build/outputs/apk/release/lost-cities-calculator.apk
+        body: ${{ env.RELEASE_NOTES }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
