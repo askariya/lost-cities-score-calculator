@@ -130,9 +130,10 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Write Release Notes to File
+    - name: Process and Write Release Notes to File
       run: |
-        echo "${{ env.RELEASE_NOTES }}" > release_notes.txt
+        # Replace literal \n with actual newline characters
+        echo "${{ env.RELEASE_NOTES }}" | sed 's/\\n/\n/g' > release_notes.txt
         cat release_notes.txt
 
     - name: Create Release and Upload APK
