@@ -96,30 +96,32 @@ jobs:
       run: |
         LAST_TAG=${{ env.LATEST_TAG }}
         NEW_TAG=${{ env.NEW_VERSION }}
-        
+  
         # Remove the 'v' prefix and convert tag to a date-like format for comparison
         LAST_TAG_DATE=$(echo "$LAST_TAG" | sed 's/^v//g' | awk -F. '{ printf "%04d-%02d-%02d", $1, $2, $3 }')
-        
+  
         # Fetch merged PRs since the last tag using GitHub API
         API_URL="https://api.github.com/repos/${{ github.repository }}/pulls?state=closed&base=master&sort=updated&direction=desc"
         RESPONSE=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" "$API_URL")
-        
+  
         # Use jq to filter PRs based on the merged date and handle null descriptions
         RELEASE_NOTES=$(echo "$RESPONSE" | jq -r --arg LAST_TAG_DATE "$LAST_TAG_DATE" '
           .[] | select(.merged_at != null and (.merged_at | fromdateiso8601 | strftime("%Y-%m-%d") > $LAST_TAG_DATE)) |
           "\(.title)\n\n\(.body // "No description")\n\n---\n\n"'
         )
-        
+  
+        # Handle new lines and special characters
+        CLEANED_NOTES=$(echo "$RELEASE_NOTES" | sed 's/"/\\"/g' | sed ':a;N;$!ba;s/\n/\\n/g')
+  
         # Handling empty output
-        if [ -z "$RELEASE_NOTES" ]; then
-          RELEASE_NOTES="No new PRs since the last tag."
+        if [ -z "$CLEANED_NOTES" ]; then
+          CLEANED_NOTES="No new PRs since the last tag."
         fi
-        
-        echo -e "Release Notes:\n${RELEASE_NOTES}"
-        echo "RELEASE_NOTES=Release Notes:\n${RELEASE_NOTES}" >> $GITHUB_ENV
+        echo -e "LAST_TAG = ${LAST_TAG}"
+        echo -e "NEW_TAG = ${NEW_TAG}"
+        echo "RELEASE_NOTES=Release Notes:\n${CLEANED_NOTES}" >> $GITHUB_ENV
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
 
     # - name: Create Release and Upload APK
     #   uses: softprops/action-gh-release@v2
