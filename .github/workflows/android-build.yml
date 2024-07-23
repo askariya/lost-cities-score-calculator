@@ -122,11 +122,12 @@ jobs:
 
           # Extract issues closed by this PR
           CLOSED_ISSUES=$(echo "$ISSUES_RESPONSE" | jq -r --arg PR_NUMBER "$PR_NUMBER" '
-            .[] | select(.pull_request != null and .pull_request.url | test("pulls/" + $PR_NUMBER)) |
+            .[] | select(.pull_request != null and .pull_request.url | contains("pulls/" + $PR_NUMBER)) |
             "• \(.title)"' | sed 's/"/\\"/g' | sed ':a;N;$!ba;s/\n/\\n/g')
 
           # Append PR details to release notes
-          PR_NOTES=$(echo -e "$PR_TITLE\n$(echo "$PR_BODY" | sed 's/"/\\"/g' | sed ':a;N;$!ba;s/\n/\\n/g')\n\nMerged at: $PR_MERGED_AT\n\nClosed Issues:\n$CLOSED_ISSUES\n\n---\n\n")
+          PR_BODY_ESCAPED=$(echo "$PR_BODY" | sed 's/"/\\"/g' | sed ':a;N;$!ba;s/\n/\\n/g')
+          PR_NOTES=$(printf "%s\n%s\n\nMerged at: %s\n\nClosed Issues:\n%s\n\n---\n\n" "$PR_TITLE" "$PR_BODY_ESCAPED" "$PR_MERGED_AT" "$CLOSED_ISSUES")
           RELEASE_NOTES+="$PR_NOTES"
         done
 
@@ -144,6 +145,7 @@ jobs:
         echo "RELEASE_NOTES=Release Notes:\n${RELEASE_NOTES}" >> $GITHUB_ENV
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
 
 
 
