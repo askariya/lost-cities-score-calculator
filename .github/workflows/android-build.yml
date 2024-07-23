@@ -105,25 +105,32 @@ jobs:
         # Fetch merged PRs since the last tag using GitHub API
         API_URL="https://api.github.com/repos/${{ github.repository }}/pulls?state=closed&base=master&sort=updated&direction=desc"
         RESPONSE=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" "$API_URL")
+        echo "PR_RESPONSE=$RESPONSE" # Debugging line
 
         # Initialize release notes
         RELEASE_NOTES=""
 
         # Process each PR
         for PR in $(echo "$RESPONSE" | jq -c '.[]'); do
+          echo "PR_JSON=$PR" # Debugging line
           PR_TITLE=$(echo "$PR" | jq -r '.title')
           PR_BODY=$(echo "$PR" | jq -r '.body // "No description"')
           PR_MERGED_AT=$(echo "$PR" | jq -r '.merged_at')
+
+          echo "PR_TITLE=$PR_TITLE" # Debugging line
+          echo "PR_BODY=$PR_BODY" # Debugging line
 
           # Fetch closed issues for each PR
           PR_NUMBER=$(echo "$PR" | jq -r '.number')
           ISSUES_API_URL="https://api.github.com/repos/${{ github.repository }}/issues?state=closed&per_page=100"
           ISSUES_RESPONSE=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" "$ISSUES_API_URL")
+          echo "ISSUES_RESPONSE=$ISSUES_RESPONSE" # Debugging line
 
           # Extract issues closed by this PR
           CLOSED_ISSUES=$(echo "$ISSUES_RESPONSE" | jq -r --arg PR_NUMBER "$PR_NUMBER" '
             .[] | select(.pull_request != null and .pull_request.url | contains("/pulls/" + $PR_NUMBER)) |
             "• \(.title)"')
+          echo "CLOSED_ISSUES=$CLOSED_ISSUES" # Debugging line
 
           # Escape special characters
           PR_BODY_ESCAPED=$(echo "$PR_BODY" | sed 's/"/\\"/g' | sed ':a;N;$!ba;s/\n/\\n/g')
@@ -148,6 +155,7 @@ jobs:
         echo "RELEASE_NOTES=Release Notes:\n${RELEASE_NOTES}" >> $GITHUB_ENV
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
 
 
 
