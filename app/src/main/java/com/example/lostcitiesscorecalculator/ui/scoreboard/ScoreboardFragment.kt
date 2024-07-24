@@ -41,13 +41,13 @@ class ScoreboardFragment : Fragment() {
         // set the submitButton functionality
         val submitScoreButton : Button = binding.submitScoreButton
         submitScoreButton.setOnClickListener{
-            GameStateManager.submitScore(requireContext())
+            onSubmitButtonPressed()
         }
 
         // set the resetButton functionality
         val endGameButton : Button = binding.endGameButton
         endGameButton.setOnClickListener{
-            GameStateManager.restartGame(requireContext())
+            onEndGameButtonPressed()
         }
 
         sharedScoreViewModel = (requireActivity().application as LostCitiesScoreCalculatorApplication).sharedScoreViewModel
@@ -66,14 +66,21 @@ class ScoreboardFragment : Fragment() {
         _binding = null
     }
 
+    private fun onSubmitButtonPressed() {
+        GameStateManager.submitScore(requireContext())
+    }
+    private fun onEndGameButtonPressed() {
+        GameStateManager.restartGame(requireContext())
+    }
+
     private fun addNewRound(roundCount: Int, player1RoundScore: Int, player2RoundScore: Int) {
         // Create TextView for Round number
         val textSize = 20f
         val textColor = ContextCompat.getColor(requireContext(), R.color.white)
         val colorPrimary = ContextCompat.getColor(requireContext(), R.color.color_primary)
         val colorPrimaryVariant = ContextCompat.getColor(requireContext(), R.color.color_primary_variant)
-        val colorSecondary = ContextCompat.getColor(requireContext(), R.color.color_secondary)
-        var backgroundColor = colorSecondary
+        var backgroundColor = ContextCompat.getColor(requireContext(), R.color.background_color)
+
         val spacingInDp = 10 // Desired spacing in dp
         val spacingInPx = TypedValue.applyDimension(
             TypedValue.COMPLEX_UNIT_DIP,

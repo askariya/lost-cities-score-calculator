@@ -172,7 +172,6 @@ class PlayerBoardFragment : Fragment() {
                 button?.setOnClickListener {
                     viewModel.toggleButtonStateCommand(row, col)
                 }
-                //TODO perhaps set the button stroke color to the player 1 and player 2 colours here
             }
         }
 
@@ -187,14 +186,6 @@ class PlayerBoardFragment : Fragment() {
             boardFooter.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.player1_colour))
         else
             boardFooter.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.player2_colour))
-    }
-
-    private fun setEightCardBonusVisibility(column: Int, visible: Boolean) {
-        val eightCardBonusView = findTextView(10, column, 1)
-        if (visible)
-            eightCardBonusView?.visibility = View.VISIBLE
-        else
-            eightCardBonusView?.visibility = View.INVISIBLE
     }
 
     private fun onResetButtonPressed() {
@@ -217,6 +208,14 @@ class PlayerBoardFragment : Fragment() {
         else {
             sharedScoreViewModel.resetGame()
         }
+    }
+
+    private fun setEightCardBonusVisibility(column: Int, visible: Boolean) {
+        val eightCardBonusView = findTextView(10, column, 1)
+        if (visible)
+            eightCardBonusView?.visibility = View.VISIBLE
+        else
+            eightCardBonusView?.visibility = View.INVISIBLE
     }
 
     private fun observeViewModel() {

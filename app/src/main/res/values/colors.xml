@@ -1,13 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="color_primary">#36013F</color>
-    <color name="color_primary_variant">#1A1A1A</color>
-    <color name="color_secondary">#555555</color>
+    <color name="color_primary_variant">#4527A0</color>
+    <color name="color_primary_variant2">#FFBB86FC</color>
+    <color name="color_secondary">#FF018786</color>
+    <color name="color_secondary_variant">#014D4E</color>
+    <color name="color_secondary_variant2">#FF03DAC5</color>
     <color name="purple_200">#FFBB86FC</color>
     <color name="purple_500">#FF6200EE</color>
     <color name="purple_700">#FF3700B3</color>
     <color name="teal_200">#FF03DAC5</color>
     <color name="teal_700">#FF018786</color>
+    <color name="teal_800">#FF007A79</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="yellow">#FFD700</color>
@@ -20,7 +24,7 @@
     <color name="darkest_grey">#050505</color>
     <color name="dark_orange">#DC4D01</color>
     <color name="dark_purple">#36013F</color>
-    <color name="dark_red">#8B0000</color>
+    <color name="dark_red">#6F0000</color>
     <color name="dark_blue">#00008B</color>
     <color name="dark_pink">#E75480</color>
     <color name="dark_mint">#219A6E</color>
@@ -36,8 +40,6 @@
     <color name="light_blue">#B3C6FF</color>
     <color name="sky_blue">#224772</color>
     <color name="orange_yellow">#E1AD01</color>
-    <color name="tab_background_selected">#FF018786</color>
-    <color name="tab_background_unselected">#014D4E</color>
     <color name="background_color">#555555</color>
     <color name="player1_colour">#219A6E</color>
     <color name="player2_colour">#E75480</color>
