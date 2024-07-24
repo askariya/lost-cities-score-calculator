@@ -2,12 +2,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/submit_button"
-        android:icon="@null"
-        android:title="@string/label_submit"
-        app:showAsAction="ifRoom" />
-
-    <item
         android:id="@+id/reset_game_button"
         android:icon="@null"
         android:title="@string/label_reset_game"
@@ -15,13 +9,19 @@
 
     <item
         android:id="@+id/save_game_button"
-        android:icon="@null"
+        android:icon="@drawable/ic_save"
         android:title="@string/label_save_game"
-        app:showAsAction="never" />
+        app:showAsAction="always" />
 
     <item
         android:id="@+id/load_game_button"
-        android:icon="@null"
+        android:icon="@drawable/ic_load"
         android:title="@string/label_load_game"
-        app:showAsAction="never" />
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/submit_button"
+        android:icon="@null"
+        android:title="@string/label_submit"
+        app:showAsAction="always" />
 </menu>
