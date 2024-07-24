@@ -25,6 +25,7 @@
         app:layout_constraintTop_toBottomOf="@id/header_toolbar"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
+        style="@style/CustomTabLayoutStyle"
         app:tabBackground="@drawable/tab_colour_selector"/>
 
     <androidx.viewpager2.widget.ViewPager2
