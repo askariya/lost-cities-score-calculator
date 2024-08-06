@@ -36,20 +36,26 @@
 
     <string name="back_button_desc">back button</string>
     <!-- Preference Titles -->
-    <string name="messages_header">Messages</string>
-    <string name="sync_header">Sync</string>
+    <string name="round_limit_header">Round Limit</string>
+    <string name="custom_names_header">Custom Names</string>
 
-    <!-- Messages Preferences -->
-    <string name="signature_title">Your signature</string>
-    <string name="reply_title">Default reply action</string>
-
-    <!-- Sync Preferences -->
-    <string name="sync_title">Sync email periodically</string>
-    <string name="attachment_title">Download incoming attachments</string>
-    <string name="attachment_summary_on">Automatically download attachments for incoming emails
+    <!-- Round Limit Preferences -->
+    <string name="round_limit_switch">Set Round Limit</string>
+    <string name="round_limit_summary_on">Automatically end the game and announce the winner when
+        the number of rounds below are completed
     </string>
-    <string name="attachment_summary_off">Only download attachments when manually requested</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="round_limit_summary_off">Don\'t automatically end the game when a number of
+        rounds is completed
+    </string>
+    <string name="round_limit">Number of Rounds</string>
+
+    <!-- Custom Names Preferences -->
+    <string name="custom_names_switch">Use Custom Names</string>
+    <string name="custom_names_summary_on">Apply the custom names below to the players to display
+        in the navigation header and scoreboard
+    </string>
+    <string name="custom_names_summary_off">Don\'t apply custom names to players</string>
+    <string name="player1_name">Player 1</string>
+    <string name="player2_name">Player 2</string>
 
 </resources>

@@ -1,34 +1,44 @@
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <PreferenceCategory app:title="@string/messages_header">
+    <PreferenceCategory app:title="@string/round_limit_header">
 
-        <EditTextPreference
-            app:key="signature"
-            app:title="@string/signature_title"
-            app:useSimpleSummaryProvider="true" />
+        <SwitchPreferenceCompat
+            app:key="round-limit"
+            app:summaryOn="@string/round_limit_summary_on"
+            app:summaryOff="@string/round_limit_summary_off"
+            app:title="@string/round_limit_switch"
+            app:defaultValue="true"/>
 
         <ListPreference
-            app:defaultValue="reply"
-            app:entries="@array/reply_entries"
-            app:entryValues="@array/reply_values"
-            app:key="reply"
-            app:title="@string/reply_title"
+            app:defaultValue="3"
+            app:dependency="round-limit"
+            app:entries="@array/round_limit_entries"
+            app:entryValues="@array/round_limit_values"
+            app:key="round-limit-number"
+            app:title="@string/round_limit"
             app:useSimpleSummaryProvider="true" />
-
     </PreferenceCategory>
 
-    <PreferenceCategory app:title="@string/sync_header">
+    <PreferenceCategory app:title="@string/custom_names_header">
 
         <SwitchPreferenceCompat
-            app:key="sync"
-            app:title="@string/sync_title" />
+            app:key="custom-names"
+            app:summaryOn="@string/custom_names_summary_on"
+            app:summaryOff="@string/custom_names_summary_off"
+            app:title="@string/custom_names_switch"
+            app:defaultValue="false"/>
 
-        <SwitchPreferenceCompat
-            app:dependency="sync"
-            app:key="attachment"
-            app:summaryOff="@string/attachment_summary_off"
-            app:summaryOn="@string/attachment_summary_on"
-            app:title="@string/attachment_title" />
+        <EditTextPreference
+            app:key="player1name"
+            app:dependency="custom-names"
+            app:title="@string/player1_name"
+            app:useSimpleSummaryProvider="true" />
+
+        <EditTextPreference
+            app:key="player2name"
+            app:dependency="custom-names"
+            app:title="@string/player2_name"
+            app:useSimpleSummaryProvider="true" />
 
     </PreferenceCategory>
 
