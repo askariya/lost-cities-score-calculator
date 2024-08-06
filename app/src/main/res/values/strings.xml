@@ -3,6 +3,7 @@
     <string name="title_player1">Player 1</string>
     <string name="title_player2">Player 2</string>
     <string name="title_score">Scoreboard</string>
+    <string name="title_settings">Settings</string>
     <string name="title_score_short">Score</string>
     <string name="label_button2">2</string>
     <string name="label_button3">3</string>
@@ -13,11 +14,11 @@
     <string name="label_button8">8</string>
     <string name="label_button9">9</string>
     <string name="label_button10">10</string>
-    <string name="label_reset">reset</string>
-    <string name="label_submit">submit</string>
-    <string name="label_reset_game">restart</string>
-    <string name="label_save_game">save</string>
-    <string name="label_load_game">load</string>
+    <string name="label_reset">Reset</string>
+    <string name="label_submit">Submit</string>
+    <string name="label_reset_game">Restart</string>
+    <string name="label_save_game">Save</string>
+    <string name="label_load_game">Load</string>
     <string name="label_zero">0</string>
     <string name="label_yellow_wager">yellow wager</string>
     <string name="label_white_wager">white wager</string>
@@ -32,5 +33,23 @@
     <string name="round">Round</string>
     <string name="empty_rounds_placeholder">No rounds completed yet.</string>
     <string name="eight_card_bonus_label">8</string>
+
+    <string name="back_button_desc">back button</string>
+    <!-- Preference Titles -->
+    <string name="messages_header">Messages</string>
+    <string name="sync_header">Sync</string>
+
+    <!-- Messages Preferences -->
+    <string name="signature_title">Your signature</string>
+    <string name="reply_title">Default reply action</string>
+
+    <!-- Sync Preferences -->
+    <string name="sync_title">Sync email periodically</string>
+    <string name="attachment_title">Download incoming attachments</string>
+    <string name="attachment_summary_on">Automatically download attachments for incoming emails
+    </string>
+    <string name="attachment_summary_off">Only download attachments when manually requested</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

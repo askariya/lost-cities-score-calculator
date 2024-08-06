@@ -118,4 +118,12 @@
     <style name="CustomTabLayoutStyle" parent="Widget.Design.TabLayout">
         <item name="tabIndicatorColor">@color/color_primary_variant</item>
     </style>
+
+    <style name="FullscreenDialogTheme" parent="ThemeOverlay.AppCompat.Dialog">
+        <item name="android:windowMinWidthMajor">100%</item>
+        <item name="android:windowMinWidthMinor">100%</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowBackground">@android:color/white</item>
+        <item name="android:backgroundDimAmount">0.5</item>
+    </style>
 </resources>

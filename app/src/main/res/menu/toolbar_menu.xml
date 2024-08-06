@@ -24,4 +24,10 @@
         android:icon="@null"
         android:title="@string/label_submit"
         app:showAsAction="always" />
+
+    <item
+        android:id="@+id/settings_button"
+        android:icon="@null"
+        android:title="@string/title_settings"
+        app:showAsAction="never" />
 </menu>

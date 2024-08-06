@@ -14,6 +14,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.example.lostcitiesscorecalculator.databinding.ActivityMainBinding
 import com.example.lostcitiesscorecalculator.ui.playerboard.PlayerBoardPagerAdapter
 import com.example.lostcitiesscorecalculator.ui.scoreboard.SharedScoreViewModel
+import com.example.lostcitiesscorecalculator.ui.settings.SettingsDialogFragment
 import com.example.lostcitiesscorecalculator.ui.utils.GameStateManager
 import com.google.android.material.color.MaterialColors
 import com.google.android.material.tabs.TabLayout
@@ -108,6 +109,10 @@ class MainActivity : AppCompatActivity() {
                 onLoadGameButtonPressed()
                 true
             }
+            R.id.settings_button -> {
+                onSettingsButtonPressed()
+                true
+            }
             else -> super.onOptionsItemSelected(item)
         }
     }
@@ -139,6 +144,10 @@ class MainActivity : AppCompatActivity() {
 
     private fun onLoadGameButtonPressed() {
         GameStateManager.loadGame(this)
+    }
+
+    private fun onSettingsButtonPressed() {
+        SettingsDialogFragment().show(supportFragmentManager, "SettingsDialog")
     }
 
     private val roundCounterObserver = Observer<Int> { round ->
