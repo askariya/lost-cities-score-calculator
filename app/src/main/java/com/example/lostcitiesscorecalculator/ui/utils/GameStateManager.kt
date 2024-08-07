@@ -162,7 +162,6 @@ object GameStateManager {
         setRoundScores(roundScoreMap)
         setPlayer1TotalPoints((player1TotalPoints.value ?: 0) + player1RoundScore)
         setPlayer2TotalPoints((player2TotalPoints.value ?: 0) + player2RoundScore)
-        incrementRoundCounter()
     }
 
     private fun resetRoundScores()
@@ -255,14 +254,64 @@ object GameStateManager {
         }
     }
 
+    fun endGame(context: Context)
+    {
+        // Unset the roundCounter to signal to other components that the game has ended.
+        setRoundCounter(-1)
+
+        val player1 = player1Name.value ?: DEFAULT_PLAYER_1_NAME
+        val player2 = player2Name.value ?: DEFAULT_PLAYER_2_NAME
+        val player1FinalScore = player1TotalPoints.value ?: 0
+        val player2FinalScore = player2TotalPoints.value ?: 0
+        // Game ended in a tie
+        if (player1FinalScore == player2FinalScore) {
+            // Popup a notification notifying the user that the game has ended due to a tie.
+            val message = """
+            The game has ended in a draw!<br><br>
+            Final Scores:<br>
+            <b>$player1:</b>&nbsp;&nbsp;&nbsp;&nbsp;$player1FinalScore<br>
+            <b>$player2:</b>&nbsp;&nbsp;&nbsp;&nbsp;$player2FinalScore
+            """.trimIndent()
+            DialogUtils.showNotificationDialog(context,
+                "Game Over: Draw",
+                message,
+                "Disappointing")
+            {
+                //TODO what to do now that game is over?
+            }
+
+        }
+        // Game ended with a winner
+        else {
+            val winner: String = if (player1FinalScore > player2FinalScore) player1 else player2
+
+            // Popup a notification notifying the user that the game has ended with a winner.
+            val message = """
+            $winner has won the game!<br><br>
+            Final Scores:<br>
+            <b>$player1:</b>&nbsp;&nbsp;&nbsp;&nbsp;$player1FinalScore<br>
+            <b>$player2:</b>&nbsp;&nbsp;&nbsp;&nbsp;$player2FinalScore
+            """.trimIndent()
+            DialogUtils.showNotificationDialog(context,
+                "Game Over: $winner Wins",
+                message,
+                "Congratulations")
+            {
+                //TODO what to do now that game is over?
+            }
+        }
+    }
+
     fun submitScore(context: Context)
     {
+        val player1 = player1Name.value ?: DEFAULT_PLAYER_1_NAME
+        val player2 = player2Name.value ?: DEFAULT_PLAYER_2_NAME
         val player1Score = player1CurrentPoints.value ?: 0
         val player2Score = player2CurrentPoints.value ?: 0
         val message = """
             Do you want to submit the following score?<br><br>
-            <b>Player 1:</b>&nbsp;&nbsp;&nbsp;&nbsp;$player1Score<br>
-            <b>Player 2:</b>&nbsp;&nbsp;&nbsp;&nbsp;$player2Score
+            <b>$player1:</b>&nbsp;&nbsp;&nbsp;&nbsp;$player1Score<br>
+            <b>$player2:</b>&nbsp;&nbsp;&nbsp;&nbsp;$player2Score
             """.trimIndent()
         DialogUtils.showConfirmationDialog(context,
             "Submit Score",
@@ -271,7 +320,18 @@ object GameStateManager {
             "Cancel")
         {
             submitCurrentPointsToTotal()
-            saveGame(context) // Save the game automatically when submitting
+
+            val submittedRound: Int = roundCounter.value ?: 1
+            val limit: Int = roundLimit.value ?: -1
+            // When we reach the round limit --> end the game.
+            if (submittedRound == limit) {
+                endGame(context)
+            }
+            // If we have not reached the round limit, continue and increment the round counter.
+            else {
+                incrementRoundCounter()
+                saveGame(context) // Save the game automatically when submitting
+            }
         }
     }
 }
