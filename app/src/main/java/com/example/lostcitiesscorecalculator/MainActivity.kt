@@ -41,7 +41,10 @@ class MainActivity : AppCompatActivity() {
         // Initialize the SharedScoreViewModel
         sharedScoreViewModel = (application as LostCitiesScoreCalculatorApplication).sharedScoreViewModel
 
+        // Observe necessary external properties
         sharedScoreViewModel.roundCounter.observe(this, roundCounterObserver)
+        GameStateManager.player1Name.observe(this, player1NameObserver)
+        GameStateManager.player2Name.observe(this, player2NameObserver)
 
         viewPager = findViewById(R.id.view_pager)
         tabLayout = findViewById(R.id.tab_layout)
@@ -56,8 +59,8 @@ class MainActivity : AppCompatActivity() {
             val tabText = customTabView.findViewById<TextView>(R.id.tab_text)
 
             tabText.text = when (position) {
-                0 -> getString(R.string.title_player1)
-                1 -> getString(R.string.title_player2)
+                0 -> GameStateManager.player1Name.value
+                1 -> GameStateManager.player2Name.value
                 else -> getString(R.string.title_score_short)
             }
             tabIcon.setImageResource(when (position) {
@@ -130,6 +133,14 @@ class MainActivity : AppCompatActivity() {
         supportActionBar?.title = "${getString(R.string.round)} $round"
     }
 
+    private fun updateTabText(position: Int, newText: String) {
+        val tab = tabLayout.getTabAt(position)
+        val customTabView = tab?.customView
+        val tabText = customTabView?.findViewById<TextView>(R.id.tab_text)
+        tabText?.text = newText
+    }
+
+
     private fun onSubmitButtonPressed() {
         GameStateManager.submitScore(this)
     }
@@ -152,6 +163,14 @@ class MainActivity : AppCompatActivity() {
 
     private val roundCounterObserver = Observer<Int> { round ->
         updateActionBarTitle(round)
+    }
+
+    private val player1NameObserver = Observer<String> { name ->
+        updateTabText(0, name)
+    }
+
+    private val player2NameObserver = Observer<String> { name ->
+        updateTabText(1, name)
     }
 
 }
