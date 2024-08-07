@@ -19,9 +19,11 @@ object GameStateManager {
 
     private val _player1Name = MutableLiveData<String>()
     private val _player2Name = MutableLiveData<String>()
+    private val _roundLimit = MutableLiveData<Int>()
 
     val player1Name: LiveData<String> get() = _player1Name
     val player2Name: LiveData<String> get() = _player2Name
+    val roundLimit: LiveData<Int> get() = _roundLimit
 
     private val sharedPreferencesListener =
         SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
@@ -54,6 +56,10 @@ object GameStateManager {
         _player2Name.value = name
     }
 
+    private fun setRoundLimit(limit : Int){
+        _roundLimit.value = limit
+    }
+
     private fun onSharedPreferencesChanged(key: String?) {
         when(key){
             "custom-names", "player1name", "player2name" -> {
@@ -69,10 +75,10 @@ object GameStateManager {
         val useCustomNames: Boolean = settingsSharedPreferences.getBoolean("custom-names", false)
         // Custom names was enabled
         if (useCustomNames) {
-            val player1CustomName: String = settingsSharedPreferences
-                .getString("player1name", DEFAULT_PLAYER_1_NAME) ?: DEFAULT_PLAYER_1_NAME
-            val player2CustomName: String = settingsSharedPreferences
-                .getString("player2name", DEFAULT_PLAYER_2_NAME) ?: DEFAULT_PLAYER_2_NAME
+            val player1CustomName: String = (settingsSharedPreferences
+                .getString("player1name", DEFAULT_PLAYER_1_NAME) ?: DEFAULT_PLAYER_1_NAME).trim()
+            val player2CustomName: String = (settingsSharedPreferences
+                .getString("player2name", DEFAULT_PLAYER_2_NAME) ?: DEFAULT_PLAYER_2_NAME).trim()
 
             // Set to custom name if necessary
             if (player1Name.value != player1CustomName)
@@ -93,7 +99,16 @@ object GameStateManager {
     }
 
     private fun handleRoundLimitPreferences() {
-
+        val enableRoundLimit: Boolean = settingsSharedPreferences.getBoolean("round-limit", false)
+        // Round limit enabled
+        if (enableRoundLimit) {
+            val limit: Int = settingsSharedPreferences.getString("round-limit-number", "-1")?.toIntOrNull() ?: -1
+            setRoundLimit(limit)
+        }
+        // Round limit disabled
+        else {
+            setRoundLimit(-1)
+        }
     }
 
     fun saveGame(context: Context) {
