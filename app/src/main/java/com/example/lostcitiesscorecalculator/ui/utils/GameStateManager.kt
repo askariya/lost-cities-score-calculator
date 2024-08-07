@@ -5,18 +5,17 @@ import android.content.SharedPreferences
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.preference.PreferenceManager
-import com.example.lostcitiesscorecalculator.ui.scoreboard.SharedScoreViewModel
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
 object GameStateManager {
     private lateinit var gameStateSharedPreferences: SharedPreferences
     private lateinit var settingsSharedPreferences: SharedPreferences
-    private lateinit var sharedScoreViewModel: SharedScoreViewModel
 
     private const val DEFAULT_PLAYER_1_NAME = "Player 1"
     private const val DEFAULT_PLAYER_2_NAME = "Player 2"
 
+    // Settings Mutable Data
     private val _player1Name = MutableLiveData<String>()
     private val _player2Name = MutableLiveData<String>()
     private val _roundLimit = MutableLiveData<Int>()
@@ -25,23 +24,37 @@ object GameStateManager {
     val player2Name: LiveData<String> get() = _player2Name
     val roundLimit: LiveData<Int> get() = _roundLimit
 
+    // Scoring Mutable Data
+    private val _player1CurrentPoints = MutableLiveData<Int>()
+    private val _player2CurrentPoints = MutableLiveData<Int>()
+    private val _player1TotalPoints = MutableLiveData<Int>()
+    private val _player2TotalPoints = MutableLiveData<Int>()
+    private val _roundCounter = MutableLiveData<Int>()
+    private val _roundScores: MutableLiveData<MutableMap<Int, Pair<Int, Int>>> = MutableLiveData(mutableMapOf())
+
+    val player1CurrentPoints: LiveData<Int> get() = _player1CurrentPoints
+    val player2CurrentPoints: LiveData<Int> get() = _player2CurrentPoints
+    val player1TotalPoints: LiveData<Int> get() = _player1TotalPoints
+    val player2TotalPoints: LiveData<Int> get() = _player2TotalPoints
+    val roundCounter: LiveData<Int> get() = _roundCounter
+    val roundScores: MutableLiveData<MutableMap<Int, Pair<Int, Int>>> get() = _roundScores
+
     private val sharedPreferencesListener =
         SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
         // Handle changes based on the key
         onSharedPreferencesChanged(key)
     }
 
-    fun initialize(context: Context, scoreViewModel: SharedScoreViewModel) {
+    fun initialize(context: Context) {
         // initialize custom game state shared preference manager
         gameStateSharedPreferences = context.getSharedPreferences("game_state_preferences", Context.MODE_PRIVATE)
         // initialize default settings shared preference manager
         settingsSharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
         settingsSharedPreferences.registerOnSharedPreferenceChangeListener(sharedPreferencesListener)
 
-        sharedScoreViewModel = scoreViewModel
-
         handlePlayerNamePreferences()
         handleRoundLimitPreferences()
+        resetGameScores()
     }
 
     fun cleanup() {
@@ -58,6 +71,37 @@ object GameStateManager {
 
     private fun setRoundLimit(limit : Int){
         _roundLimit.value = limit
+    }
+    private fun setPlayer1TotalPoints(points: Int) {
+        _player1TotalPoints.value = points
+    }
+
+    private fun setPlayer2TotalPoints(points: Int) {
+        _player2TotalPoints.value = points
+    }
+
+    private fun setRoundScores(scores: MutableMap<Int, Pair<Int, Int>>) {
+        _roundScores.value = scores
+    }
+
+    private fun incrementRoundCounter() {
+        _roundCounter.value = (_roundCounter.value ?: 1) + 1
+    }
+
+    private fun setRoundCounter(roundNum: Int) {
+        _roundCounter.value = roundNum
+    }
+
+    private fun resetRoundCounter() {
+        _roundCounter.value = 1
+    }
+
+    fun setPlayer1CurrentPoints(points: Int) {
+        _player1CurrentPoints.value = points
+    }
+
+    fun setPlayer2CurrentPoints(points: Int) {
+        _player2CurrentPoints.value = points
     }
 
     private fun onSharedPreferencesChanged(key: String?) {
@@ -111,18 +155,55 @@ object GameStateManager {
         }
     }
 
+    private fun addRoundScore(round: Int, player1RoundScore: Int, player2RoundScore: Int)
+    {
+        val roundScoreMap = roundScores.value ?: mutableMapOf()
+        roundScoreMap[round] = Pair(player1RoundScore, player2RoundScore)
+        setRoundScores(roundScoreMap)
+        setPlayer1TotalPoints((player1TotalPoints.value ?: 0) + player1RoundScore)
+        setPlayer2TotalPoints((player2TotalPoints.value ?: 0) + player2RoundScore)
+        incrementRoundCounter()
+    }
+
+    private fun resetRoundScores()
+    {
+        setRoundScores(mutableMapOf())
+        setPlayer1TotalPoints(0)
+        setPlayer2TotalPoints(0)
+        resetRoundCounter()
+    }
+
+    private fun submitCurrentPointsToTotal() {
+        addRoundScore(roundCounter.value ?: 1, player1CurrentPoints.value ?: 0, player2CurrentPoints.value ?: 0)
+    }
+
+    fun resetGameScores() {
+        setPlayer1CurrentPoints(0)
+        setPlayer2CurrentPoints(0)
+        resetRoundScores()
+    }
+
+    // Should only be used by the MainActivity for loading the scores
+    private fun loadGameScores(scores: MutableMap<Int, Pair<Int, Int>>, player1TotalScore: Int, player2TotalScore: Int, roundNum: Int)
+    {
+        setRoundScores(scores)
+        setPlayer1TotalPoints(player1TotalScore)
+        setPlayer2TotalPoints(player2TotalScore)
+        setRoundCounter(roundNum)
+    }
+
     fun saveGame(context: Context) {
         val editor = gameStateSharedPreferences.edit()
         // Convert map to JSON string
         val gson = Gson()
-        val jsonString = gson.toJson(sharedScoreViewModel.roundScores.value)
+        val jsonString = gson.toJson(roundScores.value)
 
         // Save JSON string to SharedPreferences
         editor.putString("roundScores", jsonString)
         // Save the total points and the round count as well
-        editor.putInt("player1TotalScore", sharedScoreViewModel.player1TotalPoints.value ?: 0)
-        editor.putInt("player2TotalScore", sharedScoreViewModel.player2TotalPoints.value ?: 0)
-        editor.putInt("roundCount", sharedScoreViewModel.roundCounter.value ?: 0)
+        editor.putInt("player1TotalScore", player1TotalPoints.value ?: 0)
+        editor.putInt("player2TotalScore", player2TotalPoints.value ?: 0)
+        editor.putInt("roundCount", roundCounter.value ?: 0)
         editor.apply()
 
         DialogUtils.showGameSavedNotification(context)
@@ -152,7 +233,7 @@ object GameStateManager {
             val roundCount = gameStateSharedPreferences.getInt("roundCount", 1)
 
             // Load the saved values back into the game
-            sharedScoreViewModel.loadGame(scores, player1TotalScore, player2TotalScore, roundCount)
+            loadGameScores(scores, player1TotalScore, player2TotalScore, roundCount)
             DialogUtils.showGameLoadedNotification(context)
         }
     }
@@ -168,7 +249,7 @@ object GameStateManager {
             "Yes",
             "No")
         {
-            sharedScoreViewModel.resetGame()
+            resetGameScores()
             // We don't save here in case the user wants to reload.
             // The next submission will overwrite the save instead.
         }
@@ -176,8 +257,8 @@ object GameStateManager {
 
     fun submitScore(context: Context)
     {
-        val player1Score = sharedScoreViewModel.player1CurrentPoints.value ?: 0
-        val player2Score = sharedScoreViewModel.player2CurrentPoints.value ?: 0
+        val player1Score = player1CurrentPoints.value ?: 0
+        val player2Score = player2CurrentPoints.value ?: 0
         val message = """
             Do you want to submit the following score?<br><br>
             <b>Player 1:</b>&nbsp;&nbsp;&nbsp;&nbsp;$player1Score<br>
@@ -189,7 +270,7 @@ object GameStateManager {
             "Submit",
             "Cancel")
         {
-            sharedScoreViewModel.submitCurrentPointsToTotal()
+            submitCurrentPointsToTotal()
             saveGame(context) // Save the game automatically when submitting
         }
     }

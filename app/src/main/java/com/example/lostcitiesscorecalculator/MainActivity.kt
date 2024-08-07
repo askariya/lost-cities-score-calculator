@@ -13,7 +13,6 @@ import androidx.lifecycle.Observer
 import androidx.viewpager2.widget.ViewPager2
 import com.example.lostcitiesscorecalculator.databinding.ActivityMainBinding
 import com.example.lostcitiesscorecalculator.ui.playerboard.PlayerBoardPagerAdapter
-import com.example.lostcitiesscorecalculator.ui.scoreboard.SharedScoreViewModel
 import com.example.lostcitiesscorecalculator.ui.settings.SettingsDialogFragment
 import com.example.lostcitiesscorecalculator.ui.utils.GameStateManager
 import com.google.android.material.color.MaterialColors
@@ -27,8 +26,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var tabLayout: TabLayout
     private var colorPrimary: Int = 0
 
-    private lateinit var sharedScoreViewModel: SharedScoreViewModel
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -38,11 +35,8 @@ class MainActivity : AppCompatActivity() {
 
         colorPrimary = MaterialColors.getColor(this, androidx.appcompat.R.attr.colorPrimary, Color.BLACK)
 
-        // Initialize the SharedScoreViewModel
-        sharedScoreViewModel = (application as LostCitiesScoreCalculatorApplication).sharedScoreViewModel
-
         // Observe necessary external properties
-        sharedScoreViewModel.roundCounter.observe(this, roundCounterObserver)
+        GameStateManager.roundCounter.observe(this, roundCounterObserver)
         GameStateManager.player1Name.observe(this, player1NameObserver)
         GameStateManager.player2Name.observe(this, player2NameObserver)
 
@@ -130,7 +124,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun updateActionBarTitle(round: Int) {
-        supportActionBar?.title = "${getString(R.string.round)} $round"
+        if (round != -1)
+            supportActionBar?.title = "${getString(R.string.round)} $round"
+        else
+            supportActionBar?.title = "Game Over"
     }
 
     private fun updateTabText(position: Int, newText: String) {
