@@ -58,6 +58,9 @@ class ScoreboardFragment : Fragment() {
         sharedScoreViewModel.player2TotalPoints.observe(viewLifecycleOwner, player2TotalScoreObserver)
         sharedScoreViewModel.roundScores.observe(viewLifecycleOwner, roundScoreObserver)
 
+        GameStateManager.player1Name.observe(viewLifecycleOwner, player1NameObserver)
+        GameStateManager.player2Name.observe(viewLifecycleOwner, player2NameObserver)
+
         return root
     }
 
@@ -181,5 +184,13 @@ class ScoreboardFragment : Fragment() {
         }
 
         checkEmptyViewVisibility()
+    }
+
+    private val player1NameObserver = Observer<String> { name ->
+        binding.player1ColumnHeader.text = name
+    }
+
+    private val player2NameObserver = Observer<String> { name ->
+        binding.player2ColumnHeader.text = name
     }
 }
