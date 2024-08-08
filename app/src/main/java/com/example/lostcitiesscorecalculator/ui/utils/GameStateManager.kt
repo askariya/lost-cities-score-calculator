@@ -303,7 +303,6 @@ object GameStateManager {
                 message,
                 "Disappointing")
             {
-                setGameOver(true)
             }
 
         }
@@ -323,9 +322,11 @@ object GameStateManager {
                 message,
                 "Congratulations")
             {
-                //TODO what to do now that game is over?
             }
         }
+
+        // Trigger the Game Over screen.
+        setGameOver(true)
     }
 
     fun submitScore(context: Context)
