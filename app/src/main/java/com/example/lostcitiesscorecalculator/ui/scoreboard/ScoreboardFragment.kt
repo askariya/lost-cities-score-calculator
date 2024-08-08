@@ -42,10 +42,10 @@ class ScoreboardFragment : Fragment() {
             onSubmitButtonPressed()
         }
 
-        // set the resetButton functionality
-        val endGameButton : Button = binding.endGameButton
-        endGameButton.setOnClickListener{
-            onEndGameButtonPressed()
+        // set the restartButton functionality
+        val restartGameButton : Button = binding.restartGameButton
+        restartGameButton.setOnClickListener{
+            onRestartGameButtonPressed()
         }
 
         GameStateManager.player1CurrentPoints.observe(viewLifecycleOwner, player1CurrentScoreObserver)
@@ -69,7 +69,7 @@ class ScoreboardFragment : Fragment() {
     private fun onSubmitButtonPressed() {
         GameStateManager.submitScore(requireContext())
     }
-    private fun onEndGameButtonPressed() {
+    private fun onRestartGameButtonPressed() {
         GameStateManager.restartGame(requireContext())
     }
 

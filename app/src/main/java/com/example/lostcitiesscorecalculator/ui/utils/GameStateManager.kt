@@ -25,6 +25,7 @@ object GameStateManager {
     val roundLimit: LiveData<Int> get() = _roundLimit
 
     // Scoring Mutable Data
+    private val _gameOver = MutableLiveData<Boolean>()
     private val _player1CurrentPoints = MutableLiveData<Int>()
     private val _player2CurrentPoints = MutableLiveData<Int>()
     private val _player1TotalPoints = MutableLiveData<Int>()
@@ -32,6 +33,7 @@ object GameStateManager {
     private val _roundCounter = MutableLiveData<Int>()
     private val _roundScores: MutableLiveData<MutableMap<Int, Pair<Int, Int>>> = MutableLiveData(mutableMapOf())
 
+    val gameOver: LiveData<Boolean> get() = _gameOver
     val player1CurrentPoints: LiveData<Int> get() = _player1CurrentPoints
     val player2CurrentPoints: LiveData<Int> get() = _player2CurrentPoints
     val player1TotalPoints: LiveData<Int> get() = _player1TotalPoints
@@ -59,6 +61,10 @@ object GameStateManager {
 
     fun cleanup() {
         settingsSharedPreferences.unregisterOnSharedPreferenceChangeListener(sharedPreferencesListener)
+    }
+
+    private fun setGameOver(isGameOver: Boolean) {
+        _gameOver.value = isGameOver
     }
 
     private fun setPlayer1Name(name : String){
@@ -248,6 +254,7 @@ object GameStateManager {
             "Yes",
             "No")
         {
+            setGameOver(false)
             resetGameScores()
             // We don't save here in case the user wants to reload.
             // The next submission will overwrite the save instead.
@@ -256,9 +263,6 @@ object GameStateManager {
 
     fun endGame(context: Context)
     {
-        // Unset the roundCounter to signal to other components that the game has ended.
-        setRoundCounter(-1)
-
         val player1 = player1Name.value ?: DEFAULT_PLAYER_1_NAME
         val player2 = player2Name.value ?: DEFAULT_PLAYER_2_NAME
         val player1FinalScore = player1TotalPoints.value ?: 0
@@ -277,7 +281,7 @@ object GameStateManager {
                 message,
                 "Disappointing")
             {
-                //TODO what to do now that game is over?
+                setGameOver(true)
             }
 
         }

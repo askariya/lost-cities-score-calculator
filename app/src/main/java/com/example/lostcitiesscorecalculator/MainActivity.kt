@@ -5,6 +5,7 @@ import android.graphics.Color
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -13,6 +14,7 @@ import androidx.lifecycle.Observer
 import androidx.viewpager2.widget.ViewPager2
 import com.example.lostcitiesscorecalculator.databinding.ActivityMainBinding
 import com.example.lostcitiesscorecalculator.ui.playerboard.PlayerBoardPagerAdapter
+import com.example.lostcitiesscorecalculator.ui.scoreboard.EndGameFragment
 import com.example.lostcitiesscorecalculator.ui.settings.SettingsDialogFragment
 import com.example.lostcitiesscorecalculator.ui.utils.GameStateManager
 import com.google.android.material.color.MaterialColors
@@ -36,6 +38,7 @@ class MainActivity : AppCompatActivity() {
         colorPrimary = MaterialColors.getColor(this, androidx.appcompat.R.attr.colorPrimary, Color.BLACK)
 
         // Observe necessary external properties
+        GameStateManager.gameOver.observe(this, endGameObserver)
         GameStateManager.roundCounter.observe(this, roundCounterObserver)
         GameStateManager.player1Name.observe(this, player1NameObserver)
         GameStateManager.player2Name.observe(this, player2NameObserver)
@@ -94,8 +97,8 @@ class MainActivity : AppCompatActivity() {
                 onSubmitButtonPressed()
                 true
             }
-            R.id.reset_game_button -> {
-                onResetGameButtonPressed()
+            R.id.restart_game_button -> {
+                onRestartGameButtonPressed()
                 true
             }
             R.id.save_game_button -> {
@@ -123,11 +126,32 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun updateActionBarTitle(round: Int) {
-        if (round != -1)
-            supportActionBar?.title = "${getString(R.string.round)} $round"
-        else
-            supportActionBar?.title = "Game Over"
+    private fun showEndGameFragment() {
+        val endGameFragment = EndGameFragment()
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.endgame_fragment_container, endGameFragment)
+            .commit()
+
+        // Hide ViewPager2 and TabLayout
+        viewPager.visibility = View.GONE
+        tabLayout.visibility = View.GONE
+    }
+
+    private fun hideEndGameFragment() {
+        val endGameFragment = supportFragmentManager.findFragmentById(R.id.endgame_fragment_container)
+        if (endGameFragment != null) {
+            supportFragmentManager.beginTransaction()
+                .remove(endGameFragment)
+                .commit()
+        }
+
+        // Show ViewPager2 and TabLayout
+        viewPager.visibility = View.VISIBLE
+        tabLayout.visibility = View.VISIBLE
+    }
+
+    private fun updateActionBarTitle(title: String) {
+            supportActionBar?.title = title
     }
 
     private fun updateTabText(position: Int, newText: String) {
@@ -137,12 +161,11 @@ class MainActivity : AppCompatActivity() {
         tabText?.text = newText
     }
 
-
     private fun onSubmitButtonPressed() {
         GameStateManager.submitScore(this)
     }
 
-    private fun onResetGameButtonPressed() {
+    private fun onRestartGameButtonPressed() {
         GameStateManager.restartGame(this)
     }
 
@@ -158,8 +181,21 @@ class MainActivity : AppCompatActivity() {
         SettingsDialogFragment().show(supportFragmentManager, "SettingsDialog")
     }
 
+    private val endGameObserver = Observer<Boolean> { gameOver ->
+        if (gameOver)
+        {
+            showEndGameFragment()
+            updateActionBarTitle("Game Over")
+            //TODO Hide the save button
+        }
+        else
+        {
+            hideEndGameFragment()
+        }
+    }
+
     private val roundCounterObserver = Observer<Int> { round ->
-        updateActionBarTitle(round)
+        updateActionBarTitle("${getString(R.string.round)} $round")
     }
 
     private val player1NameObserver = Observer<String> { name ->
