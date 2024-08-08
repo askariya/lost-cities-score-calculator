@@ -27,6 +27,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var viewPager: ViewPager2
     private lateinit var tabLayout: TabLayout
     private var colorPrimary: Int = 0
+    private var showScoreOnSubmit: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,6 +40,7 @@ class MainActivity : AppCompatActivity() {
 
         // Observe necessary external properties
         GameStateManager.gameOver.observe(this, endGameObserver)
+        GameStateManager.showScoreboardOnSubmit.observe(this, showScoreOnSubmitObserver)
         GameStateManager.roundCounter.observe(this, roundCounterObserver)
         GameStateManager.player1Name.observe(this, player1NameObserver)
         GameStateManager.player2Name.observe(this, player2NameObserver)
@@ -181,21 +183,27 @@ class MainActivity : AppCompatActivity() {
         SettingsDialogFragment().show(supportFragmentManager, "SettingsDialog")
     }
 
+    private val showScoreOnSubmitObserver = Observer<Boolean> { showScore ->
+        showScoreOnSubmit = showScore
+    }
+
     private val endGameObserver = Observer<Boolean> { gameOver ->
-        if (gameOver)
-        {
+        if (gameOver) {
             showEndGameFragment()
             updateActionBarTitle("Game Over")
             //TODO Hide the save button
         }
-        else
-        {
+        else {
             hideEndGameFragment()
         }
     }
 
     private val roundCounterObserver = Observer<Int> { round ->
         updateActionBarTitle("${getString(R.string.round)} $round")
+
+        // Jump to the Scoreboard tab if this is a user submitted score and setting is enabled
+        if(showScoreOnSubmit && round != 1 && viewPager.currentItem != 2)
+            viewPager.currentItem = 2
     }
 
     private val player1NameObserver = Observer<String> { name ->

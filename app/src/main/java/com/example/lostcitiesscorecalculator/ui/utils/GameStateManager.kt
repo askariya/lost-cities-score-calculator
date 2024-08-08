@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.preference.PreferenceManager
+import com.example.lostcitiesscorecalculator.R
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
@@ -16,10 +17,12 @@ object GameStateManager {
     private const val DEFAULT_PLAYER_2_NAME = "Player 2"
 
     // Settings Mutable Data
+    private val _showScoreboardOnSubmit = MutableLiveData<Boolean>()
     private val _player1Name = MutableLiveData<String>()
     private val _player2Name = MutableLiveData<String>()
     private val _roundLimit = MutableLiveData<Int>()
 
+    val showScoreboardOnSubmit: LiveData<Boolean> get() = _showScoreboardOnSubmit
     val player1Name: LiveData<String> get() = _player1Name
     val player2Name: LiveData<String> get() = _player2Name
     val roundLimit: LiveData<Int> get() = _roundLimit
@@ -50,10 +53,13 @@ object GameStateManager {
     fun initialize(context: Context) {
         // initialize custom game state shared preference manager
         gameStateSharedPreferences = context.getSharedPreferences("game_state_preferences", Context.MODE_PRIVATE)
+
+        // Set default values for the settings preferences
+        PreferenceManager.setDefaultValues(context, R.xml.root_preferences, true)
         // initialize default settings shared preference manager
         settingsSharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
         settingsSharedPreferences.registerOnSharedPreferenceChangeListener(sharedPreferencesListener)
-
+        handleShowScoreboardOnSubmit()
         handlePlayerNamePreferences()
         handleRoundLimitPreferences()
         resetGameScores()
@@ -65,6 +71,10 @@ object GameStateManager {
 
     private fun setGameOver(isGameOver: Boolean) {
         _gameOver.value = isGameOver
+    }
+
+    private fun setShowScoreboardOnSubmit(showScoreboard: Boolean) {
+        _showScoreboardOnSubmit.value = showScoreboard
     }
 
     private fun setPlayer1Name(name : String){
@@ -112,6 +122,9 @@ object GameStateManager {
 
     private fun onSharedPreferencesChanged(key: String?) {
         when(key){
+            "show-scoreboard-on-submit" -> {
+                handleShowScoreboardOnSubmit()
+            }
             "custom-names", "player1name", "player2name" -> {
                 handlePlayerNamePreferences()
             }
@@ -119,6 +132,11 @@ object GameStateManager {
                 handleRoundLimitPreferences()
             }
         }
+    }
+
+    private fun handleShowScoreboardOnSubmit() {
+        val showScoreboard: Boolean = settingsSharedPreferences.getBoolean("show-scoreboard-on-submit", false)
+        setShowScoreboardOnSubmit(showScoreboard)
     }
 
     private fun handlePlayerNamePreferences() {

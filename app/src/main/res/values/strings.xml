@@ -37,8 +37,18 @@
 
     <string name="back_button_desc">back button</string>
     <!-- Preference Titles -->
+    <string name="general_header">General</string>
     <string name="round_limit_header">Round Limit</string>
     <string name="custom_names_header">Custom Names</string>
+
+    <!-- General Preferences -->
+    <string name="show_score_switch">Show Scoreboard on Submit</string>
+    <string name="show_score_switch_summary_on">Automatically switch to the Scoreboard tab when
+        scores for a round are submitted
+    </string>
+    <string name="show_score_switch_summary_off">Don\'t automatically switch to the Scoreboard tab
+        when scores for a round are submitted.
+    </string>
 
     <!-- Round Limit Preferences -->
     <string name="round_limit_switch">Set Round Limit</string>
