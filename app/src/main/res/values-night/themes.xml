@@ -11,8 +11,10 @@
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
-        <!-- Customize your theme here. -->
+        <!-- Custom Alert Dialog Theme. -->
         <item name="alertDialogTheme">@style/CustomAlertDialogTheme</item>
+        <!-- Custom Preferences Theme. -->
+        <item name="preferenceTheme">@style/CustomPreferenceTheme</item>
     </style>
 
     <!-- Custom Toolbar Style -->
@@ -36,5 +38,11 @@
     </style>
     <style name="PositiveButtonStyle" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
         <item name="android:textColor">@color/color_secondary_variant2</item>
+    </style>
+
+    <style name="CustomPreferenceTheme" parent="PreferenceThemeOverlay">
+        <item name="colorAccent">@color/teal_200</item>
+        <item name="android:textColorPrimary">@color/white</item>
+        <item name="android:textColorSecondary">@color/light_white</item>
     </style>
 </resources>

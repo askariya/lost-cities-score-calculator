@@ -3,7 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.scoreboard.EndGameFragment">
+    tools:context=".ui.scoreboard.EndGameFragment"
+    android:background="@color/medium_dark_grey">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
