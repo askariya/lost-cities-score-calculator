@@ -63,6 +63,7 @@ object GameStateManager {
         handlePlayerNamePreferences()
         handleRoundLimitPreferences()
         resetGameScores()
+        setGameOver(false)
     }
 
     fun cleanup() {
@@ -227,6 +228,7 @@ object GameStateManager {
         editor.putInt("player1TotalScore", player1TotalPoints.value ?: 0)
         editor.putInt("player2TotalScore", player2TotalPoints.value ?: 0)
         editor.putInt("roundCount", roundCounter.value ?: 0)
+        editor.putBoolean("gameOver", gameOver.value ?: false)
         editor.apply()
 
         DialogUtils.showGameSavedNotification(context)
@@ -254,9 +256,11 @@ object GameStateManager {
             val player1TotalScore = gameStateSharedPreferences.getInt("player1TotalScore", 0)
             val player2TotalScore = gameStateSharedPreferences.getInt("player2TotalScore", 0)
             val roundCount = gameStateSharedPreferences.getInt("roundCount", 1)
+            val gameOver = gameStateSharedPreferences.getBoolean("gameOver", false)
 
             // Load the saved values back into the game
             loadGameScores(scores, player1TotalScore, player2TotalScore, roundCount)
+            setGameOver(gameOver)
             DialogUtils.showGameLoadedNotification(context)
         }
     }
