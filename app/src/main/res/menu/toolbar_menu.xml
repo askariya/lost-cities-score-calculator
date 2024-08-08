@@ -2,7 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/reset_game_button"
+        android:id="@+id/restart_game_button"
         android:icon="@null"
         android:title="@string/label_reset_game"
         app:showAsAction="never" />
@@ -24,4 +24,10 @@
         android:icon="@null"
         android:title="@string/label_submit"
         app:showAsAction="always" />
+
+    <item
+        android:id="@+id/settings_button"
+        android:icon="@null"
+        android:title="@string/title_settings"
+        app:showAsAction="never" />
 </menu>

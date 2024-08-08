@@ -25,8 +25,6 @@ class ScoreboardFragment : Fragment() {
     // onDestroyView.
     private val binding get() = _binding!!
 
-    private lateinit var sharedScoreViewModel: SharedScoreViewModel
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -44,19 +42,21 @@ class ScoreboardFragment : Fragment() {
             onSubmitButtonPressed()
         }
 
-        // set the resetButton functionality
-        val endGameButton : Button = binding.endGameButton
-        endGameButton.setOnClickListener{
-            onEndGameButtonPressed()
+        // set the restartButton functionality
+        val restartGameButton : Button = binding.restartGameButton
+        restartGameButton.setOnClickListener{
+            onRestartGameButtonPressed()
         }
 
-        sharedScoreViewModel = (requireActivity().application as LostCitiesScoreCalculatorApplication).sharedScoreViewModel
+        GameStateManager.player1CurrentPoints.observe(viewLifecycleOwner, player1CurrentScoreObserver)
+        GameStateManager.player2CurrentPoints.observe(viewLifecycleOwner, player2CurrentScoreObserver)
+        GameStateManager.player1TotalPoints.observe(viewLifecycleOwner, player1TotalScoreObserver)
+        GameStateManager.player2TotalPoints.observe(viewLifecycleOwner, player2TotalScoreObserver)
+        GameStateManager.roundScores.observe(viewLifecycleOwner, roundScoreObserver)
+        GameStateManager.roundScores.observe(viewLifecycleOwner, roundScoreObserver)
 
-        sharedScoreViewModel.player1CurrentPoints.observe(viewLifecycleOwner, player1CurrentScoreObserver)
-        sharedScoreViewModel.player2CurrentPoints.observe(viewLifecycleOwner, player2CurrentScoreObserver)
-        sharedScoreViewModel.player1TotalPoints.observe(viewLifecycleOwner, player1TotalScoreObserver)
-        sharedScoreViewModel.player2TotalPoints.observe(viewLifecycleOwner, player2TotalScoreObserver)
-        sharedScoreViewModel.roundScores.observe(viewLifecycleOwner, roundScoreObserver)
+        GameStateManager.player1Name.observe(viewLifecycleOwner, player1NameObserver)
+        GameStateManager.player2Name.observe(viewLifecycleOwner, player2NameObserver)
 
         return root
     }
@@ -69,7 +69,7 @@ class ScoreboardFragment : Fragment() {
     private fun onSubmitButtonPressed() {
         GameStateManager.submitScore(requireContext())
     }
-    private fun onEndGameButtonPressed() {
+    private fun onRestartGameButtonPressed() {
         GameStateManager.restartGame(requireContext())
     }
 
@@ -181,5 +181,13 @@ class ScoreboardFragment : Fragment() {
         }
 
         checkEmptyViewVisibility()
+    }
+
+    private val player1NameObserver = Observer<String> { name ->
+        binding.player1ColumnHeader.text = name
+    }
+
+    private val player2NameObserver = Observer<String> { name ->
+        binding.player2ColumnHeader.text = name
     }
 }

@@ -1,0 +1,48 @@
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory app:title="@string/general_header">
+        <SwitchPreferenceCompat
+            app:key="show-scoreboard-on-submit"
+            app:summaryOn="@string/show_score_switch_summary_on"
+            app:summaryOff="@string/show_score_switch_summary_off"
+            app:title="@string/show_score_switch"
+            app:defaultValue="true"/>
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="@string/round_limit_header">
+        <SwitchPreferenceCompat
+            app:key="round-limit"
+            app:summaryOn="@string/round_limit_summary_on"
+            app:summaryOff="@string/round_limit_summary_off"
+            app:title="@string/round_limit_switch"
+            app:defaultValue="false"/>
+        <ListPreference
+            app:defaultValue="3"
+            app:dependency="round-limit"
+            app:entries="@array/round_limit_entries"
+            app:entryValues="@array/round_limit_values"
+            app:key="round-limit-number"
+            app:title="@string/round_limit"
+            app:useSimpleSummaryProvider="true" />
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="@string/custom_names_header">
+        <SwitchPreferenceCompat
+            app:key="custom-names"
+            app:summaryOn="@string/custom_names_summary_on"
+            app:summaryOff="@string/custom_names_summary_off"
+            app:title="@string/custom_names_switch"
+            app:defaultValue="false"/>
+        <EditTextPreference
+            app:key="player1name"
+            app:dependency="custom-names"
+            app:title="@string/player1_name"
+            app:useSimpleSummaryProvider="true" />
+        <EditTextPreference
+            app:key="player2name"
+            app:dependency="custom-names"
+            app:title="@string/player2_name"
+            app:useSimpleSummaryProvider="true" />
+    </PreferenceCategory>
+
+</PreferenceScreen>

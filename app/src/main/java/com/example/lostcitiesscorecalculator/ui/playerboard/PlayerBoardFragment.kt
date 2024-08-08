@@ -15,11 +15,10 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.example.lostcitiesscorecalculator.LostCitiesScoreCalculatorApplication
 import com.example.lostcitiesscorecalculator.R
 import com.example.lostcitiesscorecalculator.databinding.FragmentPlayerboardBinding
-import com.example.lostcitiesscorecalculator.ui.scoreboard.SharedScoreViewModel
 import com.example.lostcitiesscorecalculator.ui.utils.DialogUtils
+import com.example.lostcitiesscorecalculator.ui.utils.GameStateManager
 import com.google.android.material.card.MaterialCardView
 
 class PlayerBoardFragment : Fragment() {
@@ -28,7 +27,6 @@ class PlayerBoardFragment : Fragment() {
     private val binding get() = _binding!!
     private lateinit var viewModel: PlayerBoardViewModel
     private var playerId: Int = 0
-    private lateinit var sharedScoreViewModel: SharedScoreViewModel
 
     companion object {
         private const val ARG_PLAYER_ID = "playerId"
@@ -54,14 +52,12 @@ class PlayerBoardFragment : Fragment() {
         val factory = PlayerBoardViewModelFactory(playerId)
         viewModel = ViewModelProvider(this, factory).get(PlayerBoardViewModel::class.java)
 
-        sharedScoreViewModel = (requireActivity().application as LostCitiesScoreCalculatorApplication).sharedScoreViewModel
-
-        sharedScoreViewModel.roundCounter.observe(viewLifecycleOwner, roundCounterObserver)
+        GameStateManager.roundCounter.observe(viewLifecycleOwner, roundCounterObserver)
 
         if (playerId == 1)
-            sharedScoreViewModel.player1TotalPoints.observe(viewLifecycleOwner, totalScoreObserver)
+            GameStateManager.player1TotalPoints.observe(viewLifecycleOwner, totalScoreObserver)
         else
-            sharedScoreViewModel.player2TotalPoints.observe(viewLifecycleOwner, totalScoreObserver)
+            GameStateManager.player2TotalPoints.observe(viewLifecycleOwner, totalScoreObserver)
 
         setupGridLayout()
         observeViewModel()
@@ -202,11 +198,11 @@ class PlayerBoardFragment : Fragment() {
                 "Yes",
                 "No")
             {
-                sharedScoreViewModel.resetGame()
+                GameStateManager.resetGameScores()
             }
         }
         else {
-            sharedScoreViewModel.resetGame()
+            GameStateManager.resetGameScores()
         }
     }
 
@@ -237,11 +233,11 @@ class PlayerBoardFragment : Fragment() {
 
     private val scoreObserver = Observer<Int> { score ->
         if (playerId == 1) {
-            // Update Player 1 score in SharedScoreViewModel
-            sharedScoreViewModel.setPlayer1CurrentPoints(score)
+            // Update Player 1 score in GameStateManager
+            GameStateManager.setPlayer1CurrentPoints(score)
         } else if (playerId == 2) {
-            // Update Player 2 score in SharedScoreViewModel
-            sharedScoreViewModel.setPlayer2CurrentPoints(score)
+            // Update Player 2 score in GameStateManager
+            GameStateManager.setPlayer2CurrentPoints(score)
         }
 
         binding.currentScoreValue.text = score.toString()

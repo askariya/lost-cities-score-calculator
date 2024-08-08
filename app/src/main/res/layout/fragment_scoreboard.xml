@@ -12,7 +12,7 @@
         android:paddingTop="16dp"
         android:paddingLeft="0dp"
         android:paddingRight="0dp"
-        android:background="@color/medium_dark_grey">
+        android:background="@color/background_color_dark">
 
         <GridLayout
             android:id="@+id/score_grid_header"
@@ -32,6 +32,7 @@
                 style="@style/ScoreHeaderStyle"/>
 
             <TextView
+                android:id="@+id/player1_column_header"
                 android:layout_row="0"
                 android:layout_column="1"
                 android:layout_columnWeight="0.35"
@@ -41,6 +42,7 @@
                 style="@style/ScoreHeaderStyle"/>
 
             <TextView
+                android:id="@+id/player2_column_header"
                 android:layout_row="0"
                 android:layout_column="2"
                 android:layout_columnWeight="0.35"
@@ -163,7 +165,7 @@
             android:columnCount="2"
             android:padding="10dp">
             <Button
-                android:id="@+id/end_game_button"
+                android:id="@+id/restart_game_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/white"
