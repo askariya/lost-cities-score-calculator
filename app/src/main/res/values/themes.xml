@@ -14,7 +14,7 @@
         <!-- Custom Alert Dialog Theme. -->
         <item name="alertDialogTheme">@style/CustomAlertDialogTheme</item>
         <!-- Custom Preferences Theme. -->
-        <item name="preferenceTheme">@style/CustomPreferenceTheme</item>
+        <item name="settingsBackgroundColor">@color/background_color_light</item>
     </style>
 
     <!-- Custom Toolbar Style -->
@@ -34,18 +34,11 @@
         <item name="buttonBarNegativeButtonStyle">@style/NegativeButtonStyle</item>
         <item name="buttonBarPositiveButtonStyle">@style/PositiveButtonStyle</item>
         <item name="android:textColor">@color/color_primary</item>
-        <item name="android:textColorSecondary">@color/color_primary</item>
     </style>
     <style name="NegativeButtonStyle" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
         <item name="android:textColor">@color/color_secondary_variant</item>
     </style>
     <style name="PositiveButtonStyle" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
         <item name="android:textColor">@color/color_secondary_variant</item>
-    </style>
-
-    <style name="CustomPreferenceTheme" parent="PreferenceThemeOverlay">
-        <item name="colorAccent">@color/teal_200</item>
-        <item name="android:textColorPrimary">@color/white</item>
-        <item name="android:textColorSecondary">@color/light_white</item>
     </style>
 </resources>

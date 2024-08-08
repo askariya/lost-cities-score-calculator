@@ -12,7 +12,7 @@
         android:paddingTop="16dp"
         android:paddingLeft="0dp"
         android:paddingRight="0dp"
-        android:background="@color/medium_dark_grey">
+        android:background="@color/background_color_dark">
 
         <GridLayout
             android:id="@+id/score_grid_header"
