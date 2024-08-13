@@ -185,11 +185,13 @@ class PlayerBoardFragment : Fragment() {
     }
 
     private fun onResetButtonPressed() {
+        val currentPlayer = if (playerId == 1) GameStateManager.player1Name.value
+                            else GameStateManager.player2Name.value
         // Only prompt if the board has been modified.
         if (viewModel.hasBoardBeenModified) {
             val message = """
-            Are you sure you want to reset Player $playerId's board?<br><br>
-            <i>All selected buttons will be unselected and Player $playerId's 
+            Are you sure you want to reset $currentPlayer's board?<br><br>
+            <i>All selected buttons will be unselected and $currentPlayer's 
             current score will be reset.</i>
             """.trimIndent()
             DialogUtils.showConfirmationDialog(requireContext(),
