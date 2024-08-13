@@ -82,7 +82,7 @@ class MainActivity : AppCompatActivity() {
         viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
-                setHeaderToolbar(position)
+                setHeaderToolbarColor(position)
             }
         })
     }
@@ -91,6 +91,13 @@ class MainActivity : AppCompatActivity() {
         menuInflater.inflate(R.menu.toolbar_menu, menu)
         return true
     }
+
+    override fun onPrepareOptionsMenu(menu: Menu): Boolean {
+        val submitButton = menu.findItem(R.id.submit_button)
+        submitButton.isVisible = !(GameStateManager.gameOver.value ?: false)
+        return super.onPrepareOptionsMenu(menu)
+    }
+
 
     // Handle toolbar button clicks
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -119,7 +126,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun setHeaderToolbar(position: Int)
+    private fun setHeaderToolbarColor(position: Int)
     {
         when (position) {
             0 -> binding.headerToolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.player1_colour))
@@ -133,7 +140,6 @@ class MainActivity : AppCompatActivity() {
         supportFragmentManager.beginTransaction()
             .replace(R.id.endgame_fragment_container, endGameFragment)
             .commit()
-
         // Hide ViewPager2 and TabLayout
         viewPager.visibility = View.GONE
         tabLayout.visibility = View.GONE
@@ -191,10 +197,13 @@ class MainActivity : AppCompatActivity() {
         if (gameOver) {
             showEndGameFragment()
             updateActionBarTitle("Game Over")
-            //TODO Hide the save button
+            setHeaderToolbarColor(2)
+            invalidateOptionsMenu()
         }
         else {
             hideEndGameFragment()
+            viewPager.currentItem = 0
+            invalidateOptionsMenu()
         }
     }
 
