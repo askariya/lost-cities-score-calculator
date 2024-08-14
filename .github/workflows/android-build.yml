@@ -219,7 +219,7 @@ jobs:
       - name: Commit Version Code and Name Changes
         run: |
           # Check if NEW_VERSION_CODE is not empty
-          if [ -n "${{ env.NEW_VERSION_CODE }}" ]; then
+          #if [ -n "${{ env.NEW_VERSION_CODE }}" ]; then
             echo "Committing new version: ${{ env.NEW_VERSION_CODE }}" 
             git config --global user.email "github-actions@github.com"
             git config --global user.name "GitHub Actions"
@@ -227,9 +227,9 @@ jobs:
             git add app/build.gradle.kts
             git commit -m "Increment versionCode to ${{ env.NEW_VERSION_CODE }} and versionName to ${{ env.NEW_VERSION_NAME }} [skip ci]"
             git push origin ${{ github.ref_name }}
-          else
-            echo "No version code update required."
-          fi
+          #else
+            #echo "No version code update required."
+          #fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
