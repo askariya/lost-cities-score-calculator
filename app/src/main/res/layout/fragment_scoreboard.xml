@@ -23,7 +23,7 @@
         <GridLayout
             android:id="@+id/score_grid_header"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="60dp"
             android:columnCount="3"
             android:padding="2dp">
 
@@ -136,7 +136,7 @@
             <!-- Headers for Round, Player 1, and Player 2 -->
             <TextView
                 android:id="@+id/total_score_label"
-                android:padding="5dp"
+                android:padding="10dp"
                 android:layout_row="0"
                 android:layout_column="0"
                 android:layout_columnWeight="0.3"
@@ -147,7 +147,7 @@
 
             <TextView
                 android:id="@+id/player1_total_score_view"
-                android:padding="5dp"
+                android:padding="10dp"
                 android:layout_row="0"
                 android:layout_column="1"
                 android:layout_columnWeight="0.35"
@@ -158,7 +158,7 @@
 
             <TextView
                 android:id="@+id/player2_total_score_view"
-                android:padding="5dp"
+                android:padding="10dp"
                 android:layout_row="0"
                 android:layout_column="2"
                 android:layout_columnWeight="0.35"

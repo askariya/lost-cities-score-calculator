@@ -104,6 +104,7 @@ class ScoreboardFragment : Fragment() {
             setTextColor(textColor)
             setBackgroundColor(colorPrimaryVariant)
             setTypeface(typeface, android.graphics.Typeface.BOLD)
+            setPadding(12,12,12,12)
             gravity = android.view.Gravity.CENTER
         }
 
@@ -119,6 +120,7 @@ class ScoreboardFragment : Fragment() {
             setTextSize(TypedValue.COMPLEX_UNIT_SP, textSize)
             setTextColor(textColor)
             setBackgroundColor(backgroundColor)
+            setPadding(12,12,12,12)
             gravity = android.view.Gravity.CENTER
         }
 
@@ -134,6 +136,7 @@ class ScoreboardFragment : Fragment() {
             setTextSize(TypedValue.COMPLEX_UNIT_SP, textSize)
             setTextColor(textColor)
             setBackgroundColor(backgroundColor)
+            setPadding(12,12,12,12)
             gravity = android.view.Gravity.CENTER
         }
 
@@ -171,11 +174,11 @@ class ScoreboardFragment : Fragment() {
             binding.scoreboardFooter.visibility = View.VISIBLE
             binding.totalScoreLabel.text = getString(R.string.total_label)
             binding.totalScoreLabel.textSize = 20F
-            binding.totalScoreLabel.setPadding(5,5,5,5)
+            binding.totalScoreLabel.setPadding(10,10,10,10)
             binding.player1TotalScoreView.textSize = 20F
-            binding.player1TotalScoreView.setPadding(5,5,5,5)
+            binding.player1TotalScoreView.setPadding(10,10,10,10)
             binding.player2TotalScoreView.textSize = 20F
-            binding.player2TotalScoreView.setPadding(5,5,5,5)
+            binding.player2TotalScoreView.setPadding(10,10,10,10)
         }
     }
 
