@@ -7,8 +7,61 @@ on:
 permissions: write-all
 
 jobs:
+  setup-version:
+    if: github.event_name == 'push' && !contains(github.event.head_commit.message, '[skip ci]')
+    runs-on: ubuntu-latest
+
+    outputs:
+      new_version_string: ${{ steps.increment_version.outputs.new_version_string }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Configure Git
+        run: |
+          git config --global user.email "github-actions@github.com"
+          git config --global user.name "GitHub Actions"
+      
+      - name: Fetch Latest Tag
+        id: fetch_tag
+        run: |
+          git fetch --tags
+          LATEST_TAG=$(git tag --sort=-creatordate | head -n 1)
+          echo -e "Latest Tag is ${LATEST_TAG}"
+          echo "LATEST_TAG=$LATEST_TAG" >> $GITHUB_ENV
+    
+      - name: Increment Version
+        id: increment_version
+        run: |
+          MAJOR=${{ vars.MAJOR_VERSION }}
+          MINOR=${{ vars.MINOR_VERSION }}
+          TAG=${{ env.LATEST_TAG }}
+          if [ -z "$TAG" ]; then
+            TAG="v0.0.0"
+          fi
+          TAG=${TAG#v}
+          CURRENT_MAJOR=${TAG%%.*}
+          CURRENT_MINOR=${TAG#*.}
+          CURRENT_MINOR=${CURRENT_MINOR%%.*}
+          PATCH=${TAG##*.}
+  
+          # Reset patch version if major or minor versions change
+          if [ "$MAJOR" -ne "$CURRENT_MAJOR" ] || [ "$MINOR" -ne "$CURRENT_MINOR" ]; then
+            PATCH=0
+          else
+            PATCH=$((PATCH + 1))
+          fi
+  
+          # Construct the new version
+          NEW_VERSION="v$MAJOR.$MINOR.$PATCH"
+          echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
+          echo "new_version_string=$NEW_VERSION" >> $GITHUB_OUTPUT
+  
+
   apk-build:
     if: github.event_name == 'push' && !contains(github.event.head_commit.message, '[skip ci]')
+    needs: setup-version
     runs-on: ubuntu-latest
 
     steps:
@@ -20,6 +73,12 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
         cache: gradle
+    
+    - name: Read version args
+      run: |
+        NEW_VERSION="${{ needs.setup-version.outputs.new_version_string }}"
+        echo -e "Read NEW_VERSION = ${NEW_VERSION}"
+        echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
 
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
@@ -53,37 +112,11 @@ jobs:
         git config --global user.name "GitHub Actions"
 
     - name: Fetch Latest Tag
-      id: fetch_tag
       run: |
         git fetch --tags
         LATEST_TAG=$(git tag --sort=-creatordate | head -n 1)
+        echo -e "Latest Tag is ${LATEST_TAG}"
         echo "LATEST_TAG=$LATEST_TAG" >> $GITHUB_ENV
-
-    - name: Increment Version
-      id: increment_version
-      run: |
-        MAJOR=${{ vars.MAJOR_VERSION }}
-        MINOR=${{ vars.MINOR_VERSION }}
-        TAG=${{ env.LATEST_TAG }}
-        if [ -z "$TAG" ]; then
-          TAG="v0.0.0"
-        fi
-        TAG=${TAG#v}
-        CURRENT_MAJOR=${TAG%%.*}
-        CURRENT_MINOR=${TAG#*.}
-        CURRENT_MINOR=${CURRENT_MINOR%%.*}
-        PATCH=${TAG##*.}
-
-        # Reset patch version if major or minor versions change
-        if [ "$MAJOR" -ne "$CURRENT_MAJOR" ] || [ "$MINOR" -ne "$CURRENT_MINOR" ]; then
-          PATCH=0
-        else
-          PATCH=$((PATCH + 1))
-        fi
-
-        # Construct the new version
-        NEW_VERSION="v$MAJOR.$MINOR.$PATCH"
-        echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
 
     - name: Create and Push New Tag
       run: |
@@ -98,14 +131,18 @@ jobs:
         LAST_TAG=${{ env.LATEST_TAG }}
         NEW_TAG=${{ env.NEW_VERSION }}
 
+        echo -e "LAST_TAG = ${LAST_TAG} and NEW_TAG = ${NEW_TAG}"
+
         # Fetch the commit date of the latest tag in a consistent format
         TAG_COMMIT_DATE=$(git log -1 --format=%cI $LAST_TAG)
         TAG_DATE=$(date -u -d "$TAG_COMMIT_DATE" +%Y-%m-%dT%H:%M:%SZ)
+        echo -e "Fetched commit date of the latest tag = ${TAG_DATE}"
         echo "TAG_DATE=$TAG_DATE" >> $GITHUB_ENV
 
         # Fetch merged PRs since the last tag using GitHub API
         API_URL="https://api.github.com/repos/${{ github.repository }}/pulls?state=closed&base=master&sort=updated&direction=desc"
         RESPONSE=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" "$API_URL")
+        echo -e "Fetched Merged PR Response = ${RESPONSE}"
 
         # Use jq to filter PRs based on the merged date and format output with bullet points
         RELEASE_NOTES=$(echo "$RESPONSE" | jq -r --arg TAG_DATE "$TAG_DATE" '
@@ -113,8 +150,12 @@ jobs:
           "\(.title)\n\((.body // "No description") | split("\n") | map("• \(.|gsub("\\\\"; "\\\\"))") | join("\n"))\n\n---\n\n"' 
         )
 
+        echo -e "Finished extracting Release Notes"
+
         # Handle new lines and special characters
         CLEANED_NOTES=$(echo "$RELEASE_NOTES" | sed 's/"/\\"/g' | sed ':a;N;$!ba;s/\n/\\n/g')
+
+        echo -e "Finished cleaning Release Notes"
 
         # Handling empty output
         if [ -z "$CLEANED_NOTES" ]; then
@@ -150,6 +191,7 @@ jobs:
 
   aab-build:
     if: github.event_name == 'push' && !contains(github.event.head_commit.message, '[skip ci]')
+    needs: setup-version
     runs-on: ubuntu-latest
 
     steps:
@@ -162,6 +204,14 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
           cache: gradle
+      
+      - name: Read version args
+        run: |
+          NEW_VERSION_RAW="${{ needs.setup-version.outputs.new_version_string }}"
+          echo -e "Raw NEW_VERSION = ${NEW_VERSION_RAW}"
+          NEW_VERSION="${NEW_VERSION_RAW#v}"
+          echo -e "Stripped NEW_VERSION = ${NEW_VERSION}"
+          echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
@@ -172,7 +222,7 @@ jobs:
         env:
           KEYSTORE_FILE: ${{ secrets.KEYSTORE_FILE }}
 
-      - name: Increment Version Code and Name
+      - name: Increment Version Code and Set Version Name
         id: increment_version
         run: |
           # Print initial content of the file
@@ -182,15 +232,12 @@ jobs:
           # Read the current version code and name
           VERSION_CODE=$(grep 'versionCode' app/build.gradle.kts | awk '{print $3}' | tr -d '[:space:]')
           VERSION_NAME=$(grep 'versionName' app/build.gradle.kts | awk -F'\"' '{print $2}')
-          
-          echo "Extracted VERSION_CODE: $VERSION_CODE"
-          echo "Extracted VERSION_NAME: $VERSION_NAME"
         
           # Increment version code
           NEW_VERSION_CODE=$((VERSION_CODE + 1))
         
-          # Update version name to match the new version code
-          NEW_VERSION_NAME="$NEW_VERSION_CODE.0"
+          # Use the version name fetched from the setup-version job
+          NEW_VERSION_NAME="${{ env.NEW_VERSION }}"
         
           echo "New VERSION_CODE: $NEW_VERSION_CODE"
           echo "New VERSION_NAME: $NEW_VERSION_NAME"
