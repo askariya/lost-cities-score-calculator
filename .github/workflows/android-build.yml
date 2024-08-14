@@ -13,7 +13,6 @@ jobs:
 
     outputs:
       new_version_string: ${{ steps.increment_version.outputs.new_version_string }}
-      latest_tag_version: ${{ steps.fetch_tag.outputs.latest_tag_version }}
 
     steps:
       - name: Checkout code
@@ -31,7 +30,6 @@ jobs:
           LATEST_TAG=$(git tag --sort=-creatordate | head -n 1)
           echo -e "Latest Tag is ${LATEST_TAG}"
           echo "LATEST_TAG=$LATEST_TAG" >> $GITHUB_ENV
-          echo "latest_tag_version=$LATEST_TAG" >> $GITHUB_OUTPUT
     
       - name: Increment Version
         id: increment_version
@@ -209,7 +207,7 @@ jobs:
       
       - name: Read version args
         run: |
-          NEW_VERSION_RAW="${{ needs.setup-version.outputs.new_version }}"
+          NEW_VERSION_RAW="${{ needs.setup-version.outputs.new_version_string }}"
           echo -e "Raw NEW_VERSION = ${NEW_VERSION_RAW}"
           NEW_VERSION="${NEW_VERSION_RAW#v}"
           echo -e "Stripped NEW_VERSION = ${NEW_VERSION}"
