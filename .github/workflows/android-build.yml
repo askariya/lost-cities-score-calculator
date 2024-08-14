@@ -29,6 +29,7 @@ jobs:
         run: |
           git fetch --tags
           LATEST_TAG=$(git tag --sort=-creatordate | head -n 1)
+          echo -e "Latest Tag is ${LATEST_TAG}"
           echo "LATEST_TAG=$LATEST_TAG" >> $GITHUB_ENV
           echo "LATEST_TAG=$LATEST_TAG >> $GITHUB_OUTPUT
     
