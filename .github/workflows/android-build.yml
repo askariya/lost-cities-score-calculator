@@ -165,13 +165,13 @@ jobs:
         run: chmod +x gradlew
 
       - name: Build Unsigned AAB
-        run: ./gradlew bundleRelease
+        run: ./gradlew bundleAabRelease
 
       - name: Upload AAB to GitHub
         uses: actions/upload-artifact@v3
         with:
-          name: app-release.aab
-          path: app/build/outputs/bundle/release/app-release.aab
+          name: app-aab-release.aab
+          path: app/build/outputs/bundle/aabRelease/app-aab-release.aab
 
       #TODO
       # - name: Upload AAB to Google Play (Optional)

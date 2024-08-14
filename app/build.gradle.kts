@@ -47,6 +47,14 @@ android {
                 "proguard-rules.pro"
             )
         }
+        create("aab-release") {
+            isMinifyEnabled = true
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+            // No signingConfig here to ensure it's unsigned
+        }
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
