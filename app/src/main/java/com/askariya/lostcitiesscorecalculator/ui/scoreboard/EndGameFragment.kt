@@ -1,4 +1,4 @@
-package com.example.lostcitiesscorecalculator.ui.scoreboard
+package com.askariya.lostcitiesscorecalculator.ui.scoreboard
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,9 +8,9 @@ import android.widget.Button
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import com.example.lostcitiesscorecalculator.R
-import com.example.lostcitiesscorecalculator.databinding.FragmentEndGameBinding
-import com.example.lostcitiesscorecalculator.ui.utils.GameStateManager
+import com.askariya.lostcitiesscorecalculator.R
+import com.askariya.lostcitiesscorecalculator.databinding.FragmentEndGameBinding
+import com.askariya.lostcitiesscorecalculator.ui.utils.GameStateManager
 
 class EndGameFragment : Fragment() {
 

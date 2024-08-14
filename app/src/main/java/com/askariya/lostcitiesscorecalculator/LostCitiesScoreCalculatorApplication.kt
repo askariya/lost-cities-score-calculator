@@ -1,7 +1,7 @@
-package com.example.lostcitiesscorecalculator
+package com.askariya.lostcitiesscorecalculator
 
 import android.app.Application
-import com.example.lostcitiesscorecalculator.ui.utils.GameStateManager
+import com.askariya.lostcitiesscorecalculator.ui.utils.GameStateManager
 
 class LostCitiesScoreCalculatorApplication : Application() {
 

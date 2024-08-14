@@ -1,4 +1,4 @@
-package com.example.lostcitiesscorecalculator.ui.utils
+package com.askariya.lostcitiesscorecalculator.ui.utils
 
 import android.content.Context
 import android.text.Html

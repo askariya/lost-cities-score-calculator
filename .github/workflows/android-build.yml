@@ -164,8 +164,19 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: Build Unsigned AAB
+      - name: Set up signing keys
+        run: |
+          echo "${{ secrets.KEYSTORE_FILE }}" | base64 -d > ${{ github.workspace }}/my-release-key.jks
+        env:
+          KEYSTORE_FILE: ${{ secrets.KEYSTORE_FILE }}
+
+      - name: Build AAB
         run: ./gradlew bundleAab-release
+        env:
+          KEYSTORE_FILE: ${{ github.workspace }}/my-release-key.jks
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
 
       - name: List build output directory
         run: ls -R app/build/outputs/bundle/

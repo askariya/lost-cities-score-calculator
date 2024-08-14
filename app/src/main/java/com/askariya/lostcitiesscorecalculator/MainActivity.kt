@@ -1,4 +1,4 @@
-package com.example.lostcitiesscorecalculator
+package com.askariya.lostcitiesscorecalculator
 
 import android.content.res.ColorStateList
 import android.graphics.Color
@@ -12,11 +12,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.viewpager2.widget.ViewPager2
-import com.example.lostcitiesscorecalculator.databinding.ActivityMainBinding
-import com.example.lostcitiesscorecalculator.ui.playerboard.PlayerBoardPagerAdapter
-import com.example.lostcitiesscorecalculator.ui.scoreboard.EndGameFragment
-import com.example.lostcitiesscorecalculator.ui.settings.SettingsDialogFragment
-import com.example.lostcitiesscorecalculator.ui.utils.GameStateManager
+import com.askariya.lostcitiesscorecalculator.databinding.ActivityMainBinding
+import com.askariya.lostcitiesscorecalculator.ui.playerboard.PlayerBoardPagerAdapter
+import com.askariya.lostcitiesscorecalculator.ui.scoreboard.EndGameFragment
+import com.askariya.lostcitiesscorecalculator.ui.settings.SettingsDialogFragment
+import com.askariya.lostcitiesscorecalculator.ui.utils.GameStateManager
 import com.google.android.material.color.MaterialColors
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator

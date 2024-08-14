@@ -6,11 +6,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.lostcitiesscorecalculator"
+    namespace = "com.askariya.lostcitiesscorecalculator"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.lostcitiesscorecalculator"
+        applicationId = "com.askariya.lostcitiesscorecalculator"
         minSdk = 24
         targetSdk = 34
         versionCode = 1
@@ -59,13 +59,12 @@ android {
             )
         }
         create("aab-release") {
+            signingConfig = signingConfigs.findByName("release")
             isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            // Explicitly ensure no signing config is applied
-            signingConfig = null
         }
     }
 

@@ -1,4 +1,4 @@
-package com.example.lostcitiesscorecalculator
+package com.askariya.lostcitiesscorecalculator
 
 import org.junit.Test
 
