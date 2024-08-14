@@ -2,7 +2,7 @@ name: Android CI
 
 on:
   push:
-    branches: [ "aab-release-v2" ]
+    branches: [ "master" ]
 
 permissions: write-all
 
