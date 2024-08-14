@@ -13,8 +13,8 @@ android {
         applicationId = "com.askariya.lostcitiesscorecalculator"
         minSdk = 24
         targetSdk = 34
-        versionCode = 2
-        versionName = "1.2.3"
+        versionCode = 3
+        versionName = "1.3.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
