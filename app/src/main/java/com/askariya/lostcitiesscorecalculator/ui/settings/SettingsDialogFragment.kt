@@ -1,4 +1,4 @@
-package com.example.lostcitiesscorecalculator.ui.settings
+package com.askariya.lostcitiesscorecalculator.ui.settings
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.DialogFragment
-import com.example.lostcitiesscorecalculator.R
+import com.askariya.lostcitiesscorecalculator.R
 
 class SettingsDialogFragment : DialogFragment() {
 

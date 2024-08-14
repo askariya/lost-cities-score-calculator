@@ -1,4 +1,4 @@
-package com.example.lostcitiesscorecalculator.ui.playerboard
+package com.askariya.lostcitiesscorecalculator.ui.playerboard
 
 import PlayerBoardViewModelFactory
 import android.content.res.ColorStateList
@@ -15,10 +15,10 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.example.lostcitiesscorecalculator.R
-import com.example.lostcitiesscorecalculator.databinding.FragmentPlayerboardBinding
-import com.example.lostcitiesscorecalculator.ui.utils.DialogUtils
-import com.example.lostcitiesscorecalculator.ui.utils.GameStateManager
+import com.askariya.lostcitiesscorecalculator.R
+import com.askariya.lostcitiesscorecalculator.databinding.FragmentPlayerboardBinding
+import com.askariya.lostcitiesscorecalculator.ui.utils.DialogUtils
+import com.askariya.lostcitiesscorecalculator.ui.utils.GameStateManager
 import com.google.android.material.card.MaterialCardView
 
 class PlayerBoardFragment : Fragment() {

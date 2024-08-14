@@ -6,11 +6,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.lostcitiesscorecalculator"
+    namespace = "com.askariya.lostcitiesscorecalculator"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.lostcitiesscorecalculator"
+        applicationId = "com.askariya.lostcitiesscorecalculator"
         minSdk = 24
         targetSdk = 34
         versionCode = 1

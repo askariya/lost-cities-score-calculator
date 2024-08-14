@@ -1,4 +1,4 @@
-package com.example.lostcitiesscorecalculator.ui.scoreboard
+package com.askariya.lostcitiesscorecalculator.ui.scoreboard
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

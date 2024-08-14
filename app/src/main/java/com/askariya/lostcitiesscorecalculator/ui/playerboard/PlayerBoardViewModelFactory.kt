@@ -1,6 +1,6 @@
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.lostcitiesscorecalculator.ui.playerboard.PlayerBoardViewModel
+import com.askariya.lostcitiesscorecalculator.ui.playerboard.PlayerBoardViewModel
 
 class PlayerBoardViewModelFactory(private val playerId: Int) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {

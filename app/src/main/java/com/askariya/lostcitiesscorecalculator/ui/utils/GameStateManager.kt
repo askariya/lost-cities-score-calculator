@@ -1,11 +1,11 @@
-package com.example.lostcitiesscorecalculator.ui.utils
+package com.askariya.lostcitiesscorecalculator.ui.utils
 
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.preference.PreferenceManager
-import com.example.lostcitiesscorecalculator.R
+import com.askariya.lostcitiesscorecalculator.R
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 

@@ -170,7 +170,7 @@ jobs:
         env:
           KEYSTORE_FILE: ${{ secrets.KEYSTORE_FILE }}
 
-      - name: Build Unsigned AAB
+      - name: Build AAB
         run: ./gradlew bundleAab-release
         env:
           KEYSTORE_FILE: ${{ github.workspace }}/my-release-key.jks

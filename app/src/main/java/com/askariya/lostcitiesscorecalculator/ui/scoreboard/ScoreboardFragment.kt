@@ -1,4 +1,4 @@
-package com.example.lostcitiesscorecalculator.ui.scoreboard
+package com.askariya.lostcitiesscorecalculator.ui.scoreboard
 
 import android.os.Bundle
 import android.util.TypedValue
@@ -12,10 +12,10 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.example.lostcitiesscorecalculator.R
-import com.example.lostcitiesscorecalculator.databinding.FragmentScoreboardBinding
-import com.example.lostcitiesscorecalculator.ui.utils.DialogUtils
-import com.example.lostcitiesscorecalculator.ui.utils.GameStateManager
+import com.askariya.lostcitiesscorecalculator.R
+import com.askariya.lostcitiesscorecalculator.databinding.FragmentScoreboardBinding
+import com.askariya.lostcitiesscorecalculator.ui.utils.DialogUtils
+import com.askariya.lostcitiesscorecalculator.ui.utils.GameStateManager
 
 class ScoreboardFragment : Fragment() {
 
