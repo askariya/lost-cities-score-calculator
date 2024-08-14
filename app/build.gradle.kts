@@ -59,13 +59,12 @@ android {
             )
         }
         create("aab-release") {
+            signingConfig = signingConfigs.findByName("release")
             isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            // Explicitly ensure no signing config is applied
-            signingConfig = null
         }
     }
 
