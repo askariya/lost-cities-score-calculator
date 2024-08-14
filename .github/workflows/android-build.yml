@@ -129,6 +129,8 @@ jobs:
         LAST_TAG=${{ env.LATEST_TAG }}
         NEW_TAG=${{ env.NEW_VERSION }}
 
+        echo -e "LAST_TAG = ${LAST_TAG} and NEW_TAG = ${NEW_TAG}"
+
         # Fetch the commit date of the latest tag in a consistent format
         TAG_COMMIT_DATE=$(git log -1 --format=%cI $LAST_TAG)
         TAG_DATE=$(date -u -d "$TAG_COMMIT_DATE" +%Y-%m-%dT%H:%M:%SZ)
