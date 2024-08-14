@@ -38,6 +38,12 @@ class EndGameFragment : Fragment() {
             onRestartGameButtonPressed()
         }
 
+        // set the reloadButton functionality
+        val reloadGameButton : Button = binding.reloadGameButton
+        reloadGameButton.setOnClickListener{
+            onReloadGameButtonPressed()
+        }
+
         return root
     }
 
@@ -90,5 +96,8 @@ class EndGameFragment : Fragment() {
 
     private fun onRestartGameButtonPressed() {
         GameStateManager.restartGame(requireContext())
+    }
+    private fun onReloadGameButtonPressed() {
+        GameStateManager.loadGame(requireContext())
     }
 }

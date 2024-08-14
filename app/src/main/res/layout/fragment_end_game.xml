@@ -43,15 +43,25 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         android:padding="5dp">
-                <Button
-                    android:id="@+id/restart_game_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/white"
-                    android:text="@string/label_reset_game"
-                    android:textSize="20sp"
-                    android:backgroundTint="@color/dark_red"
-                    style="@style/StandardButtonStyle"
-                    android:layout_gravity="center"/>
+        <Button
+            android:id="@+id/reload_game_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:text="@string/label_load_game"
+            android:textSize="20sp"
+            android:backgroundTint="@color/dark_grey"
+            style="@style/StandardButtonStyle"
+            android:layout_gravity="start"/>
+        <Button
+            android:id="@+id/restart_game_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:text="@string/label_reset_game"
+            android:textSize="20sp"
+            android:backgroundTint="@color/dark_red"
+            style="@style/StandardButtonStyle"
+            android:layout_gravity="end"/>
     </GridLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

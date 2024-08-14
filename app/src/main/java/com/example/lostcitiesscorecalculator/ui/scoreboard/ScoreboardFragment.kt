@@ -14,6 +14,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.lostcitiesscorecalculator.R
 import com.example.lostcitiesscorecalculator.databinding.FragmentScoreboardBinding
+import com.example.lostcitiesscorecalculator.ui.utils.DialogUtils
 import com.example.lostcitiesscorecalculator.ui.utils.GameStateManager
 
 class ScoreboardFragment : Fragment() {
@@ -47,6 +48,12 @@ class ScoreboardFragment : Fragment() {
             onRestartGameButtonPressed()
         }
 
+        // set the endGameButton functionality
+        val endGameButton : Button = binding.endGameButton
+        endGameButton.setOnClickListener{
+            onEndGameButtonPressed()
+        }
+
         GameStateManager.gameOver.observe(viewLifecycleOwner, endGameObserver)
         GameStateManager.player1CurrentPoints.observe(viewLifecycleOwner, player1CurrentScoreObserver)
         GameStateManager.player2CurrentPoints.observe(viewLifecycleOwner, player2CurrentScoreObserver)
@@ -70,6 +77,20 @@ class ScoreboardFragment : Fragment() {
     }
     private fun onRestartGameButtonPressed() {
         GameStateManager.restartGame(requireContext())
+    }
+    private fun onEndGameButtonPressed() {
+        val message = """
+            Are you sure you want to end the game?<br><br>
+            <i>All player scores and round history will be finalized.</i>
+            """.trimIndent()
+        DialogUtils.showConfirmationDialog(requireContext(),
+            "End Game",
+            message,
+            "Yes",
+            "No")
+        {
+            GameStateManager.endGame(requireContext())
+        }
     }
 
     private fun addNewRound(roundCount: Int, player1RoundScore: Int, player2RoundScore: Int) {

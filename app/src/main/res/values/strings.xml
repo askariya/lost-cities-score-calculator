@@ -17,6 +17,7 @@
     <string name="label_reset">Reset</string>
     <string name="label_submit">Submit</string>
     <string name="label_reset_game">Restart</string>
+    <string name="label_end_game">End Game</string>
     <string name="label_save_game">Save</string>
     <string name="label_load_game">Load</string>
     <string name="label_zero">0</string>

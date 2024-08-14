@@ -174,11 +174,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:rowCount="1"
-            android:columnCount="2"
+            android:columnCount="3"
             android:padding="10dp">
             <Button
                 android:id="@+id/restart_game_button"
-                android:tag="restart_button"
+                android:layout_column="0"
+                android:layout_columnWeight="1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/white"
@@ -187,8 +188,20 @@
                 style="@style/StandardButtonStyle"
                 android:layout_gravity="start"/>
             <Button
+                android:id="@+id/end_game_button"
+                android:layout_column="1"
+                android:layout_columnWeight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:text="@string/label_end_game"
+                android:backgroundTint="@color/dark_grey"
+                style="@style/StandardButtonStyle"
+                android:layout_gravity="center"/>
+            <Button
                 android:id="@+id/submit_score_button"
-                android:tag="submit_button"
+                android:layout_column="2"
+                android:layout_columnWeight="1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/white"
