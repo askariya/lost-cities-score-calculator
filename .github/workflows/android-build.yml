@@ -78,11 +78,8 @@ jobs:
     
     - name: Read version args
       run: |
-        LATEST_TAG="${{ needs.setup-version.outputs.latest_tag_version }}"
         NEW_VERSION="${{ needs.setup-version.outputs.new_version_string }}"
-        echo -e "Read LATEST_TAG = ${LATEST_TAG}"
         echo -e "Read NEW_VERSION = ${NEW_VERSION}"
-        echo "LATEST_TAG=$LATEST_TAG" >> $GITHUB_ENV
         echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
 
     - name: Grant execute permission for gradlew
@@ -115,6 +112,13 @@ jobs:
       run: |
         git config --global user.email "github-actions@github.com"
         git config --global user.name "GitHub Actions"
+
+    - name: Fetch Latest Tag
+      run: |
+        git fetch --tags
+        LATEST_TAG=$(git tag --sort=-creatordate | head -n 1)
+        echo -e "Latest Tag is ${LATEST_TAG}"
+        echo "LATEST_TAG=$LATEST_TAG" >> $GITHUB_ENV
 
     - name: Create and Push New Tag
       run: |
