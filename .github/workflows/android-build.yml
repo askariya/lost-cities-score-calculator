@@ -182,6 +182,9 @@ jobs:
           # Read the current version code and name
           VERSION_CODE=$(grep 'versionCode' app/build.gradle.kts | sed 's/versionCode\s*=\s*//')
           VERSION_NAME=$(grep 'versionName' app/build.gradle.kts | sed 's/versionName\s*=\s*"\(.*\)"/\1/')
+      
+          echo "Extracted VERSION_CODE: $VERSION_CODE"
+          echo "Extracted VERSION_NAME: $VERSION_NAME"
         
           # Increment version code
           NEW_VERSION_CODE=$((VERSION_CODE + 1))
@@ -189,10 +192,25 @@ jobs:
           # Update version name to match the new version code
           NEW_VERSION_NAME="$NEW_VERSION_CODE.0"
         
+          echo "New VERSION_CODE: $NEW_VERSION_CODE"
+          echo "New VERSION_NAME: $NEW_VERSION_NAME"
+        
           # Update the build.gradle.kts file with new values
           sed -i "s/versionCode\s*=\s*$VERSION_CODE/versionCode = $NEW_VERSION_CODE/" app/build.gradle.kts
+          STATUS_CODE_SED_1=$?
           sed -i "s/versionName\s*=\s*\"$VERSION_NAME\"/versionName = \"$NEW_VERSION_NAME\"/" app/build.gradle.kts
-        
+          STATUS_CODE_SED_2=$?
+      
+          # Check if sed commands succeeded
+          if [ $STATUS_CODE_SED_1 -ne 0 ] || [ $STATUS_CODE_SED_2 -ne 0 ]; then
+            echo "Error: Sed command(s) failed."
+            echo "sed command 1 exit status: $STATUS_CODE_SED_1"
+            echo "sed command 2 exit status: $STATUS_CODE_SED_2"
+            exit 1
+          else
+            echo "Sed commands succeeded."
+          fi
+      
           # Print file content after sed commands
           echo "Content of build.gradle.kts after sed commands:"
           cat app/build.gradle.kts
@@ -206,8 +224,6 @@ jobs:
           echo "NEW_VERSION_CODE=$NEW_VERSION_CODE" >> $GITHUB_ENV
           echo "NEW_VERSION_NAME=$NEW_VERSION_NAME" >> $GITHUB_ENV
         
-        
-
       # - name: Build AAB
       #   run: ./gradlew bundleAab-release
       #   env:
