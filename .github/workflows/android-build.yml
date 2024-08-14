@@ -7,145 +7,145 @@ on:
 permissions: write-all
 
 jobs:
-  # apk-build:
-  #   runs-on: ubuntu-latest
+  apk-build:
+    runs-on: ubuntu-latest
 
-  #   steps:
-  #   - uses: actions/checkout@v4
+    steps:
+    - uses: actions/checkout@v4
 
-  #   - name: Set up JDK 17
-  #     uses: actions/setup-java@v4
-  #     with:
-  #       java-version: '17'
-  #       distribution: 'temurin'
-  #       cache: gradle
+    - name: Set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        cache: gradle
 
-  #   - name: Grant execute permission for gradlew
-  #     run: chmod +x gradlew
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
 
-  #   - name: Set up signing keys
-  #     run: |
-  #       echo "${{ secrets.KEYSTORE_FILE }}" | base64 -d > ${{ github.workspace }}/my-release-key.jks
-  #     env:
-  #       KEYSTORE_FILE: ${{ secrets.KEYSTORE_FILE }}
+    - name: Set up signing keys
+      run: |
+        echo "${{ secrets.KEYSTORE_FILE }}" | base64 -d > ${{ github.workspace }}/my-release-key.jks
+      env:
+        KEYSTORE_FILE: ${{ secrets.KEYSTORE_FILE }}
 
-  #   - name: Build APK
-  #     run: ./gradlew assembleRelease
-  #     env:
-  #       KEYSTORE_FILE: ${{ github.workspace }}/my-release-key.jks
-  #       KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-  #       KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-  #       KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+    - name: Build APK
+      run: ./gradlew assembleRelease
+      env:
+        KEYSTORE_FILE: ${{ github.workspace }}/my-release-key.jks
+        KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+        KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+        KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
 
-  #   - name: Rename APK file
-  #     run: mv app/build/outputs/apk/release/app-release.apk app/build/outputs/apk/release/lost-cities-calculator.apk
+    - name: Rename APK file
+      run: mv app/build/outputs/apk/release/app-release.apk app/build/outputs/apk/release/lost-cities-calculator.apk
 
-  #   - name: Upload APK as artifact
-  #     uses: actions/upload-artifact@v4
-  #     with:
-  #       name: lost-cities-calculator
-  #       path: app/build/outputs/apk/release/lost-cities-calculator.apk
+    - name: Upload APK as artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: lost-cities-calculator
+        path: app/build/outputs/apk/release/lost-cities-calculator.apk
 
-  #   - name: Configure Git
-  #     run: |
-  #       git config --global user.email "github-actions@github.com"
-  #       git config --global user.name "GitHub Actions"
+    - name: Configure Git
+      run: |
+        git config --global user.email "github-actions@github.com"
+        git config --global user.name "GitHub Actions"
 
-  #   - name: Fetch Latest Tag
-  #     id: fetch_tag
-  #     run: |
-  #       git fetch --tags
-  #       LATEST_TAG=$(git tag --sort=-creatordate | head -n 1)
-  #       echo "LATEST_TAG=$LATEST_TAG" >> $GITHUB_ENV
+    - name: Fetch Latest Tag
+      id: fetch_tag
+      run: |
+        git fetch --tags
+        LATEST_TAG=$(git tag --sort=-creatordate | head -n 1)
+        echo "LATEST_TAG=$LATEST_TAG" >> $GITHUB_ENV
 
-  #   - name: Increment Version
-  #     id: increment_version
-  #     run: |
-  #       MAJOR=${{ vars.MAJOR_VERSION }}
-  #       MINOR=${{ vars.MINOR_VERSION }}
-  #       TAG=${{ env.LATEST_TAG }}
-  #       if [ -z "$TAG" ]; then
-  #         TAG="v0.0.0"
-  #       fi
-  #       TAG=${TAG#v}
-  #       CURRENT_MAJOR=${TAG%%.*}
-  #       CURRENT_MINOR=${TAG#*.}
-  #       CURRENT_MINOR=${CURRENT_MINOR%%.*}
-  #       PATCH=${TAG##*.}
+    - name: Increment Version
+      id: increment_version
+      run: |
+        MAJOR=${{ vars.MAJOR_VERSION }}
+        MINOR=${{ vars.MINOR_VERSION }}
+        TAG=${{ env.LATEST_TAG }}
+        if [ -z "$TAG" ]; then
+          TAG="v0.0.0"
+        fi
+        TAG=${TAG#v}
+        CURRENT_MAJOR=${TAG%%.*}
+        CURRENT_MINOR=${TAG#*.}
+        CURRENT_MINOR=${CURRENT_MINOR%%.*}
+        PATCH=${TAG##*.}
 
-  #       # Reset patch version if major or minor versions change
-  #       if [ "$MAJOR" -ne "$CURRENT_MAJOR" ] || [ "$MINOR" -ne "$CURRENT_MINOR" ]; then
-  #         PATCH=0
-  #       else
-  #         PATCH=$((PATCH + 1))
-  #       fi
+        # Reset patch version if major or minor versions change
+        if [ "$MAJOR" -ne "$CURRENT_MAJOR" ] || [ "$MINOR" -ne "$CURRENT_MINOR" ]; then
+          PATCH=0
+        else
+          PATCH=$((PATCH + 1))
+        fi
 
-  #       # Construct the new version
-  #       NEW_VERSION="v$MAJOR.$MINOR.$PATCH"
-  #       echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
+        # Construct the new version
+        NEW_VERSION="v$MAJOR.$MINOR.$PATCH"
+        echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
 
-  #   - name: Create and Push New Tag
-  #     run: |
-  #       git tag -a ${{ env.NEW_VERSION }} -m "Release version ${{ env.NEW_VERSION }}"
-  #       git push origin ${{ env.NEW_VERSION }}
-  #     env:
-  #       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Create and Push New Tag
+      run: |
+        git tag -a ${{ env.NEW_VERSION }} -m "Release version ${{ env.NEW_VERSION }}"
+        git push origin ${{ env.NEW_VERSION }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  #   - name: Generate Release Notes
-  #     id: generate_notes
-  #     run: |
-  #       LAST_TAG=${{ env.LATEST_TAG }}
-  #       NEW_TAG=${{ env.NEW_VERSION }}
+    - name: Generate Release Notes
+      id: generate_notes
+      run: |
+        LAST_TAG=${{ env.LATEST_TAG }}
+        NEW_TAG=${{ env.NEW_VERSION }}
 
-  #       # Fetch the commit date of the latest tag in a consistent format
-  #       TAG_COMMIT_DATE=$(git log -1 --format=%cI $LAST_TAG)
-  #       TAG_DATE=$(date -u -d "$TAG_COMMIT_DATE" +%Y-%m-%dT%H:%M:%SZ)
-  #       echo "TAG_DATE=$TAG_DATE" >> $GITHUB_ENV
+        # Fetch the commit date of the latest tag in a consistent format
+        TAG_COMMIT_DATE=$(git log -1 --format=%cI $LAST_TAG)
+        TAG_DATE=$(date -u -d "$TAG_COMMIT_DATE" +%Y-%m-%dT%H:%M:%SZ)
+        echo "TAG_DATE=$TAG_DATE" >> $GITHUB_ENV
 
-  #       # Fetch merged PRs since the last tag using GitHub API
-  #       API_URL="https://api.github.com/repos/${{ github.repository }}/pulls?state=closed&base=master&sort=updated&direction=desc"
-  #       RESPONSE=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" "$API_URL")
+        # Fetch merged PRs since the last tag using GitHub API
+        API_URL="https://api.github.com/repos/${{ github.repository }}/pulls?state=closed&base=master&sort=updated&direction=desc"
+        RESPONSE=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" "$API_URL")
 
-  #       # Use jq to filter PRs based on the merged date and format output with bullet points
-  #       RELEASE_NOTES=$(echo "$RESPONSE" | jq -r --arg TAG_DATE "$TAG_DATE" '
-  #         .[] | select(.merged_at != null and (.merged_at > $TAG_DATE)) |
-  #         "\(.title)\n\((.body // "No description") | split("\n") | map("• \(.|gsub("\\\\"; "\\\\"))") | join("\n"))\n\n---\n\n"' 
-  #       )
+        # Use jq to filter PRs based on the merged date and format output with bullet points
+        RELEASE_NOTES=$(echo "$RESPONSE" | jq -r --arg TAG_DATE "$TAG_DATE" '
+          .[] | select(.merged_at != null and (.merged_at > $TAG_DATE)) |
+          "\(.title)\n\((.body // "No description") | split("\n") | map("• \(.|gsub("\\\\"; "\\\\"))") | join("\n"))\n\n---\n\n"' 
+        )
 
-  #       # Handle new lines and special characters
-  #       CLEANED_NOTES=$(echo "$RELEASE_NOTES" | sed 's/"/\\"/g' | sed ':a;N;$!ba;s/\n/\\n/g')
+        # Handle new lines and special characters
+        CLEANED_NOTES=$(echo "$RELEASE_NOTES" | sed 's/"/\\"/g' | sed ':a;N;$!ba;s/\n/\\n/g')
 
-  #       # Handling empty output
-  #       if [ -z "$CLEANED_NOTES" ]; then
-  #         CLEANED_NOTES="No new PRs since the last tag."
-  #       fi
+        # Handling empty output
+        if [ -z "$CLEANED_NOTES" ]; then
+          CLEANED_NOTES="No new PRs since the last tag."
+        fi
 
-  #       # Print debug information
-  #       echo -e "LAST_TAG = ${LAST_TAG}"
-  #       echo -e "NEW_TAG = ${NEW_TAG}"
-  #       echo -e "RELEASE_NOTES = ${CLEANED_NOTES}"
-  #       echo -e "LAST_TAG_DATE = ${TAG_DATE}"
+        # Print debug information
+        echo -e "LAST_TAG = ${LAST_TAG}"
+        echo -e "NEW_TAG = ${NEW_TAG}"
+        echo -e "RELEASE_NOTES = ${CLEANED_NOTES}"
+        echo -e "LAST_TAG_DATE = ${TAG_DATE}"
 
-  #       echo "RELEASE_NOTES=\n\n\n${CLEANED_NOTES}" >> $GITHUB_ENV
-  #     env:
-  #       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        echo "RELEASE_NOTES=\n\n\n${CLEANED_NOTES}" >> $GITHUB_ENV
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 
-  #   - name: Process and Write Release Notes to File
-  #     run: |
-  #       # Replace literal \n with actual newline characters
-  #       echo "${{ env.RELEASE_NOTES }}" | sed 's/\\n/\n/g' > release_notes.txt
-  #       cat release_notes.txt
+    - name: Process and Write Release Notes to File
+      run: |
+        # Replace literal \n with actual newline characters
+        echo "${{ env.RELEASE_NOTES }}" | sed 's/\\n/\n/g' > release_notes.txt
+        cat release_notes.txt
 
-  #   - name: Create Release and Upload APK
-  #     uses: softprops/action-gh-release@v2
-  #     with:
-  #       tag_name: ${{ env.NEW_VERSION }}
-  #       files: ./app/build/outputs/apk/release/lost-cities-calculator.apk
-  #       body_path: release_notes.txt
-  #       generate_release_notes: true
-  #     env:
-  #       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Create Release and Upload APK
+      uses: softprops/action-gh-release@v2
+      with:
+        tag_name: ${{ env.NEW_VERSION }}
+        files: ./app/build/outputs/apk/release/lost-cities-calculator.apk
+        body_path: release_notes.txt
+        generate_release_notes: true
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   aab-build:
     runs-on: ubuntu-latest
