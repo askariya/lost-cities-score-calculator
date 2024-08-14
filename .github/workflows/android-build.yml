@@ -132,11 +132,13 @@ jobs:
         # Fetch the commit date of the latest tag in a consistent format
         TAG_COMMIT_DATE=$(git log -1 --format=%cI $LAST_TAG)
         TAG_DATE=$(date -u -d "$TAG_COMMIT_DATE" +%Y-%m-%dT%H:%M:%SZ)
+        echo -e "Fetched commit date of the latest tag = ${TAG_DATE}"
         echo "TAG_DATE=$TAG_DATE" >> $GITHUB_ENV
 
         # Fetch merged PRs since the last tag using GitHub API
         API_URL="https://api.github.com/repos/${{ github.repository }}/pulls?state=closed&base=master&sort=updated&direction=desc"
         RESPONSE=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" "$API_URL")
+        echo -e "Fetched Merged PR Response = ${RESPONSE}"
 
         # Use jq to filter PRs based on the merged date and format output with bullet points
         RELEASE_NOTES=$(echo "$RESPONSE" | jq -r --arg TAG_DATE "$TAG_DATE" '
@@ -144,8 +146,12 @@ jobs:
           "\(.title)\n\((.body // "No description") | split("\n") | map("• \(.|gsub("\\\\"; "\\\\"))") | join("\n"))\n\n---\n\n"' 
         )
 
+        echo -e "Finished extracting Release Notes"
+
         # Handle new lines and special characters
         CLEANED_NOTES=$(echo "$RELEASE_NOTES" | sed 's/"/\\"/g' | sed ':a;N;$!ba;s/\n/\\n/g')
+
+        echo -e "Finished cleaning Release Notes"
 
         # Handling empty output
         if [ -z "$CLEANED_NOTES" ]; then
