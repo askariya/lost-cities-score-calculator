@@ -8,6 +8,7 @@ permissions: write-all
 
 jobs:
   apk-build:
+    if: github.event_name == 'push' && !contains(github.event.head_commit.message, '[skip ci]')
     runs-on: ubuntu-latest
 
     steps:
@@ -148,6 +149,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   aab-build:
+    if: github.event_name == 'push' && !contains(github.event.head_commit.message, '[skip ci]')
     runs-on: ubuntu-latest
 
     steps:
@@ -170,6 +172,71 @@ jobs:
         env:
           KEYSTORE_FILE: ${{ secrets.KEYSTORE_FILE }}
 
+      - name: Increment Version Code and Name
+        id: increment_version
+        run: |
+          # Print initial content of the file
+          echo "Initial content of build.gradle.kts:"
+          cat app/build.gradle.kts
+      
+          # Read the current version code and name
+          VERSION_CODE=$(grep 'versionCode' app/build.gradle.kts | awk '{print $3}' | tr -d '[:space:]')
+          VERSION_NAME=$(grep 'versionName' app/build.gradle.kts | awk -F'\"' '{print $2}')
+          
+          echo "Extracted VERSION_CODE: $VERSION_CODE"
+          echo "Extracted VERSION_NAME: $VERSION_NAME"
+        
+          # Increment version code
+          NEW_VERSION_CODE=$((VERSION_CODE + 1))
+        
+          # Update version name to match the new version code
+          NEW_VERSION_NAME="$NEW_VERSION_CODE.0"
+        
+          echo "New VERSION_CODE: $NEW_VERSION_CODE"
+          echo "New VERSION_NAME: $NEW_VERSION_NAME"
+        
+          # Update the build.gradle.kts file with new values using Python
+          python3 -c "
+          import re
+          
+          filename = 'app/build.gradle.kts'
+          old_version_code = '$VERSION_CODE'
+          new_version_code = '$NEW_VERSION_CODE'
+          old_version_name = '$VERSION_NAME'
+          new_version_name = '$NEW_VERSION_NAME'
+          
+          with open(filename, 'r') as file:
+              content = file.read()
+          
+          content = re.sub(rf'versionCode\s*=\s*{old_version_code}', f'versionCode = {new_version_code}', content)
+          content = re.sub(rf'versionName\s*=\s*\"{old_version_name}\"', f'versionName = \"{new_version_name}\"', content)
+          
+          with open(filename, 'w') as file:
+              file.write(content)
+          "
+      
+          # Check if the file has been updated
+          if [ $? -ne 0 ]; then
+            echo "Error: Python script failed."
+            exit 1
+          else
+            echo "Python script succeeded."
+          fi
+        
+          # Print file content after modifications
+          echo "Content of build.gradle.kts after modifications:"
+          cat app/build.gradle.kts
+        
+          # Check for changes
+          git config --global user.email "github-actions@github.com"
+          git config --global user.name "GitHub Actions"
+          git status
+        
+          # Output new values for next step
+          echo "NEW_VERSION_CODE=$NEW_VERSION_CODE" >> $GITHUB_ENV
+          echo "NEW_VERSION_NAME=$NEW_VERSION_NAME" >> $GITHUB_ENV
+        
+        
       - name: Build AAB
         run: ./gradlew bundleAab-release
         env:
@@ -186,6 +253,23 @@ jobs:
         with:
           name: app-aab-release.aab
           path: app/build/outputs/bundle/aab-release/app-aab-release.aab
+
+      - name: Commit Version Code and Name Changes
+        run: |
+          # Check if NEW_VERSION_CODE is not empty
+          #if [ -n "${{ env.NEW_VERSION_CODE }}" ]; then
+            echo "Committing new version: ${{ env.NEW_VERSION_CODE }}" 
+            git config --global user.email "github-actions@github.com"
+            git config --global user.name "GitHub Actions"
+            git status
+            git add app/build.gradle.kts
+            git commit -m "Increment versionCode to ${{ env.NEW_VERSION_CODE }} and versionName to ${{ env.NEW_VERSION_NAME }} [skip ci]"
+            git push origin ${{ github.ref_name }}
+          #else
+            #echo "No version code update required."
+          #fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       #TODO
       # - name: Upload AAB to Google Play (Optional)
