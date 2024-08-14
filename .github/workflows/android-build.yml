@@ -197,8 +197,10 @@ jobs:
       
       - name: Read version args
         run: |
-          NEW_VERSION="${{ needs.setup-version.outputs.new_version }}"
-          echo -e "Read NEW_VERSION = ${NEW_VERSION}"
+          NEW_VERSION_RAW="${{ needs.setup-version.outputs.new_version }}"
+          echo -e "Raw NEW_VERSION = ${NEW_VERSION_RAW}"
+          NEW_VERSION="${NEW_VERSION_RAW#v}"
+          echo -e "Stripped NEW_VERSION = ${NEW_VERSION}"
           echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
 
       # - name: Grant execute permission for gradlew
