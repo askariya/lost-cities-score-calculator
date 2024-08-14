@@ -173,25 +173,26 @@ jobs:
           KEYSTORE_FILE: ${{ secrets.KEYSTORE_FILE }}
 
       - name: Increment Version Code and Name
+        id: increment_version
         run: |
-          # Extract current version code and name
-          CURRENT_VERSION_CODE=$(grep 'versionCode' app/build.gradle.kts | sed 's/.*versionCode = \([0-9]*\).*/\1/')
-          CURRENT_VERSION_NAME=$(grep 'versionName' app/build.gradle.kts | sed 's/.*versionName = "\([0-9.]*\)".*/\1/')
-          
+          # Read the current version code and name
+          VERSION_CODE=$(grep 'versionCode' app/build.gradle.kts | sed 's/versionCode\s*=\s*//')
+          VERSION_NAME=$(grep 'versionName' app/build.gradle.kts | sed 's/versionName\s*=\s*"\(.*\)"/\1/')
+      
           # Increment version code
-          NEW_VERSION_CODE=$((CURRENT_VERSION_CODE + 1))
-          
-          # Increment version name (basic example for minor version update)
-          VERSION_NAME_PARTS=(${CURRENT_VERSION_NAME//./ })
-          MAJOR_VERSION=${VERSION_NAME_PARTS[0]}
-          MINOR_VERSION=$((VERSION_NAME_PARTS[1] + 1))
-          NEW_VERSION_NAME="${MAJOR_VERSION}.${MINOR_VERSION}"
-          
-          # Update build.gradle.kts with new values
-          sed -i "s/versionCode = $CURRENT_VERSION_CODE/versionCode = $NEW_VERSION_CODE/" app/build.gradle.kts
-          sed -i "s/versionName = \"$CURRENT_VERSION_NAME\"/versionName = \"$NEW_VERSION_NAME\"/" app/build.gradle.kts
-  
-          echo "Updated versionCode to $NEW_VERSION_CODE and versionName to $NEW_VERSION_NAME"
+          NEW_VERSION_CODE=$((VERSION_CODE + 1))
+      
+          # Update version name to match the new version code
+          NEW_VERSION_NAME="$NEW_VERSION_CODE.0"
+      
+          # Update the build.gradle.kts file with new values
+          sed -i "s/versionCode\s*=\s*$VERSION_CODE/versionCode = $NEW_VERSION_CODE/" app/build.gradle.kts
+          sed -i "s/versionName\s*=\s*\"$VERSION_NAME\"/versionName = \"$NEW_VERSION_NAME\"/" app/build.gradle.kts
+      
+          # Output new values for next step
+          echo "NEW_VERSION_CODE=$NEW_VERSION_CODE" >> $GITHUB_ENV
+          echo "NEW_VERSION_NAME=$NEW_VERSION_NAME" >> $GITHUB_ENV
+        
 
       - name: Build AAB
         run: ./gradlew bundleAab-release
@@ -216,10 +217,13 @@ jobs:
           git config --global user.name "GitHub Actions"
 
       - name: Commit Version Code and Name Changes
+        if: steps.increment_version.outputs.NEW_VERSION_CODE != ''
         run: |
+          git config --global user.email "github-actions@github.com"
+          git config --global user.name "GitHub Actions"
           git add app/build.gradle.kts
-          git commit -m "Increment versionCode and versionName [skip ci]"
-          git push origin master
+          git commit -m "Increment versionCode to ${{ env.NEW_VERSION_CODE }} and versionName to ${{ env.NEW_VERSION_NAME }} [skip ci]"
+          git push origin ${{ github.ref_name }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
