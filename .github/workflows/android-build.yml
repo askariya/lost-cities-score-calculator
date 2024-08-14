@@ -30,7 +30,7 @@ jobs:
           git fetch --tags
           LATEST_TAG=$(git tag --sort=-creatordate | head -n 1)
           echo "LATEST_TAG=$LATEST_TAG" >> $GITHUB_ENV
-          echo "::set-output name=latest_tag::$LATEST_TAG"
+          echo "LATEST_TAG=$LATEST_TAG >> $GITHUB_OUTPUT
     
       - name: Increment Version
         id: increment_version
@@ -57,7 +57,7 @@ jobs:
           # Construct the new version
           NEW_VERSION="v$MAJOR.$MINOR.$PATCH"
           echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
-          echo "::set-output name=new_version::$NEW_VERSION"
+          echo "NEW_VERSION=$NEW_VERSION >> $GITHUB_OUTPUT
   
 
   apk-build:
