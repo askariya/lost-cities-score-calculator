@@ -174,7 +174,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: app-aab-release.aab
-          path: app/build/outputs/bundle/aab-Release/app-aab-release.aab
+          path: app/build/outputs/bundle/aab-release/app-aab-release.aab
 
       #TODO
       # - name: Upload AAB to Google Play (Optional)
