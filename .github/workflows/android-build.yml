@@ -12,8 +12,8 @@ jobs:
     runs-on: ubuntu-latest
 
     outputs:
-      new_version: ${{ steps.increment_version.outputs.new_version }}
-      latest_tag: ${{ steps.fetch_tag.outputs.latest_tag }}
+      new_version_string: ${{ steps.increment_version.outputs.new_version_string }}
+      latest_tag_version: ${{ steps.fetch_tag.outputs.latest_tag_version }}
 
     steps:
       - name: Checkout code
@@ -31,7 +31,7 @@ jobs:
           LATEST_TAG=$(git tag --sort=-creatordate | head -n 1)
           echo -e "Latest Tag is ${LATEST_TAG}"
           echo "LATEST_TAG=$LATEST_TAG" >> $GITHUB_ENV
-          echo "latest_tag=$LATEST_TAG" >> $GITHUB_OUTPUT
+          echo "latest_tag_version=$LATEST_TAG" >> $GITHUB_OUTPUT
     
       - name: Increment Version
         id: increment_version
@@ -58,7 +58,7 @@ jobs:
           # Construct the new version
           NEW_VERSION="v$MAJOR.$MINOR.$PATCH"
           echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
-          echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
+          echo "new_version_string=$NEW_VERSION" >> $GITHUB_OUTPUT
   
 
   apk-build:
@@ -78,8 +78,8 @@ jobs:
     
     - name: Read version args
       run: |
-        LATEST_TAG="${{ needs.setup-version.outputs.latest_tag }}"
-        NEW_VERSION="${{ needs.setup-version.outputs.new_version }}"
+        LATEST_TAG="${{ needs.setup-version.outputs.latest_tag_version }}"
+        NEW_VERSION="${{ needs.setup-version.outputs.new_version_string }}"
         echo -e "Read LATEST_TAG = ${LATEST_TAG}"
         echo -e "Read NEW_VERSION = ${NEW_VERSION}"
         echo "LATEST_TAG=$LATEST_TAG" >> $GITHUB_ENV
@@ -94,22 +94,22 @@ jobs:
       env:
         KEYSTORE_FILE: ${{ secrets.KEYSTORE_FILE }}
 
-    - name: Build APK
-      run: ./gradlew assembleRelease
-      env:
-        KEYSTORE_FILE: ${{ github.workspace }}/my-release-key.jks
-        KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-        KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-        KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+    # - name: Build APK
+    #   run: ./gradlew assembleRelease
+    #   env:
+    #     KEYSTORE_FILE: ${{ github.workspace }}/my-release-key.jks
+    #     KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+    #     KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+    #     KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
 
-    - name: Rename APK file
-      run: mv app/build/outputs/apk/release/app-release.apk app/build/outputs/apk/release/lost-cities-calculator.apk
+    # - name: Rename APK file
+    #   run: mv app/build/outputs/apk/release/app-release.apk app/build/outputs/apk/release/lost-cities-calculator.apk
 
-    - name: Upload APK as artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: lost-cities-calculator
-        path: app/build/outputs/apk/release/lost-cities-calculator.apk
+    # - name: Upload APK as artifact
+    #   uses: actions/upload-artifact@v4
+    #   with:
+    #     name: lost-cities-calculator
+    #     path: app/build/outputs/apk/release/lost-cities-calculator.apk
 
     - name: Configure Git
       run: |
