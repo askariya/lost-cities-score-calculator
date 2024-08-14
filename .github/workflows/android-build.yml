@@ -172,26 +172,26 @@ jobs:
         env:
           KEYSTORE_FILE: ${{ secrets.KEYSTORE_FILE }}
 
-      - name: Increment Version Code and Name
-        id: increment_version
-        run: |
-          # Read the current version code and name
-          VERSION_CODE=$(grep 'versionCode' app/build.gradle.kts | sed 's/versionCode\s*=\s*//')
-          VERSION_NAME=$(grep 'versionName' app/build.gradle.kts | sed 's/versionName\s*=\s*"\(.*\)"/\1/')
+      # - name: Increment Version Code and Name
+      #   id: increment_version
+      #   run: |
+      #     # Read the current version code and name
+      #     VERSION_CODE=$(grep 'versionCode' app/build.gradle.kts | sed 's/versionCode\s*=\s*//')
+      #     VERSION_NAME=$(grep 'versionName' app/build.gradle.kts | sed 's/versionName\s*=\s*"\(.*\)"/\1/')
       
-          # Increment version code
-          NEW_VERSION_CODE=$((VERSION_CODE + 1))
+      #     # Increment version code
+      #     NEW_VERSION_CODE=$((VERSION_CODE + 1))
       
-          # Update version name to match the new version code
-          NEW_VERSION_NAME="$NEW_VERSION_CODE.0"
+      #     # Update version name to match the new version code
+      #     NEW_VERSION_NAME="$NEW_VERSION_CODE.0"
       
-          # Update the build.gradle.kts file with new values
-          sed -i "s/versionCode\s*=\s*$VERSION_CODE/versionCode = $NEW_VERSION_CODE/" app/build.gradle.kts
-          sed -i "s/versionName\s*=\s*\"$VERSION_NAME\"/versionName = \"$NEW_VERSION_NAME\"/" app/build.gradle.kts
+      #     # Update the build.gradle.kts file with new values
+      #     sed -i "s/versionCode\s*=\s*$VERSION_CODE/versionCode = $NEW_VERSION_CODE/" app/build.gradle.kts
+      #     sed -i "s/versionName\s*=\s*\"$VERSION_NAME\"/versionName = \"$NEW_VERSION_NAME\"/" app/build.gradle.kts
       
-          # Output new values for next step
-          echo "NEW_VERSION_CODE=$NEW_VERSION_CODE" >> $GITHUB_ENV
-          echo "NEW_VERSION_NAME=$NEW_VERSION_NAME" >> $GITHUB_ENV
+      #     # Output new values for next step
+      #     echo "NEW_VERSION_CODE=$NEW_VERSION_CODE" >> $GITHUB_ENV
+      #     echo "NEW_VERSION_NAME=$NEW_VERSION_NAME" >> $GITHUB_ENV
         
 
       # - name: Build AAB
