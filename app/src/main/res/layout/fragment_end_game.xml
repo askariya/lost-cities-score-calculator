@@ -49,7 +49,7 @@
             android:layout_height="wrap_content"
             android:textColor="@color/white"
             android:text="@string/label_load_game"
-            android:textSize="20sp"
+            android:textSize="18sp"
             android:backgroundTint="@color/dark_grey"
             style="@style/StandardButtonStyle"
             android:layout_gravity="start"/>
@@ -59,7 +59,7 @@
             android:layout_height="wrap_content"
             android:textColor="@color/white"
             android:text="@string/label_reset_game"
-            android:textSize="20sp"
+            android:textSize="18sp"
             android:backgroundTint="@color/dark_red"
             style="@style/StandardButtonStyle"
             android:layout_gravity="end"/>

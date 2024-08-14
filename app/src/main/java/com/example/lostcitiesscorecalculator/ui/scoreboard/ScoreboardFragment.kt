@@ -181,11 +181,11 @@ class ScoreboardFragment : Fragment() {
             binding.scoreCurrentHeader.visibility = View.GONE
             binding.scoreboardFooter.visibility = View.GONE
             binding.totalScoreLabel.text = getString(R.string.final_label)
-            binding.totalScoreLabel.textSize = 30F
+            binding.totalScoreLabel.textSize = 25F
             binding.totalScoreLabel.setPadding(15,15,15,15)
-            binding.player1TotalScoreView.textSize = 30F
+            binding.player1TotalScoreView.textSize = 25F
             binding.player1TotalScoreView.setPadding(15,15,15,15)
-            binding.player2TotalScoreView.textSize = 30F
+            binding.player2TotalScoreView.textSize = 25F
             binding.player2TotalScoreView.setPadding(15,15,15,15)
         }
         else
