@@ -196,9 +196,9 @@ jobs:
           echo "New VERSION_NAME: $NEW_VERSION_NAME"
         
           # Update the build.gradle.kts file with new values
-          sed -i "s/versionCode\s*=\s*$VERSION_CODE/versionCode = $NEW_VERSION_CODE/" app/build.gradle.kts
+          sed -i "s/versionCsode\s*=\s*$VERSION_CODE/versionCode = $NEW_VERSION_CODE/" app/build.gradle.kts
           STATUS_CODE_SED_1=$?
-          sed -i "s/versionName\s*=\s*\"$VERSION_NAME\"/versionName = \"$NEW_VERSION_NAME\"/" app/build.gradle.kts
+          sed -i "s/versionsName\s*=\s*\"$VERSION_NAME\"/versionName = \"$NEW_VERSION_NAME\"/" app/build.gradle.kts
           STATUS_CODE_SED_2=$?
       
           # Check if sed commands succeeded
