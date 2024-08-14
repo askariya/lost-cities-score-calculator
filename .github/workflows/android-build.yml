@@ -85,99 +85,99 @@ jobs:
         echo "LATEST_TAG=$LATEST_TAG" >> $GITHUB_ENV
         echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
 
-    # - name: Grant execute permission for gradlew
-    #   run: chmod +x gradlew
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
 
-    # - name: Set up signing keys
-    #   run: |
-    #     echo "${{ secrets.KEYSTORE_FILE }}" | base64 -d > ${{ github.workspace }}/my-release-key.jks
-    #   env:
-    #     KEYSTORE_FILE: ${{ secrets.KEYSTORE_FILE }}
+    - name: Set up signing keys
+      run: |
+        echo "${{ secrets.KEYSTORE_FILE }}" | base64 -d > ${{ github.workspace }}/my-release-key.jks
+      env:
+        KEYSTORE_FILE: ${{ secrets.KEYSTORE_FILE }}
 
-    # - name: Build APK
-    #   run: ./gradlew assembleRelease
-    #   env:
-    #     KEYSTORE_FILE: ${{ github.workspace }}/my-release-key.jks
-    #     KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-    #     KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-    #     KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+    - name: Build APK
+      run: ./gradlew assembleRelease
+      env:
+        KEYSTORE_FILE: ${{ github.workspace }}/my-release-key.jks
+        KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+        KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+        KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
 
-    # - name: Rename APK file
-    #   run: mv app/build/outputs/apk/release/app-release.apk app/build/outputs/apk/release/lost-cities-calculator.apk
+    - name: Rename APK file
+      run: mv app/build/outputs/apk/release/app-release.apk app/build/outputs/apk/release/lost-cities-calculator.apk
 
-    # - name: Upload APK as artifact
-    #   uses: actions/upload-artifact@v4
-    #   with:
-    #     name: lost-cities-calculator
-    #     path: app/build/outputs/apk/release/lost-cities-calculator.apk
+    - name: Upload APK as artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: lost-cities-calculator
+        path: app/build/outputs/apk/release/lost-cities-calculator.apk
 
-    # - name: Configure Git
-    #   run: |
-    #     git config --global user.email "github-actions@github.com"
-    #     git config --global user.name "GitHub Actions"
+    - name: Configure Git
+      run: |
+        git config --global user.email "github-actions@github.com"
+        git config --global user.name "GitHub Actions"
 
-    # - name: Create and Push New Tag
-    #   run: |
-    #     git tag -a ${{ env.NEW_VERSION }} -m "Release version ${{ env.NEW_VERSION }}"
-    #     git push origin ${{ env.NEW_VERSION }}
-    #   env:
-    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Create and Push New Tag
+      run: |
+        git tag -a ${{ env.NEW_VERSION }} -m "Release version ${{ env.NEW_VERSION }}"
+        git push origin ${{ env.NEW_VERSION }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-    # - name: Generate Release Notes
-    #   id: generate_notes
-    #   run: |
-    #     LAST_TAG=${{ env.LATEST_TAG }}
-    #     NEW_TAG=${{ env.NEW_VERSION }}
+    - name: Generate Release Notes
+      id: generate_notes
+      run: |
+        LAST_TAG=${{ env.LATEST_TAG }}
+        NEW_TAG=${{ env.NEW_VERSION }}
 
-    #     # Fetch the commit date of the latest tag in a consistent format
-    #     TAG_COMMIT_DATE=$(git log -1 --format=%cI $LAST_TAG)
-    #     TAG_DATE=$(date -u -d "$TAG_COMMIT_DATE" +%Y-%m-%dT%H:%M:%SZ)
-    #     echo "TAG_DATE=$TAG_DATE" >> $GITHUB_ENV
+        # Fetch the commit date of the latest tag in a consistent format
+        TAG_COMMIT_DATE=$(git log -1 --format=%cI $LAST_TAG)
+        TAG_DATE=$(date -u -d "$TAG_COMMIT_DATE" +%Y-%m-%dT%H:%M:%SZ)
+        echo "TAG_DATE=$TAG_DATE" >> $GITHUB_ENV
 
-    #     # Fetch merged PRs since the last tag using GitHub API
-    #     API_URL="https://api.github.com/repos/${{ github.repository }}/pulls?state=closed&base=master&sort=updated&direction=desc"
-    #     RESPONSE=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" "$API_URL")
+        # Fetch merged PRs since the last tag using GitHub API
+        API_URL="https://api.github.com/repos/${{ github.repository }}/pulls?state=closed&base=master&sort=updated&direction=desc"
+        RESPONSE=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" "$API_URL")
 
-    #     # Use jq to filter PRs based on the merged date and format output with bullet points
-    #     RELEASE_NOTES=$(echo "$RESPONSE" | jq -r --arg TAG_DATE "$TAG_DATE" '
-    #       .[] | select(.merged_at != null and (.merged_at > $TAG_DATE)) |
-    #       "\(.title)\n\((.body // "No description") | split("\n") | map("• \(.|gsub("\\\\"; "\\\\"))") | join("\n"))\n\n---\n\n"' 
-    #     )
+        # Use jq to filter PRs based on the merged date and format output with bullet points
+        RELEASE_NOTES=$(echo "$RESPONSE" | jq -r --arg TAG_DATE "$TAG_DATE" '
+          .[] | select(.merged_at != null and (.merged_at > $TAG_DATE)) |
+          "\(.title)\n\((.body // "No description") | split("\n") | map("• \(.|gsub("\\\\"; "\\\\"))") | join("\n"))\n\n---\n\n"' 
+        )
 
-    #     # Handle new lines and special characters
-    #     CLEANED_NOTES=$(echo "$RELEASE_NOTES" | sed 's/"/\\"/g' | sed ':a;N;$!ba;s/\n/\\n/g')
+        # Handle new lines and special characters
+        CLEANED_NOTES=$(echo "$RELEASE_NOTES" | sed 's/"/\\"/g' | sed ':a;N;$!ba;s/\n/\\n/g')
 
-    #     # Handling empty output
-    #     if [ -z "$CLEANED_NOTES" ]; then
-    #       CLEANED_NOTES="No new PRs since the last tag."
-    #     fi
+        # Handling empty output
+        if [ -z "$CLEANED_NOTES" ]; then
+          CLEANED_NOTES="No new PRs since the last tag."
+        fi
 
-    #     # Print debug information
-    #     echo -e "LAST_TAG = ${LAST_TAG}"
-    #     echo -e "NEW_TAG = ${NEW_TAG}"
-    #     echo -e "RELEASE_NOTES = ${CLEANED_NOTES}"
-    #     echo -e "LAST_TAG_DATE = ${TAG_DATE}"
+        # Print debug information
+        echo -e "LAST_TAG = ${LAST_TAG}"
+        echo -e "NEW_TAG = ${NEW_TAG}"
+        echo -e "RELEASE_NOTES = ${CLEANED_NOTES}"
+        echo -e "LAST_TAG_DATE = ${TAG_DATE}"
 
-    #     echo "RELEASE_NOTES=\n\n\n${CLEANED_NOTES}" >> $GITHUB_ENV
-    #   env:
-    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        echo "RELEASE_NOTES=\n\n\n${CLEANED_NOTES}" >> $GITHUB_ENV
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 
-    # - name: Process and Write Release Notes to File
-    #   run: |
-    #     # Replace literal \n with actual newline characters
-    #     echo "${{ env.RELEASE_NOTES }}" | sed 's/\\n/\n/g' > release_notes.txt
-    #     cat release_notes.txt
+    - name: Process and Write Release Notes to File
+      run: |
+        # Replace literal \n with actual newline characters
+        echo "${{ env.RELEASE_NOTES }}" | sed 's/\\n/\n/g' > release_notes.txt
+        cat release_notes.txt
 
-    # - name: Create Release and Upload APK
-    #   uses: softprops/action-gh-release@v2
-    #   with:
-    #     tag_name: ${{ env.NEW_VERSION }}
-    #     files: ./app/build/outputs/apk/release/lost-cities-calculator.apk
-    #     body_path: release_notes.txt
-    #     generate_release_notes: true
-    #   env:
-    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Create Release and Upload APK
+      uses: softprops/action-gh-release@v2
+      with:
+        tag_name: ${{ env.NEW_VERSION }}
+        files: ./app/build/outputs/apk/release/lost-cities-calculator.apk
+        body_path: release_notes.txt
+        generate_release_notes: true
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   aab-build:
     if: github.event_name == 'push' && !contains(github.event.head_commit.message, '[skip ci]')
@@ -203,110 +203,110 @@ jobs:
           echo -e "Stripped NEW_VERSION = ${NEW_VERSION}"
           echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
 
-      # - name: Grant execute permission for gradlew
-      #   run: chmod +x gradlew
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
 
-      # - name: Set up signing keys
-      #   run: |
-      #     echo "${{ secrets.KEYSTORE_FILE }}" | base64 -d > ${{ github.workspace }}/my-release-key.jks
-      #   env:
-      #     KEYSTORE_FILE: ${{ secrets.KEYSTORE_FILE }}
+      - name: Set up signing keys
+        run: |
+          echo "${{ secrets.KEYSTORE_FILE }}" | base64 -d > ${{ github.workspace }}/my-release-key.jks
+        env:
+          KEYSTORE_FILE: ${{ secrets.KEYSTORE_FILE }}
 
-      # - name: Increment Version Code and Set Version Name
-      #   id: increment_version
-      #   run: |
-      #     # Print initial content of the file
-      #     echo "Initial content of build.gradle.kts:"
-      #     cat app/build.gradle.kts
+      - name: Increment Version Code and Set Version Name
+        id: increment_version
+        run: |
+          # Print initial content of the file
+          echo "Initial content of build.gradle.kts:"
+          cat app/build.gradle.kts
       
-      #     # Read the current version code
-      #     VERSION_CODE=$(grep 'versionCode' app/build.gradle.kts | awk '{print $3}' | tr -d '[:space:]')
-      #     echo "Extracted VERSION_CODE: $VERSION_CODE"
+          # Read the current version code
+          VERSION_CODE=$(grep 'versionCode' app/build.gradle.kts | awk '{print $3}' | tr -d '[:space:]')
+          echo "Extracted VERSION_CODE: $VERSION_CODE"
         
-      #     # Increment version code
-      #     NEW_VERSION_CODE=$((VERSION_CODE + 1))
+          # Increment version code
+          NEW_VERSION_CODE=$((VERSION_CODE + 1))
         
-      #     # Use the version name fetched from the setup-version job
-      #     NEW_VERSION_NAME="${{ env.NEW_VERSION }}"
+          # Use the version name fetched from the setup-version job
+          NEW_VERSION_NAME="${{ env.NEW_VERSION }}"
         
-      #     echo "New VERSION_CODE: $NEW_VERSION_CODE"
-      #     echo "New VERSION_NAME: $NEW_VERSION_NAME"
+          echo "New VERSION_CODE: $NEW_VERSION_CODE"
+          echo "New VERSION_NAME: $NEW_VERSION_NAME"
         
-      #     # Update the build.gradle.kts file with new values using Python
-      #     python3 -c "
-      #     import re
+          # Update the build.gradle.kts file with new values using Python
+          python3 -c "
+          import re
           
-      #     filename = 'app/build.gradle.kts'
-      #     old_version_code = '$VERSION_CODE'
-      #     new_version_code = '$NEW_VERSION_CODE'
-      #     old_version_name = '$VERSION_NAME'
-      #     new_version_name = '$NEW_VERSION_NAME'
+          filename = 'app/build.gradle.kts'
+          old_version_code = '$VERSION_CODE'
+          new_version_code = '$NEW_VERSION_CODE'
+          old_version_name = '$VERSION_NAME'
+          new_version_name = '$NEW_VERSION_NAME'
           
-      #     with open(filename, 'r') as file:
-      #         content = file.read()
+          with open(filename, 'r') as file:
+              content = file.read()
           
-      #     content = re.sub(rf'versionCode\s*=\s*{old_version_code}', f'versionCode = {new_version_code}', content)
-      #     content = re.sub(rf'versionName\s*=\s*\"{old_version_name}\"', f'versionName = \"{new_version_name}\"', content)
+          content = re.sub(rf'versionCode\s*=\s*{old_version_code}', f'versionCode = {new_version_code}', content)
+          content = re.sub(rf'versionName\s*=\s*\"{old_version_name}\"', f'versionName = \"{new_version_name}\"', content)
           
-      #     with open(filename, 'w') as file:
-      #         file.write(content)
-      #     "
+          with open(filename, 'w') as file:
+              file.write(content)
+          "
       
-      #     # Check if the file has been updated
-      #     if [ $? -ne 0 ]; then
-      #       echo "Error: Python script failed."
-      #       exit 1
-      #     else
-      #       echo "Python script succeeded."
-      #     fi
+          # Check if the file has been updated
+          if [ $? -ne 0 ]; then
+            echo "Error: Python script failed."
+            exit 1
+          else
+            echo "Python script succeeded."
+          fi
         
-      #     # Print file content after modifications
-      #     echo "Content of build.gradle.kts after modifications:"
-      #     cat app/build.gradle.kts
+          # Print file content after modifications
+          echo "Content of build.gradle.kts after modifications:"
+          cat app/build.gradle.kts
         
-      #     # Check for changes
-      #     git config --global user.email "github-actions@github.com"
-      #     git config --global user.name "GitHub Actions"
-      #     git status
+          # Check for changes
+          git config --global user.email "github-actions@github.com"
+          git config --global user.name "GitHub Actions"
+          git status
         
-      #     # Output new values for next step
-      #     echo "NEW_VERSION_CODE=$NEW_VERSION_CODE" >> $GITHUB_ENV
-      #     echo "NEW_VERSION_NAME=$NEW_VERSION_NAME" >> $GITHUB_ENV
+          # Output new values for next step
+          echo "NEW_VERSION_CODE=$NEW_VERSION_CODE" >> $GITHUB_ENV
+          echo "NEW_VERSION_NAME=$NEW_VERSION_NAME" >> $GITHUB_ENV
         
         
-      # - name: Build AAB
-      #   run: ./gradlew bundleAab-release
-      #   env:
-      #     KEYSTORE_FILE: ${{ github.workspace }}/my-release-key.jks
-      #     KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-      #     KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-      #     KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+      - name: Build AAB
+        run: ./gradlew bundleAab-release
+        env:
+          KEYSTORE_FILE: ${{ github.workspace }}/my-release-key.jks
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
 
-      # - name: List build output directory
-      #   run: ls -R app/build/outputs/bundle/
+      - name: List build output directory
+        run: ls -R app/build/outputs/bundle/
 
-      # - name: Upload AAB to GitHub
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: app-aab-release.aab
-      #     path: app/build/outputs/bundle/aab-release/app-aab-release.aab
+      - name: Upload AAB to GitHub
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-aab-release.aab
+          path: app/build/outputs/bundle/aab-release/app-aab-release.aab
 
-      # - name: Commit Version Code and Name Changes
-      #   run: |
-      #     # Check if NEW_VERSION_CODE is not empty
-      #     #if [ -n "${{ env.NEW_VERSION_CODE }}" ]; then
-      #       echo "Committing new version: ${{ env.NEW_VERSION_CODE }}" 
-      #       git config --global user.email "github-actions@github.com"
-      #       git config --global user.name "GitHub Actions"
-      #       git status
-      #       git add app/build.gradle.kts
-      #       git commit -m "Increment versionCode to ${{ env.NEW_VERSION_CODE }} and versionName to ${{ env.NEW_VERSION_NAME }} [skip ci]"
-      #       git push origin ${{ github.ref_name }}
-      #     #else
-      #       #echo "No version code update required."
-      #     #fi
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Commit Version Code and Name Changes
+        run: |
+          # Check if NEW_VERSION_CODE is not empty
+          #if [ -n "${{ env.NEW_VERSION_CODE }}" ]; then
+            echo "Committing new version: ${{ env.NEW_VERSION_CODE }}" 
+            git config --global user.email "github-actions@github.com"
+            git config --global user.name "GitHub Actions"
+            git status
+            git add app/build.gradle.kts
+            git commit -m "Increment versionCode to ${{ env.NEW_VERSION_CODE }} and versionName to ${{ env.NEW_VERSION_NAME }} [skip ci]"
+            git push origin ${{ github.ref_name }}
+          #else
+            #echo "No version code update required."
+          #fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       #TODO
       # - name: Upload AAB to Google Play (Optional)
