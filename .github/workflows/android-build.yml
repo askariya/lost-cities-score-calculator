@@ -194,36 +194,40 @@ jobs:
           echo "NEW_VERSION_NAME=$NEW_VERSION_NAME" >> $GITHUB_ENV
         
 
-      - name: Build AAB
-        run: ./gradlew bundleAab-release
-        env:
-          KEYSTORE_FILE: ${{ github.workspace }}/my-release-key.jks
-          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+      # - name: Build AAB
+      #   run: ./gradlew bundleAab-release
+      #   env:
+      #     KEYSTORE_FILE: ${{ github.workspace }}/my-release-key.jks
+      #     KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+      #     KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+      #     KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
 
-      - name: List build output directory
-        run: ls -R app/build/outputs/bundle/
+      # - name: List build output directory
+      #   run: ls -R app/build/outputs/bundle/
 
-      - name: Upload AAB to GitHub
-        uses: actions/upload-artifact@v4
-        with:
-          name: app-aab-release.aab
-          path: app/build/outputs/bundle/aab-release/app-aab-release.aab
+      # - name: Upload AAB to GitHub
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: app-aab-release.aab
+      #     path: app/build/outputs/bundle/aab-release/app-aab-release.aab
 
-      - name: Configure Git
-        run: |
-          git config --global user.email "github-actions@github.com"
-          git config --global user.name "GitHub Actions"
+      # - name: Configure Git
+      #   run: |
+      #     git config --global user.email "github-actions@github.com"
+      #     git config --global user.name "GitHub Actions"
 
       - name: Commit Version Code and Name Changes
-        if: steps.increment_version.outputs.NEW_VERSION_CODE != ''
         run: |
-          git config --global user.email "github-actions@github.com"
-          git config --global user.name "GitHub Actions"
-          git add app/build.gradle.kts
-          git commit -m "Increment versionCode to ${{ env.NEW_VERSION_CODE }} and versionName to ${{ env.NEW_VERSION_NAME }} [skip ci]"
-          git push origin ${{ github.ref_name }}
+          # Check if NEW_VERSION_CODE is not empty
+          if [ -n "${{ env.NEW_VERSION_CODE }}" ]; then
+            git config --global user.email "github-actions@github.com"
+            git config --global user.name "GitHub Actions"
+            git add app/build.gradle.kts
+            git commit -m "Increment versionCode to ${{ env.NEW_VERSION_CODE }} and versionName to ${{ env.NEW_VERSION_NAME }} [skip ci]"
+            git push origin ${{ github.ref_name }}
+          else
+            echo "No version code update required."
+          fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
