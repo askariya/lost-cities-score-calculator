@@ -12,8 +12,8 @@ jobs:
     runs-on: ubuntu-latest
 
     outputs:
-      new_version: ${{ steps.set_version.outputs.new_version }}
-      latest_tag: ${{ steps.set_version.outputs.latest_tag }}
+      new_version: ${{ steps.increment_version.outputs.new_version }}
+      latest_tag: ${{ steps.fetch_tag.outputs.latest_tag }}
 
     steps:
       - name: Checkout code
