@@ -30,17 +30,28 @@ android {
                 keyAlias = localProperties.getProperty("key.alias")
                 keyPassword = localProperties.getProperty("key.password")
             } else {
-                storeFile = file(System.getenv("KEYSTORE_FILE"))
-                storePassword = System.getenv("KEYSTORE_PASSWORD")
-                keyAlias = System.getenv("KEY_ALIAS")
-                keyPassword = System.getenv("KEY_PASSWORD")
+                // Only set signing config if all required env vars are present
+                val signKeystoreFile = System.getenv("KEYSTORE_FILE")
+                val signKeystorePassword = System.getenv("KEYSTORE_PASSWORD")
+                val signKey = System.getenv("KEY_ALIAS")
+                val signPassword = System.getenv("KEY_PASSWORD")
+
+                if (signKeystoreFile != null && signKeystorePassword != null && signKey != null && signPassword != null) {
+                    storeFile = file(signKeystoreFile)
+                    storePassword = signKeystorePassword
+                    keyAlias = signKey
+                    keyPassword = signPassword
+                } else {
+                    // Skip signing if env variables are missing
+                    println("Keystore information missing, skipping signing.")
+                }
             }
         }
     }
 
     buildTypes {
         release {
-            signingConfig = signingConfigs.getByName("release")
+            signingConfig = signingConfigs.findByName("release")
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -53,9 +64,11 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            // No signingConfig here to ensure it's unsigned
+            // Explicitly ensure no signing config is applied
+            signingConfig = null
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
@@ -69,7 +82,6 @@ android {
 }
 
 dependencies {
-
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
