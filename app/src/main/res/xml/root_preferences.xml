@@ -15,7 +15,7 @@
             app:summaryOn="@string/round_limit_summary_on"
             app:summaryOff="@string/round_limit_summary_off"
             app:title="@string/round_limit_switch"
-            app:defaultValue="false"/>
+            app:defaultValue="true"/>
         <ListPreference
             app:defaultValue="3"
             app:dependency="round-limit"

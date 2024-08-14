@@ -12,9 +12,9 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.example.lostcitiesscorecalculator.LostCitiesScoreCalculatorApplication
 import com.example.lostcitiesscorecalculator.R
 import com.example.lostcitiesscorecalculator.databinding.FragmentScoreboardBinding
+import com.example.lostcitiesscorecalculator.ui.utils.DialogUtils
 import com.example.lostcitiesscorecalculator.ui.utils.GameStateManager
 
 class ScoreboardFragment : Fragment() {
@@ -48,13 +48,19 @@ class ScoreboardFragment : Fragment() {
             onRestartGameButtonPressed()
         }
 
+        // set the endGameButton functionality
+        val endGameButton : Button = binding.endGameButton
+        endGameButton.setOnClickListener{
+            onEndGameButtonPressed()
+        }
+
+        GameStateManager.gameOver.observe(viewLifecycleOwner, endGameObserver)
         GameStateManager.player1CurrentPoints.observe(viewLifecycleOwner, player1CurrentScoreObserver)
         GameStateManager.player2CurrentPoints.observe(viewLifecycleOwner, player2CurrentScoreObserver)
         GameStateManager.player1TotalPoints.observe(viewLifecycleOwner, player1TotalScoreObserver)
         GameStateManager.player2TotalPoints.observe(viewLifecycleOwner, player2TotalScoreObserver)
         GameStateManager.roundScores.observe(viewLifecycleOwner, roundScoreObserver)
         GameStateManager.roundScores.observe(viewLifecycleOwner, roundScoreObserver)
-
         GameStateManager.player1Name.observe(viewLifecycleOwner, player1NameObserver)
         GameStateManager.player2Name.observe(viewLifecycleOwner, player2NameObserver)
 
@@ -71,6 +77,20 @@ class ScoreboardFragment : Fragment() {
     }
     private fun onRestartGameButtonPressed() {
         GameStateManager.restartGame(requireContext())
+    }
+    private fun onEndGameButtonPressed() {
+        val message = """
+            Are you sure you want to end the game?<br><br>
+            <i>All player scores and round history will be finalized.</i>
+            """.trimIndent()
+        DialogUtils.showConfirmationDialog(requireContext(),
+            "End Game",
+            message,
+            "Yes",
+            "No")
+        {
+            GameStateManager.endGame(requireContext())
+        }
     }
 
     private fun addNewRound(roundCount: Int, player1RoundScore: Int, player2RoundScore: Int) {
@@ -105,6 +125,7 @@ class ScoreboardFragment : Fragment() {
             setTextColor(textColor)
             setBackgroundColor(colorPrimaryVariant)
             setTypeface(typeface, android.graphics.Typeface.BOLD)
+            setPadding(12,12,12,12)
             gravity = android.view.Gravity.CENTER
         }
 
@@ -120,6 +141,7 @@ class ScoreboardFragment : Fragment() {
             setTextSize(TypedValue.COMPLEX_UNIT_SP, textSize)
             setTextColor(textColor)
             setBackgroundColor(backgroundColor)
+            setPadding(12,12,12,12)
             gravity = android.view.Gravity.CENTER
         }
 
@@ -135,6 +157,7 @@ class ScoreboardFragment : Fragment() {
             setTextSize(TypedValue.COMPLEX_UNIT_SP, textSize)
             setTextColor(textColor)
             setBackgroundColor(backgroundColor)
+            setPadding(12,12,12,12)
             gravity = android.view.Gravity.CENTER
         }
 
@@ -149,6 +172,35 @@ class ScoreboardFragment : Fragment() {
     // Function to check and update empty view visibility
     private fun checkEmptyViewVisibility() {
         binding.emptyView.visibility = if (binding.scoreGridLayout.childCount <= 0) View.VISIBLE else View.GONE
+    }
+
+    private val endGameObserver = Observer<Boolean> { gameOver ->
+        if (gameOver)
+        {
+            binding.scoreBoardContent.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.dark_grey))
+            binding.scoreCurrentHeader.visibility = View.GONE
+            binding.scoreboardFooter.visibility = View.GONE
+            binding.totalScoreLabel.text = getString(R.string.final_label)
+            binding.totalScoreLabel.textSize = 30F
+            binding.totalScoreLabel.setPadding(15,15,15,15)
+            binding.player1TotalScoreView.textSize = 30F
+            binding.player1TotalScoreView.setPadding(15,15,15,15)
+            binding.player2TotalScoreView.textSize = 30F
+            binding.player2TotalScoreView.setPadding(15,15,15,15)
+        }
+        else
+        {
+            binding.scoreBoardContent.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.background_color_dark))
+            binding.scoreCurrentHeader.visibility = View.VISIBLE
+            binding.scoreboardFooter.visibility = View.VISIBLE
+            binding.totalScoreLabel.text = getString(R.string.total_label)
+            binding.totalScoreLabel.textSize = 20F
+            binding.totalScoreLabel.setPadding(10,10,10,10)
+            binding.player1TotalScoreView.textSize = 20F
+            binding.player1TotalScoreView.setPadding(10,10,10,10)
+            binding.player2TotalScoreView.textSize = 20F
+            binding.player2TotalScoreView.setPadding(10,10,10,10)
+        }
     }
 
     private val player1CurrentScoreObserver = Observer<Int> { score ->

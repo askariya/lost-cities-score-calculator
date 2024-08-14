@@ -17,6 +17,7 @@
     <string name="label_reset">Reset</string>
     <string name="label_submit">Submit</string>
     <string name="label_reset_game">Restart</string>
+    <string name="label_end_game">End Game</string>
     <string name="label_save_game">Save</string>
     <string name="label_load_game">Load</string>
     <string name="label_zero">0</string>
@@ -29,7 +30,8 @@
     <string name="current_score">Current Round:</string>
     <string name="current">Current</string>
     <string name="total_score">Total Score:</string>
-    <string name="total">Total</string>
+    <string name="total_label">Total</string>
+    <string name="final_label">Score</string>
     <string name="round">Round</string>
     <string name="empty_rounds_placeholder">No rounds completed yet.</string>
     <string name="eight_card_bonus_label">8</string>
