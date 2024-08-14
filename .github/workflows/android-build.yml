@@ -180,9 +180,9 @@ jobs:
           cat app/build.gradle.kts
       
           # Read the current version code and name
-          VERSION_CODE=$(grep 'versionCode' app/build.gradle.kts | sed 's/versionCode\s*=\s*//')
-          VERSION_NAME=$(grep 'versionName' app/build.gradle.kts | sed 's/versionName\s*=\s*"\(.*\)"/\1/')
-      
+          VERSION_CODE=$(grep 'versionCode' app/build.gradle.kts | awk '{print $3}' | tr -d '[:space:]')
+          VERSION_NAME=$(grep 'versionName' app/build.gradle.kts | awk -F'\"' '{print $2}')
+          
           echo "Extracted VERSION_CODE: $VERSION_CODE"
           echo "Extracted VERSION_NAME: $VERSION_NAME"
         
@@ -195,34 +195,47 @@ jobs:
           echo "New VERSION_CODE: $NEW_VERSION_CODE"
           echo "New VERSION_NAME: $NEW_VERSION_NAME"
         
-          # Update the build.gradle.kts file with new values
-          sed -i "s/versionCsode\s*=\s*$VERSION_CODE/versionCode = $NEW_VERSION_CODE/" app/build.gradle.kts
-          STATUS_CODE_SED_1=$?
-          sed -i "s/versionsName\s*=\s*\"$VERSION_NAME\"/versionName = \"$NEW_VERSION_NAME\"/" app/build.gradle.kts
-          STATUS_CODE_SED_2=$?
+          # Update the build.gradle.kts file with new values using Python
+          python3 -c "
+          import re
+          
+          filename = 'app/build.gradle.kts'
+          old_version_code = '$VERSION_CODE'
+          new_version_code = '$NEW_VERSION_CODE'
+          old_version_name = '$VERSION_NAME'
+          new_version_name = '$NEW_VERSION_NAME'
+          
+          with open(filename, 'r') as file:
+              content = file.read()
+          
+          content = re.sub(rf'versionCode\s*=\s*{old_version_code}', f'versionCode = {new_version_code}', content)
+          content = re.sub(rf'versionName\s*=\s*\"{old_version_name}\"', f'versionName = \"{new_version_name}\"', content)
+          
+          with open(filename, 'w') as file:
+              file.write(content)
+          "
       
-          # Check if sed commands succeeded
-          if [ $STATUS_CODE_SED_1 -ne 0 ] || [ $STATUS_CODE_SED_2 -ne 0 ]; then
-            echo "Error: Sed command(s) failed."
-            echo "sed command 1 exit status: $STATUS_CODE_SED_1"
-            echo "sed command 2 exit status: $STATUS_CODE_SED_2"
+          # Check if the file has been updated
+          if [ $? -ne 0 ]; then
+            echo "Error: Python script failed."
             exit 1
           else
-            echo "Sed commands succeeded."
+            echo "Python script succeeded."
           fi
-      
-          # Print file content after sed commands
-          echo "Content of build.gradle.kts after sed commands:"
+        
+          # Print file content after modifications
+          echo "Content of build.gradle.kts after modifications:"
           cat app/build.gradle.kts
-      
+        
           # Check for changes
           git config --global user.email "github-actions@github.com"
           git config --global user.name "GitHub Actions"
           git status
-      
+        
           # Output new values for next step
           echo "NEW_VERSION_CODE=$NEW_VERSION_CODE" >> $GITHUB_ENV
           echo "NEW_VERSION_NAME=$NEW_VERSION_NAME" >> $GITHUB_ENV
+        
         
       # - name: Build AAB
       #   run: ./gradlew bundleAab-release
