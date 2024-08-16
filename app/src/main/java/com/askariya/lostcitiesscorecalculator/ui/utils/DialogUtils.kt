@@ -63,7 +63,7 @@ object DialogUtils {
         val colorTo = ContextCompat.getColor(textView.context, toColorId) // Flash color
 
         val animator = ValueAnimator.ofObject(ArgbEvaluator(), colorFrom, colorTo)
-        animator.duration = 350 // Half a second total for flashing
+        animator.duration = 250 // Half a second total for flashing
         animator.repeatCount = 1
         animator.repeatMode = ValueAnimator.REVERSE
 

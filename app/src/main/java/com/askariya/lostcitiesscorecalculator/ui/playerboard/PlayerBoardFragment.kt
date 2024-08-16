@@ -228,8 +228,8 @@ class PlayerBoardFragment : Fragment() {
         viewModel.resetBoardCommand()
     }
     private val totalScoreObserver = Observer<Int> { totalScore ->
-        binding.totalScoreValue.text = totalScore.toString()
         DialogUtils.flashTextColor(binding.totalScoreValue, R.color.white, R.color.color_primary)
+        binding.totalScoreValue.text = totalScore.toString()
     }
 
     private val scoreObserver = Observer<Int> { score ->
@@ -241,8 +241,8 @@ class PlayerBoardFragment : Fragment() {
             GameStateManager.setPlayer2CurrentPoints(score)
         }
 
-        binding.currentScoreValue.text = score.toString()
         DialogUtils.flashTextColor(binding.currentScoreValue, R.color.white, R.color.color_primary)
+        binding.currentScoreValue.text = score.toString()
     }
 
     private val pointsObserver = Observer<Map<Int, Int>> { points ->
