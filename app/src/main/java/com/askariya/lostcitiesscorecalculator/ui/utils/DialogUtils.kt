@@ -1,9 +1,13 @@
 package com.askariya.lostcitiesscorecalculator.ui.utils
 
+import android.animation.ArgbEvaluator
+import android.animation.ValueAnimator
 import android.content.Context
 import android.text.Html
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 
 object DialogUtils {
     fun showConfirmationDialog(context: Context,
@@ -51,5 +55,22 @@ object DialogUtils {
 
     fun showGameLoadedNotification(context: Context){
         Toast.makeText(context, "Loaded Save", Toast.LENGTH_SHORT).show()
+    }
+
+    // Function to make the text field flash
+    fun flashTextColor(textView: TextView, fromColorId: Int, toColorId: Int) {
+        val colorFrom = ContextCompat.getColor(textView.context, fromColorId)
+        val colorTo = ContextCompat.getColor(textView.context, toColorId) // Flash color
+
+        val animator = ValueAnimator.ofObject(ArgbEvaluator(), colorFrom, colorTo)
+        animator.duration = 350 // Half a second total for flashing
+        animator.repeatCount = 1
+        animator.repeatMode = ValueAnimator.REVERSE
+
+        animator.addUpdateListener { animation ->
+            textView.setTextColor(animation.animatedValue as Int)
+        }
+
+        animator.start()
     }
 }

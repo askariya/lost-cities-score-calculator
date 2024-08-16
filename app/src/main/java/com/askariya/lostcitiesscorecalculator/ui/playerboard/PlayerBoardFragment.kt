@@ -226,11 +226,10 @@ class PlayerBoardFragment : Fragment() {
 
     private val roundCounterObserver = Observer<Int> { round ->
         viewModel.resetBoardCommand()
-        //TODO add a notification badge to score tab
     }
     private val totalScoreObserver = Observer<Int> { totalScore ->
         binding.totalScoreValue.text = totalScore.toString()
-        //TODO make field flash
+        DialogUtils.flashTextColor(binding.totalScoreValue, R.color.white, R.color.color_primary)
     }
 
     private val scoreObserver = Observer<Int> { score ->
@@ -243,6 +242,7 @@ class PlayerBoardFragment : Fragment() {
         }
 
         binding.currentScoreValue.text = score.toString()
+        DialogUtils.flashTextColor(binding.currentScoreValue, R.color.white, R.color.color_primary)
     }
 
     private val pointsObserver = Observer<Map<Int, Int>> { points ->
