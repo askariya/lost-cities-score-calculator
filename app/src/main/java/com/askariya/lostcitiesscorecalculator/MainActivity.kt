@@ -137,9 +137,18 @@ class MainActivity : AppCompatActivity() {
 
     private fun showEndGameFragment() {
         val endGameFragment = EndGameFragment()
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.endgame_fragment_container, endGameFragment)
-            .commit()
+        val transaction = supportFragmentManager.beginTransaction()
+
+        // Apply rotate animations
+        transaction.setCustomAnimations(
+            R.anim.rotate_in,   // Animation for fragment entering
+            R.anim.rotate_out   // Animation for fragment exiting
+        )
+
+        transaction.replace(R.id.endgame_fragment_container, endGameFragment)
+        transaction.addToBackStack(null) // Optional: to allow navigation back
+        transaction.commit()
+
         // Hide ViewPager2 and TabLayout
         viewPager.visibility = View.GONE
         tabLayout.visibility = View.GONE
@@ -148,9 +157,16 @@ class MainActivity : AppCompatActivity() {
     private fun hideEndGameFragment() {
         val endGameFragment = supportFragmentManager.findFragmentById(R.id.endgame_fragment_container)
         if (endGameFragment != null) {
-            supportFragmentManager.beginTransaction()
-                .remove(endGameFragment)
-                .commit()
+            val transaction = supportFragmentManager.beginTransaction()
+
+            // Apply rotate-out and slide-out animations
+            transaction.setCustomAnimations(
+                R.anim.rotate_in,   // Animation for fragment entering
+                R.anim.slide_out   // Animation for fragment exiting
+            )
+
+            transaction.remove(endGameFragment)
+            transaction.commit()
         }
 
         // Show ViewPager2 and TabLayout
