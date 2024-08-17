@@ -35,6 +35,7 @@ object GameStateManager {
     private val _player2TotalPoints = MutableLiveData<Int>()
     private val _roundCounter = MutableLiveData<Int>()
     private val _roundScores: MutableLiveData<MutableMap<Int, Pair<Int, Int>>> = MutableLiveData(mutableMapOf())
+    private val _submittedRoundScore: MutableLiveData<Pair<Int, Int>> = MutableLiveData<Pair<Int, Int>>()
 
     val gameOver: LiveData<Boolean> get() = _gameOver
     val player1CurrentPoints: LiveData<Int> get() = _player1CurrentPoints
@@ -43,12 +44,15 @@ object GameStateManager {
     val player2TotalPoints: LiveData<Int> get() = _player2TotalPoints
     val roundCounter: LiveData<Int> get() = _roundCounter
     val roundScores: MutableLiveData<MutableMap<Int, Pair<Int, Int>>> get() = _roundScores
+    val submittedRoundScore: MutableLiveData<Pair<Int, Int>> get() = _submittedRoundScore
 
     private val sharedPreferencesListener =
         SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
         // Handle changes based on the key
         onSharedPreferencesChanged(key)
     }
+
+    private var roundScoresLocal: MutableMap<Int, Pair<Int, Int>> = mutableMapOf()
 
     fun initialize(context: Context) {
         // initialize custom game state shared preference manager
@@ -99,6 +103,18 @@ object GameStateManager {
 
     private fun setRoundScores(scores: MutableMap<Int, Pair<Int, Int>>) {
         _roundScores.value = scores
+    }
+
+    private fun setRoundScoresLocal(scores: MutableMap<Int, Pair<Int, Int>>) {
+        roundScoresLocal = scores
+    }
+
+    private fun setSubmittedRoundScore(roundScore: Pair<Int, Int>) {
+        _submittedRoundScore.value = roundScore
+    }
+
+    fun clearSubmittedRoundScore() {
+        _submittedRoundScore.value = Pair(-500, -500)
     }
 
     private fun incrementRoundCounter() {
@@ -184,13 +200,16 @@ object GameStateManager {
     {
         val roundScoreMap = roundScores.value ?: mutableMapOf()
         roundScoreMap[round] = Pair(player1RoundScore, player2RoundScore)
-        setRoundScores(roundScoreMap)
+        // We only want to set the local score so that the subscribers don't get an update.
+        setRoundScoresLocal(roundScoreMap)
+        setSubmittedRoundScore(Pair(player1RoundScore, player2RoundScore))
         setPlayer1TotalPoints((player1TotalPoints.value ?: 0) + player1RoundScore)
         setPlayer2TotalPoints((player2TotalPoints.value ?: 0) + player2RoundScore)
     }
 
     private fun resetRoundScores()
     {
+        setRoundScoresLocal(mutableMapOf())
         setRoundScores(mutableMapOf())
         setPlayer1TotalPoints(0)
         setPlayer2TotalPoints(0)
@@ -210,6 +229,7 @@ object GameStateManager {
     // Should only be used by the MainActivity for loading the scores
     private fun loadGameScores(scores: MutableMap<Int, Pair<Int, Int>>, player1TotalScore: Int, player2TotalScore: Int, roundNum: Int)
     {
+        setRoundScoresLocal(scores)
         setRoundScores(scores)
         setPlayer1TotalPoints(player1TotalScore)
         setPlayer2TotalPoints(player2TotalScore)
@@ -220,7 +240,7 @@ object GameStateManager {
         val editor = gameStateSharedPreferences.edit()
         // Convert map to JSON string
         val gson = Gson()
-        val jsonString = gson.toJson(roundScores.value)
+        val jsonString = gson.toJson(roundScoresLocal)
 
         // Save JSON string to SharedPreferences
         editor.putString("roundScores", jsonString)

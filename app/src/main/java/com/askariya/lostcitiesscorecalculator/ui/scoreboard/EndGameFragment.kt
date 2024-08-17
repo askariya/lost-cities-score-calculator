@@ -28,6 +28,9 @@ class EndGameFragment : Fragment() {
 
         handleWinner()
 
+        // Clear the submitted round score to counteract the Scoreboard observer incorrectly
+        // being triggered when observer is attached.
+        GameStateManager.clearSubmittedRoundScore()
         val fragment = ScoreboardFragment() // Replace with your fragment class
         childFragmentManager.beginTransaction()
             .replace(R.id.fragment_container, fragment)

@@ -60,7 +60,8 @@ class ScoreboardFragment : Fragment() {
         GameStateManager.player2CurrentPoints.observe(viewLifecycleOwner, player2CurrentScoreObserver)
         GameStateManager.player1TotalPoints.observe(viewLifecycleOwner, player1TotalScoreObserver)
         GameStateManager.player2TotalPoints.observe(viewLifecycleOwner, player2TotalScoreObserver)
-        GameStateManager.roundScores.observe(viewLifecycleOwner, roundScoreObserver)
+        GameStateManager.roundScores.observe(viewLifecycleOwner, roundScoresObserver)
+        GameStateManager.submittedRoundScore.observe(viewLifecycleOwner, submittedRoundScoreObserver)
         GameStateManager.player1Name.observe(viewLifecycleOwner, player1NameObserver)
         GameStateManager.player2Name.observe(viewLifecycleOwner, player2NameObserver)
 
@@ -260,7 +261,7 @@ class ScoreboardFragment : Fragment() {
         player2Score.text = totalScore.toString()
     }
 
-    private val roundScoreObserver = Observer<MutableMap<Int, Pair<Int, Int>>> { roundScores ->
+    private val roundScoresObserver = Observer<MutableMap<Int, Pair<Int, Int>>> { roundScores ->
         val roundNumbers = roundScores.keys.sorted()
         val scoreGrid = binding.scoreGridLayout
         scoreGrid.removeAllViews()
@@ -272,6 +273,18 @@ class ScoreboardFragment : Fragment() {
         }
 
         checkEmptyViewVisibility()
+    }
+
+    private val submittedRoundScoreObserver = Observer<Pair<Int, Int>> { roundScores ->
+        val player1Score = roundScores.first
+        val player2Score = roundScores.second
+
+        if (player1Score != -500 && player2Score != -500) {
+            val roundNum = GameStateManager.roundCounter.value ?: 1
+            addNewRound(roundNum, player1Score, player2Score)
+
+            checkEmptyViewVisibility()
+        }
     }
 
     private val player1NameObserver = Observer<String> { name ->
