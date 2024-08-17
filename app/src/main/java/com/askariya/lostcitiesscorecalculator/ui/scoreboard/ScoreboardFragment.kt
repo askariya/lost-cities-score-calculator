@@ -5,6 +5,7 @@ import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.DecelerateInterpolator
 import android.widget.Button
 import android.widget.GridLayout
 import android.widget.TextView
@@ -59,8 +60,8 @@ class ScoreboardFragment : Fragment() {
         GameStateManager.player2CurrentPoints.observe(viewLifecycleOwner, player2CurrentScoreObserver)
         GameStateManager.player1TotalPoints.observe(viewLifecycleOwner, player1TotalScoreObserver)
         GameStateManager.player2TotalPoints.observe(viewLifecycleOwner, player2TotalScoreObserver)
-        GameStateManager.roundScores.observe(viewLifecycleOwner, roundScoreObserver)
-        GameStateManager.roundScores.observe(viewLifecycleOwner, roundScoreObserver)
+        GameStateManager.roundScores.observe(viewLifecycleOwner, roundScoresObserver)
+        GameStateManager.submittedRoundScore.observe(viewLifecycleOwner, submittedRoundScoreObserver)
         GameStateManager.player1Name.observe(viewLifecycleOwner, player1NameObserver)
         GameStateManager.player2Name.observe(viewLifecycleOwner, player2NameObserver)
 
@@ -97,7 +98,6 @@ class ScoreboardFragment : Fragment() {
         // Create TextView for Round number
         val textSize = 20f
         val textColor = ContextCompat.getColor(requireContext(), R.color.white)
-        val colorPrimary = ContextCompat.getColor(requireContext(), R.color.color_primary)
         val colorPrimaryVariant = ContextCompat.getColor(requireContext(), R.color.color_primary_variant)
         var backgroundColor = ContextCompat.getColor(requireContext(), R.color.background_color)
 
@@ -125,8 +125,12 @@ class ScoreboardFragment : Fragment() {
             setTextColor(textColor)
             setBackgroundColor(colorPrimaryVariant)
             setTypeface(typeface, android.graphics.Typeface.BOLD)
-            setPadding(12,12,12,12)
+            setPadding(12, 12, 12, 12)
             gravity = android.view.Gravity.CENTER
+
+            // Initial state for animation
+            alpha = 0f
+            translationY = 50f
         }
 
         // Create TextView for Player 1 Score
@@ -141,8 +145,12 @@ class ScoreboardFragment : Fragment() {
             setTextSize(TypedValue.COMPLEX_UNIT_SP, textSize)
             setTextColor(textColor)
             setBackgroundColor(backgroundColor)
-            setPadding(12,12,12,12)
+            setPadding(12, 12, 12, 12)
             gravity = android.view.Gravity.CENTER
+
+            // Initial state for animation
+            alpha = 0f
+            translationY = 50f
         }
 
         // Create TextView for Player 2 Score
@@ -157,8 +165,12 @@ class ScoreboardFragment : Fragment() {
             setTextSize(TypedValue.COMPLEX_UNIT_SP, textSize)
             setTextColor(textColor)
             setBackgroundColor(backgroundColor)
-            setPadding(12,12,12,12)
+            setPadding(12, 12, 12, 12)
             gravity = android.view.Gravity.CENTER
+
+            // Initial state for animation
+            alpha = 0f
+            translationY = 50f
         }
 
         // Add the views to the GridLayout
@@ -166,6 +178,34 @@ class ScoreboardFragment : Fragment() {
         gridLayout.addView(roundNumber)
         gridLayout.addView(player1ScoreView)
         gridLayout.addView(player2ScoreView)
+
+        // Animate the views into place with a 1-second delay
+        val delay = 350L // 1 second in milliseconds
+
+        roundNumber.animate()
+            .alpha(1f)
+            .translationY(0f)
+            .setStartDelay(delay)
+            .setDuration(300)
+            .setInterpolator(DecelerateInterpolator())
+            .start()
+
+        player1ScoreView.animate()
+            .alpha(1f)
+            .translationY(0f)
+            .setStartDelay(delay)
+            .setDuration(300)
+            .setInterpolator(DecelerateInterpolator())
+            .start()
+
+        player2ScoreView.animate()
+            .alpha(1f)
+            .translationY(0f)
+            .setStartDelay(delay)
+            .setDuration(300)
+            .setInterpolator(DecelerateInterpolator())
+            .start()
+
         checkEmptyViewVisibility()
     }
 
@@ -221,7 +261,7 @@ class ScoreboardFragment : Fragment() {
         player2Score.text = totalScore.toString()
     }
 
-    private val roundScoreObserver = Observer<MutableMap<Int, Pair<Int, Int>>> { roundScores ->
+    private val roundScoresObserver = Observer<MutableMap<Int, Pair<Int, Int>>> { roundScores ->
         val roundNumbers = roundScores.keys.sorted()
         val scoreGrid = binding.scoreGridLayout
         scoreGrid.removeAllViews()
@@ -233,6 +273,18 @@ class ScoreboardFragment : Fragment() {
         }
 
         checkEmptyViewVisibility()
+    }
+
+    private val submittedRoundScoreObserver = Observer<Pair<Int, Int>> { roundScores ->
+        val player1Score = roundScores.first
+        val player2Score = roundScores.second
+
+        if (player1Score != -500 && player2Score != -500) {
+            val roundNum = GameStateManager.roundCounter.value ?: 1
+            addNewRound(roundNum, player1Score, player2Score)
+
+            checkEmptyViewVisibility()
+        }
     }
 
     private val player1NameObserver = Observer<String> { name ->
