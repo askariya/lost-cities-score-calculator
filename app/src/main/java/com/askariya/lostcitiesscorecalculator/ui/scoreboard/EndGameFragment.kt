@@ -39,12 +39,14 @@ class EndGameFragment : Fragment() {
         // set the restartButton functionality
         val restartGameButton : Button = binding.restartGameButton
         restartGameButton.setOnClickListener{
+            it.performHapticFeedback(android.view.HapticFeedbackConstants.VIRTUAL_KEY)
             onRestartGameButtonPressed()
         }
 
         // set the reloadButton functionality
         val reloadGameButton : Button = binding.reloadGameButton
         reloadGameButton.setOnClickListener{
+            it.performHapticFeedback(android.view.HapticFeedbackConstants.VIRTUAL_KEY)
             onReloadGameButtonPressed()
         }
 

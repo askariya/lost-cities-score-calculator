@@ -40,18 +40,21 @@ class ScoreboardFragment : Fragment() {
         // set the submitButton functionality
         val submitScoreButton : Button = binding.submitScoreButton
         submitScoreButton.setOnClickListener{
+            it.performHapticFeedback(android.view.HapticFeedbackConstants.VIRTUAL_KEY)
             onSubmitButtonPressed()
         }
 
         // set the restartButton functionality
         val restartGameButton : Button = binding.restartGameButton
         restartGameButton.setOnClickListener{
+            it.performHapticFeedback(android.view.HapticFeedbackConstants.VIRTUAL_KEY)
             onRestartGameButtonPressed()
         }
 
         // set the endGameButton functionality
         val endGameButton : Button = binding.endGameButton
         endGameButton.setOnClickListener{
+            it.performHapticFeedback(android.view.HapticFeedbackConstants.VIRTUAL_KEY)
             onEndGameButtonPressed()
         }
 

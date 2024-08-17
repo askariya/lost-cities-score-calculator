@@ -20,15 +20,31 @@ object DialogUtils {
         builder.setTitle(title)
         builder.setMessage(Html.fromHtml(message, Html.FROM_HTML_MODE_COMPACT))
 
-        builder.setPositiveButton(positiveButtonText) { dialog, which ->
-            onConfirm()
-        }
+        // Set null for button action initially
+        builder.setPositiveButton(positiveButtonText, null)
 
         builder.setNegativeButton(negativeButtonText) { dialog, which ->
             dialog.dismiss()
         }
 
         val dialog: AlertDialog = builder.create()
+        dialog.setOnShowListener {
+            val positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+            val negativeButton = dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+
+            // Set a click listener to perform haptic feedback and dismiss the dialog
+            positiveButton.setOnClickListener {
+                positiveButton.performHapticFeedback(android.view.HapticFeedbackConstants.VIRTUAL_KEY)
+                onConfirm()
+                dialog.dismiss() // Close the dialog
+            }
+
+            // Set a click listener to perform haptic feedback and dismiss the dialog
+            negativeButton.setOnClickListener {
+                negativeButton.performHapticFeedback(android.view.HapticFeedbackConstants.VIRTUAL_KEY)
+                dialog.dismiss() // Close the dialog
+            }
+        }
         dialog.show()
     }
 
@@ -40,12 +56,23 @@ object DialogUtils {
         val builder = AlertDialog.Builder(context)
         builder.setTitle(title)
         builder.setMessage(Html.fromHtml(message, Html.FROM_HTML_MODE_COMPACT))
-        builder.setCancelable(false) // Prevent notification from closing when clicking elsewhere.
-        builder.setPositiveButton(positiveButtonText) { dialog, which ->
-            onConfirm()
-        }
+        // Prevent notification from closing when clicking elsewhere.
+        builder.setCancelable(false)
+
+        // Set null for button action initially
+        builder.setPositiveButton(positiveButtonText, null)
 
         val dialog: AlertDialog = builder.create()
+        dialog.setOnShowListener {
+            val positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+
+            // Set a click listener to perform haptic feedback and dismiss the dialog
+            positiveButton.setOnClickListener {
+                positiveButton.performHapticFeedback(android.view.HapticFeedbackConstants.VIRTUAL_KEY)
+                onConfirm()
+                dialog.dismiss() // Close the dialog
+            }
+        }
         dialog.show()
     }
 
