@@ -3,6 +3,7 @@ package com.askariya.lostcitiesscorecalculator
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
+import android.view.HapticFeedbackConstants
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -101,6 +102,8 @@ class MainActivity : AppCompatActivity() {
 
     // Handle toolbar button clicks
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        // Trigger haptic feedback
+        findViewById<View>(R.id.header_toolbar)?.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
         return when (item.itemId) {
             R.id.submit_button -> {
                 onSubmitButtonPressed()

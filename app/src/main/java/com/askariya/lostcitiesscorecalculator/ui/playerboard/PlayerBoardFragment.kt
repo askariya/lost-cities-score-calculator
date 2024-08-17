@@ -157,6 +157,7 @@ class PlayerBoardFragment : Fragment() {
             wagerButton?.tag = viewModel.wagerCounts.value?.get(col) ?: 0
             wagerButton?.setColorFilter(buttonColor)
             wagerButton?.setOnClickListener {
+                it.performHapticFeedback(android.view.HapticFeedbackConstants.VIRTUAL_KEY)
                 viewModel.toggleWagerCountCommand(col)
             }
 
@@ -166,6 +167,7 @@ class PlayerBoardFragment : Fragment() {
                 button?.tag = viewModel.buttonStates.value?.get(col)?.get(row) ?: false
                 button?.setTextColor(buttonColor)
                 button?.setOnClickListener {
+                    it.performHapticFeedback(android.view.HapticFeedbackConstants.VIRTUAL_KEY)
                     viewModel.toggleButtonStateCommand(row, col)
                 }
             }
@@ -174,6 +176,7 @@ class PlayerBoardFragment : Fragment() {
         // set the resetButton functionality
         val resetButton : Button = binding.resetButton
         resetButton.setOnClickListener{
+            it.performHapticFeedback(android.view.HapticFeedbackConstants.VIRTUAL_KEY)
             onResetButtonPressed()
         }
 
