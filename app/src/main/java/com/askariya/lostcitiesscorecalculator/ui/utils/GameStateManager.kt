@@ -220,7 +220,7 @@ object GameStateManager {
         addRoundScore(roundCounter.value ?: 1, player1CurrentPoints.value ?: 0, player2CurrentPoints.value ?: 0)
     }
 
-    fun resetGameScores() {
+    private fun resetGameScores() {
         setPlayer1CurrentPoints(0)
         setPlayer2CurrentPoints(0)
         resetRoundScores()

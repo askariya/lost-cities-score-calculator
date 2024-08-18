@@ -203,11 +203,11 @@ class PlayerBoardFragment : Fragment() {
                 "Yes",
                 "No")
             {
-                GameStateManager.resetGameScores()
+                viewModel.resetBoardCommand()
             }
         }
         else {
-            GameStateManager.resetGameScores()
+            viewModel.resetBoardCommand()
         }
     }
 
