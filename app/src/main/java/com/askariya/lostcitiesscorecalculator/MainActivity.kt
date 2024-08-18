@@ -149,7 +149,6 @@ class MainActivity : AppCompatActivity() {
         )
 
         transaction.replace(R.id.endgame_fragment_container, endGameFragment)
-        transaction.addToBackStack(null) // Optional: to allow navigation back
         transaction.commit()
 
         // Hide ViewPager2 and TabLayout
