@@ -148,7 +148,7 @@ class PlayerBoardFragment : Fragment() {
         return ContextCompat.getColor(requireContext(), colorResourceId)
     }
 
-    private fun flipCard(button: Button?, flipLeft: Boolean) {
+    private fun flipCard(button: View?, flipLeft: Boolean) {
         if (button == null) return
 
         val scale = requireContext().resources.displayMetrics.density
@@ -181,6 +181,10 @@ class PlayerBoardFragment : Fragment() {
 
     private fun flipBackAllSelectedCardButtons() {
         for (col in 0 until totalButtonColumns) {
+            val wagerButton: ImageButton? = findImageButton(col)
+            if (wagerButton?.tag != 0)
+                flipCard(wagerButton, true)
+
             for (row in 1 until totalButtonRows) {
                 val button : Button? = findButton(row, col)
                 if (button?.tag == true)
@@ -204,6 +208,7 @@ class PlayerBoardFragment : Fragment() {
             wagerButton?.setColorFilter(buttonColor)
             wagerButton?.setOnClickListener {
                 it.performHapticFeedback(android.view.HapticFeedbackConstants.VIRTUAL_KEY)
+                flipCard(wagerButton, (wagerButton.tag as Int) == 3)
                 viewModel.toggleWagerCountCommand(col)
             }
 
