@@ -1,12 +1,16 @@
 package com.askariya.lostcitiesscorecalculator.ui.playerboard
 
 import PlayerBoardViewModelFactory
+import android.animation.AnimatorInflater
+import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
 import android.content.res.ColorStateList
 import android.graphics.Typeface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
@@ -52,6 +56,7 @@ class PlayerBoardFragment : Fragment() {
         val factory = PlayerBoardViewModelFactory(playerId)
         viewModel = ViewModelProvider(this, factory).get(PlayerBoardViewModel::class.java)
 
+        GameStateManager.gameOver.observe(viewLifecycleOwner, endGameObserver)
         GameStateManager.roundCounter.observe(viewLifecycleOwner, roundCounterObserver)
 
         if (playerId == 1)
@@ -143,6 +148,51 @@ class PlayerBoardFragment : Fragment() {
         return ContextCompat.getColor(requireContext(), colorResourceId)
     }
 
+    private fun flipCard(button: View?, flipLeft: Boolean) {
+        if (button == null) return
+
+        val scale = requireContext().resources.displayMetrics.density
+        button.cameraDistance = 8000 * scale
+
+        val flipOut = AnimatorInflater.loadAnimator(requireContext(), R.animator.flip_out) as AnimatorSet
+        val flipIn = AnimatorInflater.loadAnimator(requireContext(), R.animator.flip_in) as AnimatorSet
+
+        // Adjust the rotation based on the flipLeft argument
+        flipOut.childAnimations.forEach { animator ->
+            if (animator is ObjectAnimator && animator.propertyName == "rotationY") {
+                animator.setFloatValues(if (flipLeft) 0f else 0f, if (flipLeft) -90f else 90f)
+            }
+        }
+
+        flipIn.childAnimations.forEach { animator ->
+            if (animator is ObjectAnimator && animator.propertyName == "rotationY") {
+                animator.setFloatValues(if (flipLeft) 90f else -90f, 0f)
+            }
+        }
+
+        flipOut.setTarget(button)
+        flipIn.setTarget(button)
+
+        val flipAnim = AnimatorSet()
+        flipAnim.playSequentially(flipOut, flipIn)
+        flipAnim.interpolator = AccelerateDecelerateInterpolator()
+        flipAnim.start()
+    }
+
+    private fun flipBackAllSelectedCardButtons() {
+        for (col in 0 until totalButtonColumns) {
+            val wagerButton: ImageButton? = findImageButton(col)
+            if (wagerButton?.tag != 0)
+                flipCard(wagerButton, true)
+
+            for (row in 1 until totalButtonRows) {
+                val button : Button? = findButton(row, col)
+                if (button?.tag == true)
+                    flipCard(button, true)
+            }
+        }
+    }
+
     private fun setupGridLayout() {
         for (col in 0 until totalButtonColumns) {
             val buttonColor = getColorFromString(buttonColours[col])
@@ -158,6 +208,7 @@ class PlayerBoardFragment : Fragment() {
             wagerButton?.setColorFilter(buttonColor)
             wagerButton?.setOnClickListener {
                 it.performHapticFeedback(android.view.HapticFeedbackConstants.VIRTUAL_KEY)
+                flipCard(wagerButton, (wagerButton.tag as Int) == 3)
                 viewModel.toggleWagerCountCommand(col)
             }
 
@@ -168,6 +219,7 @@ class PlayerBoardFragment : Fragment() {
                 button?.setTextColor(buttonColor)
                 button?.setOnClickListener {
                     it.performHapticFeedback(android.view.HapticFeedbackConstants.VIRTUAL_KEY)
+                    flipCard(button, button.tag as Boolean)
                     viewModel.toggleButtonStateCommand(row, col)
                 }
             }
@@ -203,10 +255,12 @@ class PlayerBoardFragment : Fragment() {
                 "Yes",
                 "No")
             {
+                flipBackAllSelectedCardButtons()
                 viewModel.resetBoardCommand()
             }
         }
         else {
+            flipBackAllSelectedCardButtons()
             viewModel.resetBoardCommand()
         }
     }
@@ -227,7 +281,12 @@ class PlayerBoardFragment : Fragment() {
         viewModel.wagerCounts.observe(viewLifecycleOwner, wagerCountsObserver)
     }
 
-    private val roundCounterObserver = Observer<Int> { round ->
+    private val endGameObserver = Observer<Boolean> { _ ->
+        flipBackAllSelectedCardButtons()
+        viewModel.resetBoardCommand()
+    }
+    private val roundCounterObserver = Observer<Int> { _ ->
+        flipBackAllSelectedCardButtons()
         viewModel.resetBoardCommand()
     }
     private val totalScoreObserver = Observer<Int> { totalScore ->
@@ -268,7 +327,7 @@ class PlayerBoardFragment : Fragment() {
 
         buttonStates.forEach { (col, states) ->
             states.forEach { (row, state) ->
-                val button = findButton(row, col)
+                val button: Button? = findButton(row, col)
                 button?.tag = state
                 if (state) {
                     button?.setBackgroundColor(getColorFromString(buttonColours[col]))

@@ -36,6 +36,10 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setSupportActionBar(findViewById(R.id.header_toolbar))
+        supportActionBar?.setDisplayShowCustomEnabled(true)
+        supportActionBar?.setCustomView(R.layout.custom_toolbar_title)
+        // Remove default title
+        supportActionBar?.title = ""
 
         colorPrimary = MaterialColors.getColor(this, androidx.appcompat.R.attr.colorPrimary, Color.BLACK)
 
@@ -176,8 +180,31 @@ class MainActivity : AppCompatActivity() {
         tabLayout.visibility = View.VISIBLE
     }
 
+    private fun animateTitleChange(newTitle: String) {
+        val toolbarTitle = findViewById<TextView>(R.id.toolbar_title)
+
+        // Fade out old title
+        toolbarTitle.animate()
+            .alpha(0f)
+            .setDuration(300)
+            .withEndAction {
+                // Change the text
+                toolbarTitle.text = newTitle
+
+                // Fade in new title
+                toolbarTitle.alpha = 0f
+                toolbarTitle.animate()
+                    .alpha(1f)
+                    .setDuration(300)
+                    .start()
+            }
+            .start()
+    }
+
+
     private fun updateActionBarTitle(title: String) {
-            supportActionBar?.title = title
+//            supportActionBar?.title = title
+        animateTitleChange(title)
     }
 
     private fun updateTabText(position: Int, newText: String) {
