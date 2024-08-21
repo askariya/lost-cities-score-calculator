@@ -14,19 +14,23 @@
         <item name="android:backgroundTint">@color/dark_grey</item>
         <item name="android:textSize">18sp</item>
         <item name="android:fontFamily">sans-serif</item>
-        <item name="strokeColor">@color/medium_dark_grey</item>
-        <item name="strokeWidth">1dp</item>
+        <item name="android:layout_margin">1dp</item>
     </style>
 
     <style name="CardImageButtonStyle">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">0dp</item>
-        <item name="android:layout_rowWeight">1</item>
+        <item name="android:layout_rowWeight">0.9</item>
         <item name="android:layout_columnWeight">1</item>
         <item name="android:gravity">center</item>
         <item name="android:backgroundTint">@color/dark_grey</item>
         <item name="android:scaleType">fitCenter</item>
+        <item name="android:background">@drawable/image_button_background</item>
         <item name="android:src">@drawable/ic_wager</item>
+        <item name="android:layout_marginTop">3dp</item>
+        <item name="android:layout_marginBottom">4dp</item>
+        <item name="android:layout_marginRight">2dp</item>
+        <item name="android:layout_marginLeft">2dp</item>
     </style>
 
     <style name="CardBorderStyle">
