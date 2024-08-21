@@ -372,12 +372,10 @@ class PlayerBoardFragment : Fragment() {
                 2 -> {
                     wagerButton?.tag = 2
                     wagerButton?.setImageResource(R.drawable.ic_wager2)
-                    wagerButton?.scaleType = ImageView.ScaleType.CENTER_CROP
                 }
                 3 -> {
                     wagerButton?.tag = 3
                     wagerButton?.setImageResource(R.drawable.ic_wager3_alternate)
-                    wagerButton?.setPadding(15, 15, 15, 15)
                 }
             }
         }
