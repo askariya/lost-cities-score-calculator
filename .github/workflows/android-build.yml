@@ -132,69 +132,69 @@ jobs:
     - name: Read release notes
       run: |
         RELEASE_NOTES="${{ needs.setup-version.outputs.release_notes_string }}"
-        echo -e "Read Release Notes = ${RELEASE_NOTES}"
-        echo "RELEASE_NOTES=$RELEASE_NOTES" >> $GITHUB_ENV
+        echo -e "Read RELEASE_NOTES = ${RELEASE_NOTES}"
+        echo "RELEASE_NOTES=\n\n\n${RELEASE_NOTES}" >> $GITHUB_ENV
 
-    # - name: Grant execute permission for gradlew
-    #   run: chmod +x gradlew
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
 
-    # - name: Set up signing keys
-    #   run: |
-    #     echo "${{ secrets.KEYSTORE_FILE }}" | base64 -d > ${{ github.workspace }}/my-release-key.jks
-    #   env:
-    #     KEYSTORE_FILE: ${{ secrets.KEYSTORE_FILE }}
+    - name: Set up signing keys
+      run: |
+        echo "${{ secrets.KEYSTORE_FILE }}" | base64 -d > ${{ github.workspace }}/my-release-key.jks
+      env:
+        KEYSTORE_FILE: ${{ secrets.KEYSTORE_FILE }}
 
-    # - name: Build APK
-    #   run: ./gradlew assembleRelease
-    #   env:
-    #     KEYSTORE_FILE: ${{ github.workspace }}/my-release-key.jks
-    #     KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-    #     KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-    #     KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+    - name: Build APK
+      run: ./gradlew assembleRelease
+      env:
+        KEYSTORE_FILE: ${{ github.workspace }}/my-release-key.jks
+        KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+        KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+        KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
 
-    # - name: Rename APK file
-    #   run: mv app/build/outputs/apk/release/app-release.apk app/build/outputs/apk/release/lost-cities-calculator.apk
+    - name: Rename APK file
+      run: mv app/build/outputs/apk/release/app-release.apk app/build/outputs/apk/release/lost-cities-calculator.apk
 
-    # - name: Upload APK as artifact
-    #   uses: actions/upload-artifact@v4
-    #   with:
-    #     name: lost-cities-calculator
-    #     path: app/build/outputs/apk/release/lost-cities-calculator.apk
+    - name: Upload APK as artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: lost-cities-calculator
+        path: app/build/outputs/apk/release/lost-cities-calculator.apk
 
-    # - name: Configure Git
-    #   run: |
-    #     git config --global user.email "github-actions@github.com"
-    #     git config --global user.name "GitHub Actions"
+    - name: Configure Git
+      run: |
+        git config --global user.email "github-actions@github.com"
+        git config --global user.name "GitHub Actions"
 
-    # - name: Fetch Latest Tag
-    #   run: |
-    #     git fetch --tags
-    #     LATEST_TAG=$(git tag --sort=-creatordate | head -n 1)
-    #     echo -e "Latest Tag is ${LATEST_TAG}"
-    #     echo "LATEST_TAG=$LATEST_TAG" >> $GITHUB_ENV
+    - name: Fetch Latest Tag
+      run: |
+        git fetch --tags
+        LATEST_TAG=$(git tag --sort=-creatordate | head -n 1)
+        echo -e "Latest Tag is ${LATEST_TAG}"
+        echo "LATEST_TAG=$LATEST_TAG" >> $GITHUB_ENV
 
-    # - name: Create and Push New Tag
-    #   run: |
-    #     git tag -a ${{ env.NEW_VERSION }} -m "Release version ${{ env.NEW_VERSION }}"
-    #     git push origin ${{ env.NEW_VERSION }}
-    #   env:
-    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Create and Push New Tag
+      run: |
+        git tag -a ${{ env.NEW_VERSION }} -m "Release version ${{ env.NEW_VERSION }}"
+        git push origin ${{ env.NEW_VERSION }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-    # - name: Process and Write Release Notes to File
-    #   run: |
-    #     # Replace literal \n with actual newline characters
-    #     echo "${{ env.RELEASE_NOTES }}" | sed 's/\\n/\n/g' > release_notes.txt
-    #     cat release_notes.txt
+    - name: Process and Write Release Notes to File
+      run: |
+        # Replace literal \n with actual newline characters
+        echo "${{ env.RELEASE_NOTES }}" | sed 's/\\n/\n/g' > release_notes.txt
+        cat release_notes.txt
 
-    # - name: Create Release and Upload APK
-    #   uses: softprops/action-gh-release@v2
-    #   with:
-    #     tag_name: ${{ env.NEW_VERSION }}
-    #     files: ./app/build/outputs/apk/release/lost-cities-calculator.apk
-    #     body_path: release_notes.txt
-    #     generate_release_notes: true
-    #   env:
-    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Create Release and Upload APK
+      uses: softprops/action-gh-release@v2
+      with:
+        tag_name: ${{ env.NEW_VERSION }}
+        files: ./app/build/outputs/apk/release/lost-cities-calculator.apk
+        body_path: release_notes.txt
+        generate_release_notes: true
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   # aab-build:
   #   if: github.event_name == 'push' && !contains(github.event.head_commit.message, '[skip ci]')
