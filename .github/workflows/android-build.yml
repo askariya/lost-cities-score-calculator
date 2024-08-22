@@ -326,5 +326,4 @@ jobs:
           releaseFiles: app/build/outputs/bundle/aab-release/app-aab-release.aab
           track: Alpha
           inAppUpdatePriority: 0
-          userFraction: 1.0
 
