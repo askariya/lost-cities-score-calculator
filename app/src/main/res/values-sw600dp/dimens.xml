@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="max_button_text_size">28sp</dimen>
+    <dimen name="max_textview_text_size">22sp</dimen>
+    <dimen name="max_bonus_text_size">16sp</dimen>
+    <dimen name="bonus_bubble_size">21dp</dimen>
+</resources>
