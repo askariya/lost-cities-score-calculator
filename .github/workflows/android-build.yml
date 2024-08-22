@@ -301,22 +301,22 @@ jobs:
           name: app-aab-release.aab
           path: app/build/outputs/bundle/aab-release/app-aab-release.aab
 
-      - name: Commit Version Code and Name Changes
-        run: |
-          # Check if NEW_VERSION_CODE is not empty
-          #if [ -n "${{ env.NEW_VERSION_CODE }}" ]; then
-            echo "Committing new version: ${{ env.NEW_VERSION_CODE }}" 
-            git config --global user.email "github-actions@github.com"
-            git config --global user.name "GitHub Actions"
-            git status
-            git add app/build.gradle.kts
-            git commit -m "Increment versionCode to ${{ env.NEW_VERSION_CODE }} and versionName to ${{ env.NEW_VERSION_NAME }} [skip ci]"
-            git push origin ${{ github.ref_name }}
-          #else
-            #echo "No version code update required."
-          #fi
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#      - name: Commit Version Code and Name Changes
+#        run: |
+#          # Check if NEW_VERSION_CODE is not empty
+#          #if [ -n "${{ env.NEW_VERSION_CODE }}" ]; then
+#            echo "Committing new version: ${{ env.NEW_VERSION_CODE }}"
+#            git config --global user.email "github-actions@github.com"
+#            git config --global user.name "GitHub Actions"
+#            git status
+#            git add app/build.gradle.kts
+#            git commit -m "Increment versionCode to ${{ env.NEW_VERSION_CODE }} and versionName to ${{ env.NEW_VERSION_NAME }} [skip ci]"
+#            git push origin ${{ github.ref_name }}
+#          #else
+#            #echo "No version code update required."
+#          #fi
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload AAB to Google Play Closed Test
         uses: r0adkll/upload-google-play@v1
@@ -324,6 +324,6 @@ jobs:
           serviceAccountJsonPlainText: ${{ secrets.SERVICE_ACCOUNT_JSON }}
           packageName: com.askariya.lostcitiesscorecalculator
           releaseFiles: app/build/outputs/bundle/aab-release/app-aab-release.aab
-          track: Alpha
+          track: alpha
           inAppUpdatePriority: 0
 
