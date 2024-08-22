@@ -103,7 +103,7 @@ jobs:
           echo -e "LAST_TAG_DATE = ${TAG_DATE}"
 
           echo "RELEASE_NOTES=\n\n\n${CLEANED_NOTES}" >> $GITHUB_ENV
-          echo "release_notes_string=${CLEANED_NOTES} >> $GITHUB_OUTPUT
+          echo "release_notes_string=${CLEANED_NOTES}" >> $GITHUB_OUTPUT
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   
