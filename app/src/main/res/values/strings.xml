@@ -46,10 +46,10 @@
     <!-- General Preferences -->
     <string name="show_score_switch">Show Scoreboard on Submit</string>
     <string name="show_score_switch_summary_on">Automatically switch to the Scoreboard tab when
-        scores for a round are submitted
+        scores are submitted
     </string>
-    <string name="show_score_switch_summary_off">Don\'t automatically switch to the Scoreboard tab
-        when scores for a round are submitted.
+    <string name="show_score_switch_summary_off">The tab won\'t automatically change when scores
+        are submitted
     </string>
 
     <!-- Round Limit Preferences -->
@@ -57,17 +57,16 @@
     <string name="round_limit_summary_on">Automatically end the game and announce the winner when
         the number of rounds below are completed
     </string>
-    <string name="round_limit_summary_off">Don\'t automatically end the game when a number of
-        rounds is completed
+    <string name="round_limit_summary_off">The game won\'t automatically end
     </string>
     <string name="round_limit">Number of Rounds</string>
 
     <!-- Custom Names Preferences -->
     <string name="custom_names_switch">Use Custom Names</string>
-    <string name="custom_names_summary_on">Apply the custom names below to the players to display
-        in the navigation header and scoreboard
+    <string name="custom_names_summary_on">The custom names below are used for the players
     </string>
-    <string name="custom_names_summary_off">Don\'t apply custom names to players</string>
+    <string name="custom_names_summary_off">Players will be referred to as \"Player 1\"
+        and \"Player 2\"</string>
     <string name="player1_name">Player 1</string>
     <string name="player2_name">Player 2</string>
 
