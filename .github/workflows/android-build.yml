@@ -2,7 +2,7 @@ name: Android CI
 
 on:
   push:
-    branches: [ "master" ]
+    branches: [ "release-notes-formatting" ]
 
 permissions: write-all
 
