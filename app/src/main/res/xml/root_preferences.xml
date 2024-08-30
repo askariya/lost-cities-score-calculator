@@ -32,7 +32,7 @@
             app:summaryOn="@string/custom_names_summary_on"
             app:summaryOff="@string/custom_names_summary_off"
             app:title="@string/custom_names_switch"
-            app:defaultValue="false"/>
+            app:defaultValue="true"/>
         <EditTextPreference
             app:key="player1name"
             app:dependency="custom-names"
