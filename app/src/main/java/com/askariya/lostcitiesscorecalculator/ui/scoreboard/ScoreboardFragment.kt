@@ -117,12 +117,12 @@ class ScoreboardFragment : Fragment() {
 
         DialogUtils.showInputDialog(
             context = requireContext(),
-            title = "Enter $playerName Name",
+            title = "Enter Custom $playerName Name",
             message = "Please enter a custom name for $playerName:",
             positiveButtonText = "OK",
             negativeButtonText = "Cancel")
         { inputText ->
-            if (inputText.length in 1..11) {
+            if (inputText.length in 1..20) {
                 if(isPlayer1)
                     GameStateManager.updateCustomPlayer1Name(inputText)
                 else
@@ -130,8 +130,8 @@ class ScoreboardFragment : Fragment() {
             }
             else {
                 DialogUtils.showNotificationDialog(requireContext(),
-                    "Invalid Custom Name",
-                    "The name you entered is too long. My condolences; you probably " +
+                    "Invalid Custom Name Length",
+                    "The name you entered is too long.\nMy condolences; you probably " +
                             "have to repeat it every time you meet someone new.",
                     "Ugh")
                 {
