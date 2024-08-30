@@ -36,6 +36,7 @@
     <string name="empty_rounds_placeholder">No rounds completed yet.</string>
     <string name="eight_card_bonus_label">8</string>
     <string name="label_endgame_title">Game Over</string>
+    <string name="label_name_hint">Enter name</string>
 
     <string name="back_button_desc">back button</string>
     <!-- Preference Titles -->

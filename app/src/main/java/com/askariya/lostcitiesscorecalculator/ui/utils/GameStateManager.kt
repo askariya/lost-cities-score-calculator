@@ -18,11 +18,13 @@ object GameStateManager {
 
     // Settings Mutable Data
     private val _showScoreboardOnSubmit = MutableLiveData<Boolean>()
+    private val _useCustomNames = MutableLiveData<Boolean>()
     private val _player1Name = MutableLiveData<String>()
     private val _player2Name = MutableLiveData<String>()
     private val _roundLimit = MutableLiveData<Int>()
 
     val showScoreboardOnSubmit: LiveData<Boolean> get() = _showScoreboardOnSubmit
+    val useCustomNames: LiveData<Boolean> get() = _useCustomNames
     val player1Name: LiveData<String> get() = _player1Name
     val player2Name: LiveData<String> get() = _player2Name
     val roundLimit: LiveData<Int> get() = _roundLimit
@@ -82,6 +84,10 @@ object GameStateManager {
         _showScoreboardOnSubmit.value = showScoreboard
     }
 
+    private fun setUseCustomNames(useCustomName: Boolean) {
+        _useCustomNames.value = useCustomName
+    }
+
     private fun setPlayer1Name(name : String){
         _player1Name.value = name
     }
@@ -137,6 +143,21 @@ object GameStateManager {
         _player2CurrentPoints.value = points
     }
 
+    fun updateCustomPlayer1Name(newName: String) {
+        val editor = settingsSharedPreferences.edit()
+
+        // Save JSON string to SharedPreferences
+        editor.putString("player1name", newName)
+        editor.apply()
+    }
+    fun updateCustomPlayer2Name(newName: String) {
+        val editor = settingsSharedPreferences.edit()
+
+        // Save JSON string to SharedPreferences
+        editor.putString("player2name", newName)
+        editor.apply()
+    }
+
     private fun onSharedPreferencesChanged(key: String?) {
         when(key){
             "show-scoreboard-on-submit" -> {
@@ -158,6 +179,7 @@ object GameStateManager {
 
     private fun handlePlayerNamePreferences() {
         val useCustomNames: Boolean = settingsSharedPreferences.getBoolean("custom-names", false)
+        setUseCustomNames(useCustomNames)
         // Custom names was enabled
         if (useCustomNames) {
             val player1CustomName: String = (settingsSharedPreferences

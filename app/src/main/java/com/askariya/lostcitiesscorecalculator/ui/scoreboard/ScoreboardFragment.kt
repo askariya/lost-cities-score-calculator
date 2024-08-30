@@ -39,23 +39,39 @@ class ScoreboardFragment : Fragment() {
 
         // set the submitButton functionality
         val submitScoreButton : Button = binding.submitScoreButton
-        submitScoreButton.setOnClickListener{
+        submitScoreButton.setOnClickListener {
             it.performHapticFeedback(android.view.HapticFeedbackConstants.VIRTUAL_KEY)
             onSubmitButtonPressed()
         }
 
         // set the restartButton functionality
         val restartGameButton : Button = binding.restartGameButton
-        restartGameButton.setOnClickListener{
+        restartGameButton.setOnClickListener {
             it.performHapticFeedback(android.view.HapticFeedbackConstants.VIRTUAL_KEY)
             onRestartGameButtonPressed()
         }
 
         // set the endGameButton functionality
         val endGameButton : Button = binding.endGameButton
-        endGameButton.setOnClickListener{
+        endGameButton.setOnClickListener {
             it.performHapticFeedback(android.view.HapticFeedbackConstants.VIRTUAL_KEY)
             onEndGameButtonPressed()
+        }
+
+        val player1Header : TextView = binding.player1ColumnHeader
+        player1Header.setOnClickListener {
+            if (GameStateManager.useCustomNames.value == true) {
+                it.performHapticFeedback(android.view.HapticFeedbackConstants.VIRTUAL_KEY)
+                onPlayerCustomNamePressed(true)
+            }
+        }
+
+        val player2Header : TextView = binding.player2ColumnHeader
+        player2Header.setOnClickListener {
+            if (GameStateManager.useCustomNames.value == true) {
+                it.performHapticFeedback(android.view.HapticFeedbackConstants.VIRTUAL_KEY)
+                onPlayerCustomNamePressed(false)
+            }
         }
 
         GameStateManager.gameOver.observe(viewLifecycleOwner, endGameObserver)
@@ -94,6 +110,33 @@ class ScoreboardFragment : Fragment() {
             "No")
         {
             GameStateManager.endGame(requireContext())
+        }
+    }
+    private fun onPlayerCustomNamePressed(isPlayer1: Boolean) {
+        val playerName = if (isPlayer1) "Player 1" else "Player 2"
+
+        DialogUtils.showInputDialog(
+            context = requireContext(),
+            title = "Enter $playerName Name",
+            message = "Please enter a custom name for $playerName:",
+            positiveButtonText = "OK",
+            negativeButtonText = "Cancel")
+        { inputText ->
+            if (inputText.length in 1..11) {
+                if(isPlayer1)
+                    GameStateManager.updateCustomPlayer1Name(inputText)
+                else
+                    GameStateManager.updateCustomPlayer2Name(inputText)
+            }
+            else {
+                DialogUtils.showNotificationDialog(requireContext(),
+                    "Invalid Custom Name",
+                    "The name you entered is too long. My condolences; you probably " +
+                            "have to repeat it every time you meet someone new.",
+                    "Ugh")
+                {
+                }
+            }
         }
     }
 
