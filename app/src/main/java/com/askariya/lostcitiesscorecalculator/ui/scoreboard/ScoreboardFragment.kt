@@ -122,11 +122,21 @@ class ScoreboardFragment : Fragment() {
             positiveButtonText = "OK",
             negativeButtonText = "Cancel")
         { inputText ->
-            if (inputText.length in 1..20) {
+            val resultText = inputText.trim()
+            if (resultText.length in 1..15) {
                 if(isPlayer1)
                     GameStateManager.updateCustomPlayer1Name(inputText)
                 else
                     GameStateManager.updateCustomPlayer2Name(inputText)
+            }
+            else if (resultText.isEmpty()) {
+                DialogUtils.showNotificationDialog(requireContext(),
+                    "Invalid Custom Name Length",
+                    "The name you entered is too short.\nAnd, by 'too short', I mean " +
+                            "it's literally nothing at all.",
+                    "Be better")
+                {
+                }
             }
             else {
                 DialogUtils.showNotificationDialog(requireContext(),
