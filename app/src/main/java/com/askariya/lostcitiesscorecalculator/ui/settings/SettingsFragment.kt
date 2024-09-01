@@ -2,7 +2,9 @@ package com.askariya.lostcitiesscorecalculator.ui.settings
 
 import android.os.Bundle
 import android.text.InputFilter
+import android.widget.Toast
 import androidx.preference.EditTextPreference
+import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.askariya.lostcitiesscorecalculator.R
 
@@ -25,5 +27,26 @@ class SettingsFragment : PreferenceFragmentCompat() {
         player2NamePreference?.setOnBindEditTextListener { editText ->
             editText.filters = filterArray
         }
+
+        // Set up validation to prevent empty strings or whitespace
+        val nonEmptyStringValidator = Preference.OnPreferenceChangeListener { preference, newValue ->
+            val newName = newValue as? String
+            if (newName.isNullOrBlank()) {
+                // Show a message to the user (e.g., Toast or Dialog)
+                Toast.makeText(requireContext(), "Name cannot be empty or whitespace", Toast.LENGTH_SHORT).show()
+
+                // Reset the value to an empty string
+                if (preference is EditTextPreference) {
+                    preference.text = ""
+                }
+
+                false // Reject the change to prevent it from being saved
+            } else {
+                true // Accept the change
+            }
+        }
+
+        player1NamePreference?.onPreferenceChangeListener = nonEmptyStringValidator
+        player2NamePreference?.onPreferenceChangeListener = nonEmptyStringValidator
     }
 }

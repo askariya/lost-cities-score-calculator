@@ -183,9 +183,12 @@ object GameStateManager {
         // Custom names was enabled
         if (useCustomNames) {
             val player1CustomName: String = (settingsSharedPreferences
-                .getString("player1name", DEFAULT_PLAYER_1_NAME) ?: DEFAULT_PLAYER_1_NAME).trim()
+                .getString("player1name", DEFAULT_PLAYER_1_NAME)?.takeIf { it.isNotBlank() }
+                ?: DEFAULT_PLAYER_1_NAME).trim()
+
             val player2CustomName: String = (settingsSharedPreferences
-                .getString("player2name", DEFAULT_PLAYER_2_NAME) ?: DEFAULT_PLAYER_2_NAME).trim()
+                .getString("player2name", DEFAULT_PLAYER_2_NAME)?.takeIf { it.isNotBlank() }
+                ?: DEFAULT_PLAYER_2_NAME).trim()
 
             // Set to custom name if necessary
             if (player1Name.value != player1CustomName)
