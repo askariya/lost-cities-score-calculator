@@ -123,7 +123,7 @@ class ScoreboardFragment : Fragment() {
             negativeButtonText = "Cancel")
         { inputText ->
             val resultText = inputText.trim()
-            if (resultText.length in 1..20) {
+            if (resultText.length in 1..15) {
                 if(isPlayer1)
                     GameStateManager.updateCustomPlayer1Name(inputText)
                 else

@@ -16,8 +16,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
         val player1NamePreference = findPreference<EditTextPreference>("player1name")
         val player2NamePreference = findPreference<EditTextPreference>("player2name")
 
-        // Set character limit (e.g., 10 characters) for player1name and player2name
-        val maxLength = 20
+        // Set character limit for player1name and player2name
+        val maxLength = 15
         val filterArray = arrayOf(InputFilter.LengthFilter(maxLength))
 
         player1NamePreference?.setOnBindEditTextListener { editText ->
