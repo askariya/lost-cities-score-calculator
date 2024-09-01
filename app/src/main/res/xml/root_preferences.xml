@@ -1,6 +1,7 @@
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <PreferenceCategory app:title="@string/general_header">
+    <PreferenceCategory app:title="@string/general_header"
+        app:icon="@drawable/ic_general_settings">
         <SwitchPreferenceCompat
             app:key="show-scoreboard-on-submit"
             app:summaryOn="@string/show_score_switch_summary_on"
@@ -9,7 +10,8 @@
             app:defaultValue="true"/>
     </PreferenceCategory>
 
-    <PreferenceCategory app:title="@string/round_limit_header">
+    <PreferenceCategory app:title="@string/round_limit_header"
+        app:icon="@drawable/ic_round_limit">
         <SwitchPreferenceCompat
             app:key="round-limit"
             app:summaryOn="@string/round_limit_summary_on"
@@ -26,7 +28,8 @@
             app:useSimpleSummaryProvider="true" />
     </PreferenceCategory>
 
-    <PreferenceCategory app:title="@string/custom_names_header">
+    <PreferenceCategory app:title="@string/custom_names_header"
+        app:icon="@drawable/ic_custom_name">
         <SwitchPreferenceCompat
             app:key="custom-names"
             app:summaryOn="@string/custom_names_summary_on"
