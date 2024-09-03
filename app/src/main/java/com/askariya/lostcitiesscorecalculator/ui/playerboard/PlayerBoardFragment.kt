@@ -332,7 +332,7 @@ class PlayerBoardFragment : Fragment() {
                 if (state) {
                     button?.setBackgroundColor(getColorFromString(buttonColours[col]))
                     button?.setTextColor(textSelectedColour)
-                    button?.setTypeface(Typeface.create("sans-serif-black", Typeface.NORMAL))
+                    button?.setTypeface(Typeface.create("sans-serif-black", Typeface.BOLD))
                 } else {
                     button?.setBackgroundColor(unselectedColour)
                     button?.setTextColor(getColorFromString(buttonColours[col]))

@@ -347,4 +347,4 @@ jobs:
           packageName: com.askariya.lostcitiesscorecalculator
           releaseFiles: app/build/outputs/bundle/aab-release/app-aab-release.aab
           whatsNewDirectory: distribution/whatsnew
-          track: alpha
+          track: production
