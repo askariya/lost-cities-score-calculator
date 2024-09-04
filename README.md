@@ -1,4 +1,5 @@
 This is a completely free + ad-free score calculator for the Lost Cities board game. 
+
 Now available on Google Play: https://play.google.com/store/apps/details?id=com.askariya.lostcitiesscorecalculator&pcampaignid=web_share
 
 Alternatively, the APK can be found in the Releases section of this repository.
