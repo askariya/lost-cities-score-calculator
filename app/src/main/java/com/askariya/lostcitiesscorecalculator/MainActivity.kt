@@ -48,19 +48,26 @@ class MainActivity : AppCompatActivity() {
 
         ViewCompat.setOnApplyWindowInsetsListener(binding.headerToolbar) { view, insets ->
             val statusBarHeight = insets.getInsets(WindowInsetsCompat.Type.systemBars()).top
+            val navBarHeight = insets.getInsets(WindowInsetsCompat.Type.systemBars()).bottom
 
             val typedValue = TypedValue()
             theme.resolveAttribute(android.R.attr.actionBarSize, typedValue, true)
             val actionBarHeight = TypedValue.complexToDimensionPixelSize(typedValue.data, resources.displayMetrics)
 
-            // Only add half of the status bar height as padding
-            val reducedPadding = (statusBarHeight / 1.5).toInt().coerceAtLeast(0)
+            // Partial top padding
+            val reducedTopPadding = (statusBarHeight / 1.5).toInt().coerceAtLeast(0)
 
+            // Partial bottom padding if you want
+            val reducedBottomPadding = (navBarHeight / 1).toInt().coerceAtLeast(0)
+
+            // Adjust toolbar
             view.updateLayoutParams {
-                height = actionBarHeight + reducedPadding
+                height = actionBarHeight + reducedTopPadding
             }
+            view.updatePadding(top = reducedTopPadding)
 
-            view.updatePadding(top = reducedPadding)
+            // Adjust bottom content so it doesn't overlap nav bar
+            binding.viewPager.updatePadding(bottom = reducedBottomPadding)
 
             insets
         }
@@ -111,7 +118,7 @@ class MainActivity : AppCompatActivity() {
         viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
-                setHeaderToolbarColor(position)
+                setHeaderAndFooterToolbarColors(position)
             }
         })
     }
@@ -157,12 +164,21 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun setHeaderToolbarColor(position: Int)
+    private fun setHeaderAndFooterToolbarColors(position: Int)
     {
         when (position) {
-            0 -> binding.headerToolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.player1_colour))
-            1 -> binding.headerToolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.player2_colour))
-            else -> binding.headerToolbar.setBackgroundColor(this.colorPrimary)
+            0 -> {
+                binding.headerToolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.player1_colour))
+                binding.container.setBackgroundColor(ContextCompat.getColor(this, R.color.player1_colour))  // purple background for player 1 tab
+            }
+            1 -> {
+                binding.headerToolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.player2_colour))
+                binding.container.setBackgroundColor(ContextCompat.getColor(this, R.color.player2_colour))  // purple background for player 1 tab
+            }
+            else -> {
+                binding.headerToolbar.setBackgroundColor(this.colorPrimary)
+                binding.container.setBackgroundColor(this.colorPrimary)
+            }
         }
     }
 
@@ -266,7 +282,7 @@ class MainActivity : AppCompatActivity() {
         if (gameOver) {
             showEndGameFragment()
             updateActionBarTitle("Game Over")
-            setHeaderToolbarColor(2)
+            setHeaderAndFooterToolbarColors(2)
             invalidateOptionsMenu()
         }
         else {
