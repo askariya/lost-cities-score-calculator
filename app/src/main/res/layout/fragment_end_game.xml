@@ -5,7 +5,8 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.scoreboard.EndGameFragment"
-    android:background="@color/dark_grey">
+    android:background="@color/dark_grey"
+    android:fitsSystemWindows="true">
     <LinearLayout
         android:id="@+id/end_game_header"
         android:layout_width="match_parent"
