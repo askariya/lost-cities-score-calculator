@@ -3,6 +3,7 @@ package com.askariya.lostcitiesscorecalculator
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
+import android.util.TypedValue
 import android.view.HapticFeedbackConstants
 import android.view.Menu
 import android.view.MenuItem
@@ -11,6 +12,10 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updateLayoutParams
+import androidx.core.view.updatePadding
 import androidx.lifecycle.Observer
 import androidx.viewpager2.widget.ViewPager2
 import com.askariya.lostcitiesscorecalculator.databinding.ActivityMainBinding
@@ -41,7 +46,26 @@ class MainActivity : AppCompatActivity() {
         // Remove default title
         supportActionBar?.title = ""
 
-        colorPrimary = MaterialColors.getColor(this, androidx.appcompat.R.attr.colorPrimary, Color.BLACK)
+        ViewCompat.setOnApplyWindowInsetsListener(binding.headerToolbar) { view, insets ->
+            val statusBarHeight = insets.getInsets(WindowInsetsCompat.Type.systemBars()).top
+
+            val typedValue = TypedValue()
+            theme.resolveAttribute(android.R.attr.actionBarSize, typedValue, true)
+            val actionBarHeight = TypedValue.complexToDimensionPixelSize(typedValue.data, resources.displayMetrics)
+
+            // Only add half of the status bar height as padding
+            val reducedPadding = (statusBarHeight / 1.5).toInt().coerceAtLeast(0)
+
+            view.updateLayoutParams {
+                height = actionBarHeight + reducedPadding
+            }
+
+            view.updatePadding(top = reducedPadding)
+
+            insets
+        }
+
+        colorPrimary = MaterialColors.getColor(this, android.R.attr.colorPrimary, Color.BLACK)
 
         // Observe necessary external properties
         GameStateManager.gameOver.observe(this, endGameObserver)
