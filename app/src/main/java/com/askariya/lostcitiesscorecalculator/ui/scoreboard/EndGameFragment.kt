@@ -6,6 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.askariya.lostcitiesscorecalculator.R
@@ -53,11 +55,28 @@ class EndGameFragment : Fragment() {
         GameStateManager.player1Name.observe(viewLifecycleOwner, playerNameObserver)
         GameStateManager.player2Name.observe(viewLifecycleOwner, playerNameObserver)
 
+        // Fix the header and footer insets
+        adjustHeaderAndFooterInsets(root)
+
         return root
     }
 
     private val playerNameObserver = Observer<String> { _ ->
         handleWinner()
+    }
+
+    private fun adjustHeaderAndFooterInsets(root: View) {
+        ViewCompat.setOnApplyWindowInsetsListener(root) { _, insets ->
+            val navBarInsets = insets.getInsets(WindowInsetsCompat.Type.navigationBars())
+            val footer = binding.endGameFooter
+            footer.setPadding(
+                footer.paddingLeft,
+                footer.paddingTop,
+                footer.paddingRight,
+                navBarInsets.bottom + footer.paddingBottom
+            )
+            insets
+        }
     }
 
     private fun handleWinner(){

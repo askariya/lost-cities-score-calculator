@@ -46,31 +46,8 @@ class MainActivity : AppCompatActivity() {
         // Remove default title
         supportActionBar?.title = ""
 
-        ViewCompat.setOnApplyWindowInsetsListener(binding.headerToolbar) { view, insets ->
-            val statusBarHeight = insets.getInsets(WindowInsetsCompat.Type.systemBars()).top
-            val navBarHeight = insets.getInsets(WindowInsetsCompat.Type.systemBars()).bottom
-
-            val typedValue = TypedValue()
-            theme.resolveAttribute(android.R.attr.actionBarSize, typedValue, true)
-            val actionBarHeight = TypedValue.complexToDimensionPixelSize(typedValue.data, resources.displayMetrics)
-
-            // Partial top padding
-            val reducedTopPadding = (statusBarHeight / 1.5).toInt().coerceAtLeast(0)
-
-            // Partial bottom padding if you want
-            val reducedBottomPadding = (navBarHeight / 1).toInt().coerceAtLeast(0)
-
-            // Adjust toolbar
-            view.updateLayoutParams {
-                height = actionBarHeight + reducedTopPadding
-            }
-            view.updatePadding(top = reducedTopPadding)
-
-            // Adjust bottom content so it doesn't overlap nav bar
-            binding.viewPager.updatePadding(bottom = reducedBottomPadding)
-
-            insets
-        }
+        // Fix the header and footer insets
+        adjustHeaderAndFooterInsets()
 
         colorPrimary = MaterialColors.getColor(this, android.R.attr.colorPrimary, Color.BLACK)
 
@@ -161,6 +138,35 @@ class MainActivity : AppCompatActivity() {
                 true
             }
             else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    private fun adjustHeaderAndFooterInsets()
+    {
+        ViewCompat.setOnApplyWindowInsetsListener(binding.headerToolbar) { view, insets ->
+            val statusBarHeight = insets.getInsets(WindowInsetsCompat.Type.systemBars()).top
+            val navBarHeight = insets.getInsets(WindowInsetsCompat.Type.systemBars()).bottom
+
+            val typedValue = TypedValue()
+            theme.resolveAttribute(android.R.attr.actionBarSize, typedValue, true)
+            val actionBarHeight = TypedValue.complexToDimensionPixelSize(typedValue.data, resources.displayMetrics)
+
+            // Partial top padding
+            val reducedTopPadding = (statusBarHeight / 1.5).toInt().coerceAtLeast(0)
+
+            // Partial bottom padding if you want
+            val reducedBottomPadding = (navBarHeight / 1).toInt().coerceAtLeast(0)
+
+            // Adjust toolbar
+            view.updateLayoutParams {
+                height = actionBarHeight + reducedTopPadding
+            }
+            view.updatePadding(top = reducedTopPadding)
+
+            // Adjust bottom content so it doesn't overlap nav bar
+            binding.viewPager.updatePadding(bottom = reducedBottomPadding)
+
+            insets
         }
     }
 
