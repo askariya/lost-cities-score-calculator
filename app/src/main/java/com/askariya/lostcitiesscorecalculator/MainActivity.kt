@@ -34,6 +34,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var tabLayout: TabLayout
     private var colorPrimary: Int = 0
     private var showScoreOnSubmit: Boolean = false
+    private var isBusy = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -114,26 +115,33 @@ class MainActivity : AppCompatActivity() {
 
     // Handle toolbar button clicks
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (isBusy)
+            return true
         // Trigger haptic feedback
         findViewById<View>(R.id.header_toolbar)?.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
         return when (item.itemId) {
             R.id.submit_button -> {
+                isBusy = true
                 onSubmitButtonPressed()
                 true
             }
             R.id.restart_game_button -> {
+                isBusy = true
                 onRestartGameButtonPressed()
                 true
             }
             R.id.save_game_button -> {
+                isBusy = true
                 onSaveGameButtonPressed()
                 true
             }
             R.id.load_game_button -> {
+                isBusy = true
                 onLoadGameButtonPressed()
                 true
             }
             R.id.settings_button -> {
+                isBusy = true
                 onSettingsButtonPressed()
                 true
             }
@@ -262,22 +270,27 @@ class MainActivity : AppCompatActivity() {
 
     private fun onSubmitButtonPressed() {
         GameStateManager.submitScore(this)
+        isBusy = false
     }
 
     private fun onRestartGameButtonPressed() {
         GameStateManager.restartGame(this)
+        isBusy = false
     }
 
     private fun onSaveGameButtonPressed() {
         GameStateManager.saveGame(this)
+        isBusy = false
     }
 
     private fun onLoadGameButtonPressed() {
         GameStateManager.loadGame(this)
+        isBusy = false
     }
 
     private fun onSettingsButtonPressed() {
         SettingsDialogFragment().show(supportFragmentManager, "SettingsDialog")
+        isBusy = false
     }
 
     private val showScoreOnSubmitObserver = Observer<Boolean> { showScore ->
