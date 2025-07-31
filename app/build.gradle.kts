@@ -7,12 +7,12 @@ plugins {
 
 android {
     namespace = "com.askariya.lostcitiesscorecalculator"
-    compileSdk = 34
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.askariya.lostcitiesscorecalculator"
         minSdk = 24
-        targetSdk = 34
+        targetSdk = 36
         versionCode = 16
         versionName = "1.5.3"
 

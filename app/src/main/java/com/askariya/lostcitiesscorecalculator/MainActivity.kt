@@ -3,6 +3,7 @@ package com.askariya.lostcitiesscorecalculator
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
+import android.util.TypedValue
 import android.view.HapticFeedbackConstants
 import android.view.Menu
 import android.view.MenuItem
@@ -11,6 +12,10 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updateLayoutParams
+import androidx.core.view.updatePadding
 import androidx.lifecycle.Observer
 import androidx.viewpager2.widget.ViewPager2
 import com.askariya.lostcitiesscorecalculator.databinding.ActivityMainBinding
@@ -29,6 +34,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var tabLayout: TabLayout
     private var colorPrimary: Int = 0
     private var showScoreOnSubmit: Boolean = false
+    private var isBusy = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,7 +47,10 @@ class MainActivity : AppCompatActivity() {
         // Remove default title
         supportActionBar?.title = ""
 
-        colorPrimary = MaterialColors.getColor(this, androidx.appcompat.R.attr.colorPrimary, Color.BLACK)
+        // Fix the header and footer insets
+        adjustHeaderAndFooterInsets()
+
+        colorPrimary = MaterialColors.getColor(this, android.R.attr.colorPrimary, Color.BLACK)
 
         // Observe necessary external properties
         GameStateManager.gameOver.observe(this, endGameObserver)
@@ -87,7 +96,7 @@ class MainActivity : AppCompatActivity() {
         viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
-                setHeaderToolbarColor(position)
+                setHeaderAndFooterToolbarColors(position)
             }
         })
     }
@@ -106,26 +115,33 @@ class MainActivity : AppCompatActivity() {
 
     // Handle toolbar button clicks
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (isBusy)
+            return true
         // Trigger haptic feedback
         findViewById<View>(R.id.header_toolbar)?.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
         return when (item.itemId) {
             R.id.submit_button -> {
+                isBusy = true
                 onSubmitButtonPressed()
                 true
             }
             R.id.restart_game_button -> {
+                isBusy = true
                 onRestartGameButtonPressed()
                 true
             }
             R.id.save_game_button -> {
+                isBusy = true
                 onSaveGameButtonPressed()
                 true
             }
             R.id.load_game_button -> {
+                isBusy = true
                 onLoadGameButtonPressed()
                 true
             }
             R.id.settings_button -> {
+                isBusy = true
                 onSettingsButtonPressed()
                 true
             }
@@ -133,12 +149,50 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun setHeaderToolbarColor(position: Int)
+    private fun adjustHeaderAndFooterInsets()
+    {
+        ViewCompat.setOnApplyWindowInsetsListener(binding.headerToolbar) { view, insets ->
+            val statusBarHeight = insets.getInsets(WindowInsetsCompat.Type.systemBars()).top
+            val navBarHeight = insets.getInsets(WindowInsetsCompat.Type.systemBars()).bottom
+
+            val typedValue = TypedValue()
+            theme.resolveAttribute(android.R.attr.actionBarSize, typedValue, true)
+            val actionBarHeight = TypedValue.complexToDimensionPixelSize(typedValue.data, resources.displayMetrics)
+
+            // Partial top padding
+            val reducedTopPadding = (statusBarHeight / 1.5).toInt().coerceAtLeast(0)
+
+            // Partial bottom padding if you want
+            val reducedBottomPadding = (navBarHeight / 1).toInt().coerceAtLeast(0)
+
+            // Adjust toolbar
+            view.updateLayoutParams {
+                height = actionBarHeight + reducedTopPadding
+            }
+            view.updatePadding(top = reducedTopPadding)
+
+            // Adjust bottom content so it doesn't overlap nav bar
+            binding.viewPager.updatePadding(bottom = reducedBottomPadding)
+
+            insets
+        }
+    }
+
+    private fun setHeaderAndFooterToolbarColors(position: Int)
     {
         when (position) {
-            0 -> binding.headerToolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.player1_colour))
-            1 -> binding.headerToolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.player2_colour))
-            else -> binding.headerToolbar.setBackgroundColor(this.colorPrimary)
+            0 -> {
+                binding.headerToolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.player1_colour))
+                binding.container.setBackgroundColor(ContextCompat.getColor(this, R.color.player1_colour))  // purple background for player 1 tab
+            }
+            1 -> {
+                binding.headerToolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.player2_colour))
+                binding.container.setBackgroundColor(ContextCompat.getColor(this, R.color.player2_colour))  // purple background for player 1 tab
+            }
+            else -> {
+                binding.headerToolbar.setBackgroundColor(this.colorPrimary)
+                binding.container.setBackgroundColor(this.colorPrimary)
+            }
         }
     }
 
@@ -216,22 +270,27 @@ class MainActivity : AppCompatActivity() {
 
     private fun onSubmitButtonPressed() {
         GameStateManager.submitScore(this)
+        isBusy = false
     }
 
     private fun onRestartGameButtonPressed() {
         GameStateManager.restartGame(this)
+        isBusy = false
     }
 
     private fun onSaveGameButtonPressed() {
         GameStateManager.saveGame(this)
+        isBusy = false
     }
 
     private fun onLoadGameButtonPressed() {
         GameStateManager.loadGame(this)
+        isBusy = false
     }
 
     private fun onSettingsButtonPressed() {
         SettingsDialogFragment().show(supportFragmentManager, "SettingsDialog")
+        isBusy = false
     }
 
     private val showScoreOnSubmitObserver = Observer<Boolean> { showScore ->
@@ -242,7 +301,7 @@ class MainActivity : AppCompatActivity() {
         if (gameOver) {
             showEndGameFragment()
             updateActionBarTitle("Game Over")
-            setHeaderToolbarColor(2)
+            setHeaderAndFooterToolbarColors(2)
             invalidateOptionsMenu()
         }
         else {

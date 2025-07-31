@@ -21,6 +21,8 @@ import com.askariya.lostcitiesscorecalculator.ui.utils.GameStateManager
 class ScoreboardFragment : Fragment() {
 
     private var _binding: FragmentScoreboardBinding? = null
+    private var isBusy = false
+
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -40,6 +42,9 @@ class ScoreboardFragment : Fragment() {
         // set the submitButton functionality
         val submitScoreButton : Button = binding.submitScoreButton
         submitScoreButton.setOnClickListener {
+            if (isBusy)
+                return@setOnClickListener
+            isBusy = true
             it.performHapticFeedback(android.view.HapticFeedbackConstants.VIRTUAL_KEY)
             onSubmitButtonPressed()
         }
@@ -47,6 +52,9 @@ class ScoreboardFragment : Fragment() {
         // set the restartButton functionality
         val restartGameButton : Button = binding.restartGameButton
         restartGameButton.setOnClickListener {
+            if (isBusy)
+                return@setOnClickListener
+            isBusy = true
             it.performHapticFeedback(android.view.HapticFeedbackConstants.VIRTUAL_KEY)
             onRestartGameButtonPressed()
         }
@@ -54,12 +62,18 @@ class ScoreboardFragment : Fragment() {
         // set the endGameButton functionality
         val endGameButton : Button = binding.endGameButton
         endGameButton.setOnClickListener {
+            if (isBusy)
+                return@setOnClickListener
+            isBusy = true
             it.performHapticFeedback(android.view.HapticFeedbackConstants.VIRTUAL_KEY)
             onEndGameButtonPressed()
         }
 
         val player1Header : TextView = binding.player1ColumnHeader
         player1Header.setOnClickListener {
+            if (isBusy)
+                return@setOnClickListener
+            isBusy = true
             if (GameStateManager.useCustomNames.value == true) {
                 it.performHapticFeedback(android.view.HapticFeedbackConstants.VIRTUAL_KEY)
                 onPlayerCustomNamePressed(true)
@@ -68,6 +82,9 @@ class ScoreboardFragment : Fragment() {
 
         val player2Header : TextView = binding.player2ColumnHeader
         player2Header.setOnClickListener {
+            if (isBusy)
+                return@setOnClickListener
+            isBusy = true
             if (GameStateManager.useCustomNames.value == true) {
                 it.performHapticFeedback(android.view.HapticFeedbackConstants.VIRTUAL_KEY)
                 onPlayerCustomNamePressed(false)
@@ -94,9 +111,11 @@ class ScoreboardFragment : Fragment() {
 
     private fun onSubmitButtonPressed() {
         GameStateManager.submitScore(requireContext())
+        isBusy = false
     }
     private fun onRestartGameButtonPressed() {
         GameStateManager.restartGame(requireContext())
+        isBusy = false
     }
     private fun onEndGameButtonPressed() {
         val message = """
@@ -111,6 +130,7 @@ class ScoreboardFragment : Fragment() {
         {
             GameStateManager.endGame(requireContext())
         }
+        isBusy = false
     }
     private fun onPlayerCustomNamePressed(isPlayer1: Boolean) {
         val playerName = if (isPlayer1) "Player 1" else "Player 2"
@@ -148,6 +168,7 @@ class ScoreboardFragment : Fragment() {
                 }
             }
         }
+        isBusy = false
     }
 
     private fun addNewRound(roundCount: Int, player1RoundScore: Int, player2RoundScore: Int) {
