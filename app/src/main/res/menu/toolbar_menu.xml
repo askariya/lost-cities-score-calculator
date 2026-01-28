@@ -30,4 +30,10 @@
         android:icon="@null"
         android:title="@string/label_reset_game"
         app:showAsAction="never" />
+
+    <item
+        android:id="@+id/quit_button"
+        android:icon="@null"
+        android:title="@string/label_quit"
+        app:showAsAction="never" />
 </menu>
