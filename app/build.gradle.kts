@@ -25,10 +25,13 @@ android {
             val localPropertiesFile = rootProject.file("local.properties")
             if (localPropertiesFile.exists()) {
                 localPropertiesFile.inputStream().use { localProperties.load(it) }
-                storeFile = file(localProperties.getProperty("keystore.file"))
-                storePassword = localProperties.getProperty("keystore.password")
-                keyAlias = localProperties.getProperty("key.alias")
-                keyPassword = localProperties.getProperty("key.password")
+                val keystoreFile = localProperties.getProperty("keystore.file")
+                if (keystoreFile != null) {
+                    storeFile = file(keystoreFile)
+                    storePassword = localProperties.getProperty("keystore.password")
+                    keyAlias = localProperties.getProperty("key.alias")
+                    keyPassword = localProperties.getProperty("key.password")
+                }
             } else {
                 // Only set signing config if all required env vars are present
                 val signKeystoreFile = System.getenv("KEYSTORE_FILE")
