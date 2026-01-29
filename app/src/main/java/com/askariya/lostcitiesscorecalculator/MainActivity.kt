@@ -22,6 +22,7 @@ import com.askariya.lostcitiesscorecalculator.databinding.ActivityMainBinding
 import com.askariya.lostcitiesscorecalculator.ui.playerboard.PlayerBoardPagerAdapter
 import com.askariya.lostcitiesscorecalculator.ui.scoreboard.EndGameFragment
 import com.askariya.lostcitiesscorecalculator.ui.settings.SettingsDialogFragment
+import com.askariya.lostcitiesscorecalculator.ui.utils.DialogUtils
 import com.askariya.lostcitiesscorecalculator.ui.utils.GameStateManager
 import com.google.android.material.color.MaterialColors
 import com.google.android.material.tabs.TabLayout
@@ -128,6 +129,11 @@ class MainActivity : AppCompatActivity() {
             R.id.restart_game_button -> {
                 isBusy = true
                 onRestartGameButtonPressed()
+                true
+            }
+            R.id.quit_button -> {
+                isBusy = true
+                onQuitButtonPressed()
                 true
             }
             R.id.save_game_button -> {
@@ -290,6 +296,22 @@ class MainActivity : AppCompatActivity() {
 
     private fun onSettingsButtonPressed() {
         SettingsDialogFragment().show(supportFragmentManager, "SettingsDialog")
+        isBusy = false
+    }
+
+    private fun onQuitButtonPressed() {
+        val message = """
+            Are you sure you want to quit the app?<br><br>
+            <i>Unsaved player scores and round history will be lost.</i>
+            """.trimIndent()
+        DialogUtils.showConfirmationDialog(this,
+            getString(R.string.label_quit),
+            message,
+            "Yes",
+            "No")
+        {
+            finishAffinity()
+        }
         isBusy = false
     }
 
