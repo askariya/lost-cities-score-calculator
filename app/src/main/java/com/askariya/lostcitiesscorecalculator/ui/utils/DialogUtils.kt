@@ -3,6 +3,8 @@ package com.askariya.lostcitiesscorecalculator.ui.utils
 import android.animation.ArgbEvaluator
 import android.animation.ValueAnimator
 import android.content.Context
+import android.os.Handler
+import android.os.Looper
 import android.text.Html
 import android.view.LayoutInflater
 import android.widget.TextView
@@ -13,22 +15,28 @@ import com.askariya.lostcitiesscorecalculator.R
 import com.google.android.material.textfield.TextInputEditText
 
 object DialogUtils {
+
+    private var isDialogShowing = false
+
     fun showConfirmationDialog(context: Context,
                                title: String,
                                message: String,
                                positiveButtonText: String,
                                negativeButtonText: String,
                                onConfirm: () -> Unit) {
+        if (isDialogShowing) {
+            return
+        }
+        isDialogShowing = true
+        var confirmed = false
+
         val builder = AlertDialog.Builder(context)
         builder.setTitle(title)
         builder.setMessage(Html.fromHtml(message, Html.FROM_HTML_MODE_COMPACT))
 
         // Set null for button action initially
         builder.setPositiveButton(positiveButtonText, null)
-
-        builder.setNegativeButton(negativeButtonText) { dialog, which ->
-            dialog.dismiss()
-        }
+        builder.setNegativeButton(negativeButtonText, null)
 
         val dialog: AlertDialog = builder.create()
         dialog.setOnShowListener {
@@ -38,7 +46,7 @@ object DialogUtils {
             // Set a click listener to perform haptic feedback and dismiss the dialog
             positiveButton.setOnClickListener {
                 positiveButton.performHapticFeedback(android.view.HapticFeedbackConstants.VIRTUAL_KEY)
-                onConfirm()
+                confirmed = true
                 dialog.dismiss() // Close the dialog
             }
 
@@ -46,6 +54,14 @@ object DialogUtils {
             negativeButton.setOnClickListener {
                 negativeButton.performHapticFeedback(android.view.HapticFeedbackConstants.VIRTUAL_KEY)
                 dialog.dismiss() // Close the dialog
+            }
+        }
+        dialog.setOnDismissListener {
+            isDialogShowing = false
+            if (confirmed) {
+                // Use a handler to post the action to the main thread's message queue.
+                // This ensures the dialog is fully dismissed before the next action is executed.
+                Handler(Looper.getMainLooper()).post(onConfirm)
             }
         }
         dialog.show()
@@ -56,6 +72,12 @@ object DialogUtils {
                                message: String,
                                positiveButtonText: String,
                                onConfirm: () -> Unit) {
+        if (isDialogShowing) {
+            return
+        }
+        isDialogShowing = true
+        var confirmed = false
+
         val builder = AlertDialog.Builder(context)
         builder.setTitle(title)
         builder.setMessage(Html.fromHtml(message, Html.FROM_HTML_MODE_COMPACT))
@@ -72,8 +94,16 @@ object DialogUtils {
             // Set a click listener to perform haptic feedback and dismiss the dialog
             positiveButton.setOnClickListener {
                 positiveButton.performHapticFeedback(android.view.HapticFeedbackConstants.VIRTUAL_KEY)
-                onConfirm()
+                confirmed = true
                 dialog.dismiss() // Close the dialog
+            }
+        }
+        dialog.setOnDismissListener {
+            isDialogShowing = false
+            if (confirmed) {
+                // Use a handler to post the action to the main thread's message queue.
+                // This ensures the dialog is fully dismissed before the next action is executed.
+                Handler(Looper.getMainLooper()).post(onConfirm)
             }
         }
         dialog.show()
@@ -87,6 +117,13 @@ object DialogUtils {
         negativeButtonText: String,
         onConfirm: (String) -> Unit
     ) {
+        if (isDialogShowing) {
+            return
+        }
+        isDialogShowing = true
+        var confirmed = false
+        var inputTextResult = ""
+
         // Inflate the custom layout for the dialog
         val dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_edit_text, null)
         val editText = dialogView.findViewById<TextInputEditText>(R.id.edit_text)
@@ -96,9 +133,7 @@ object DialogUtils {
             .setMessage(Html.fromHtml(message, Html.FROM_HTML_MODE_COMPACT))
             .setView(dialogView) // Set the custom view for the dialog
             .setPositiveButton(positiveButtonText, null)
-            .setNegativeButton(negativeButtonText) { dialog, _ ->
-                dialog.dismiss()
-            }
+            .setNegativeButton(negativeButtonText, null)
 
         val dialog: AlertDialog = builder.create()
         dialog.setOnShowListener {
@@ -109,7 +144,8 @@ object DialogUtils {
             positiveButton.setOnClickListener {
                 positiveButton.performHapticFeedback(android.view.HapticFeedbackConstants.VIRTUAL_KEY)
                 val inputText = editText.text.toString()
-                onConfirm(inputText) // Pass the input text to the onConfirm callback
+                inputTextResult = inputText
+                confirmed = true
                 dialog.dismiss() // Close the dialog
             }
 
@@ -117,6 +153,16 @@ object DialogUtils {
             negativeButton.setOnClickListener {
                 negativeButton.performHapticFeedback(android.view.HapticFeedbackConstants.VIRTUAL_KEY)
                 dialog.dismiss() // Close the dialog
+            }
+        }
+        dialog.setOnDismissListener {
+            isDialogShowing = false
+            if (confirmed) {
+                // Use a handler to post the action to the main thread's message queue.
+                // This ensures the dialog is fully dismissed before the next action is executed.
+                Handler(Looper.getMainLooper()).post {
+                    onConfirm(inputTextResult)
+                }
             }
         }
         dialog.show()

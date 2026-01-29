@@ -147,7 +147,6 @@ class MainActivity : AppCompatActivity() {
                 true
             }
             R.id.settings_button -> {
-                isBusy = true
                 onSettingsButtonPressed()
                 true
             }
@@ -295,8 +294,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun onSettingsButtonPressed() {
-        SettingsDialogFragment().show(supportFragmentManager, "SettingsDialog")
-        isBusy = false
+        // Don't show a new settings dialog if one is already showing
+        if (supportFragmentManager.findFragmentByTag("SettingsDialog") == null) {
+            SettingsDialogFragment().show(supportFragmentManager, "SettingsDialog")
+        }
     }
 
     private fun onQuitButtonPressed() {
