@@ -13,12 +13,20 @@ import com.askariya.lostcitiesscorecalculator.R
 import com.google.android.material.textfield.TextInputEditText
 
 object DialogUtils {
+
+    private var isDialogShowing = false
+
     fun showConfirmationDialog(context: Context,
                                title: String,
                                message: String,
                                positiveButtonText: String,
                                negativeButtonText: String,
                                onConfirm: () -> Unit) {
+        if (isDialogShowing) {
+            return
+        }
+        isDialogShowing = true
+
         val builder = AlertDialog.Builder(context)
         builder.setTitle(title)
         builder.setMessage(Html.fromHtml(message, Html.FROM_HTML_MODE_COMPACT))
@@ -48,6 +56,9 @@ object DialogUtils {
                 dialog.dismiss() // Close the dialog
             }
         }
+        dialog.setOnDismissListener {
+            isDialogShowing = false
+        }
         dialog.show()
     }
 
@@ -56,6 +67,11 @@ object DialogUtils {
                                message: String,
                                positiveButtonText: String,
                                onConfirm: () -> Unit) {
+        if (isDialogShowing) {
+            return
+        }
+        isDialogShowing = true
+
         val builder = AlertDialog.Builder(context)
         builder.setTitle(title)
         builder.setMessage(Html.fromHtml(message, Html.FROM_HTML_MODE_COMPACT))
@@ -76,6 +92,9 @@ object DialogUtils {
                 dialog.dismiss() // Close the dialog
             }
         }
+        dialog.setOnDismissListener {
+            isDialogShowing = false
+        }
         dialog.show()
     }
 
@@ -87,6 +106,11 @@ object DialogUtils {
         negativeButtonText: String,
         onConfirm: (String) -> Unit
     ) {
+        if (isDialogShowing) {
+            return
+        }
+        isDialogShowing = true
+
         // Inflate the custom layout for the dialog
         val dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_edit_text, null)
         val editText = dialogView.findViewById<TextInputEditText>(R.id.edit_text)
@@ -118,6 +142,9 @@ object DialogUtils {
                 negativeButton.performHapticFeedback(android.view.HapticFeedbackConstants.VIRTUAL_KEY)
                 dialog.dismiss() // Close the dialog
             }
+        }
+        dialog.setOnDismissListener {
+            isDialogShowing = false
         }
         dialog.show()
     }
